@@ -27,6 +27,42 @@ const options: Option[] = [
                     },
                 ],
             },
+            {
+                value: 'Drive wheel motor assembly [Left]',
+                label: 'Drive wheel motor assembly [Left]',
+                children: [
+                    {
+                        value: '16.01.00116',
+                        label: '16.01.00116',
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        value: 'Motors',
+        label: 'Motors',
+        children: [
+            {
+                value: 'Drive wheel motor assembly [Right]',
+                label: 'Drive wheel motor assembly [Right]',
+                children: [
+                    {
+                        value: '16.01.00115',
+                        label: '16.01.00115',
+                    },
+                ],
+            },
+            {
+                value: 'Drive wheel motor assembly [Left]',
+                label: 'Drive wheel motor assembly [Left]',
+                children: [
+                    {
+                        value: '16.01.00116',
+                        label: '16.01.00116',
+                    },
+                ],
+            },
         ],
     },
 ];
@@ -49,6 +85,7 @@ const MyHeader = () => {
                 ...values,
                 timestamp: dayjs().valueOf(),
                 full_date: dayjs().format("dddd, MMMM DD, YYYY [at] HH:mm:ss"),
+                id: Date.now()
             });
 
             form.resetFields();
@@ -102,7 +139,7 @@ const MyHeader = () => {
                     onFinish={onFinish} // Set onFinish handler
                 >
                     <Row gutter={16}>
-                        <Col span={18}>
+                        <Col span={24}>
                             <Form.Item
                                 label="Item select"
                                 name="element" // Name for the cascader field
@@ -113,11 +150,6 @@ const MyHeader = () => {
                                     placeholder="Please select"
                                     options={options}
                                 />
-                            </Form.Item>
-                        </Col>
-                        <Col span={6}>
-                            <Form.Item label="Quantity" name="quantity">
-                                <InputNumber style={{width: "100%"}}/>
                             </Form.Item>
                         </Col>
                     </Row>

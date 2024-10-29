@@ -1,21 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import AppRouter from "./components/AppRouter";
 import MyHeader from "./components/Header/MyHeader";
-import MyFooter from "./components/Footer/MyFooter";
 import Sider from "antd/es/layout/Sider";
 import {Breadcrumb, Menu, MenuProps, theme} from 'antd';
 import {
-    CarOutlined,
-    ClusterOutlined,
-    DesktopOutlined, EnvironmentOutlined,
-    FileOutlined, HomeOutlined,
-    PieChartOutlined,
-    TeamOutlined,
-    UserOutlined,
+    HomeOutlined,
 } from '@ant-design/icons';
 import Layout, {Content, Footer, Header} from "antd/es/layout/layout";
 import {useAppDispatch} from "./hooks/storeHooks";
-import {fetchEmployers, fetchItems} from "./store/reducers/items";
+import {subscribeToItems} from "./store/reducers/items";
 
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -36,10 +29,6 @@ function getItem(
 
 const items: MenuItem[] = [
     getItem('Home', '1', <HomeOutlined />),
-    getItem('Warehouse', 'sub1', <ClusterOutlined />, [
-        getItem('PNT', '3', <EnvironmentOutlined />),
-        getItem('GLPC', '4', <EnvironmentOutlined />),
-    ]),
 ];
 
 const App = () => {
@@ -51,8 +40,9 @@ const App = () => {
     } = theme.useToken();
 
     useEffect(() => {
-        disptach(fetchItems);
+        disptach(subscribeToItems());
     }, []);
+
 
 
     return (
@@ -66,8 +56,8 @@ const App = () => {
                     <Header style={{ padding: 0, background: colorBgContainer }} > <MyHeader /> </Header>
                     <Content style={{ margin: '0 16px' }}>
                         <Breadcrumb style={{ margin: '16px 0' }}>
-                            <Breadcrumb.Item>User</Breadcrumb.Item>
-                            <Breadcrumb.Item>Bill</Breadcrumb.Item>
+                            <Breadcrumb.Item>Home</Breadcrumb.Item>
+                            <Breadcrumb.Item>PNT</Breadcrumb.Item>
                         </Breadcrumb>
                         <div
                             style={{

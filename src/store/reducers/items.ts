@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { collection, query, getDocs } from "firebase/firestore";
+import { collection, onSnapshot, query } from "firebase/firestore";
 import { db } from "../../firebase";
-import {IItem} from "../../types/Item";
+import { IItem } from "../../types/Item";
 
 type ItemsState = {
     items: IItem[];
@@ -15,33 +15,42 @@ const initialState: ItemsState = {
     error: undefined,
 };
 
-export const fetchItems = createAsyncThunk<IItem[], undefined, { rejectValue: string }>(
-    'items/fetchItems',
-    async (_, { rejectWithValue }) => {
+// Создание thunk для подписки на обновления данных
+export const subscribeToItems = createAsyncThunk<void, undefined, { rejectValue: string }>(
+    'items/subscribeToItems',
+    async (_, { dispatch, rejectWithValue }) => {
         try {
-            const q = query(collection(db, "warehouse"));
-            const querySnapshot = await getDocs(q);
+            const q = query(collection(db, "/warehouse"));
 
-            const employers: IItem[] = [];
-            querySnapshot.forEach((doc) => {
-                employers.push({
-                    ...doc.data() as IItem
+            // Подписка на изменения в коллекции
+            onSnapshot(q, (querySnapshot) => {
+                const items: IItem[] = [];
+                querySnapshot.forEach((doc) => {
+                    items.push({
+                        ...doc.data() as IItem,
+                    });
                 });
+                // Обновляем состояние при каждом изменении
+                dispatch(setItems(items));
             });
-            return employers;
         } catch (error) {
-            return rejectWithValue('There was an error loading data from the server. Please try again.');
+            return rejectWithValue('There was an error setting up real-time data fetching.');
         }
     }
 );
 
-const employersSlice = createSlice({
+const itemsSlice = createSlice({
     name: 'items',
     initialState,
     reducers: {
+        setItems: (state, action: PayloadAction<IItem[]>) => {
+            state.items = action.payload;
+            state.loading = false;
+            state.error = undefined;
+        },
         addEmployee: (state, action: PayloadAction<IItem>) => {
-            const filteredEmployers = state.items.filter(item => item.id !== action.payload.id);
-            state.items = [...filteredEmployers, action.payload];
+            const filteredItems = state.items.filter(item => item.id !== action.payload.id);
+            state.items = [...filteredItems, action.payload];
         },
         removeEmployee: (state, action: PayloadAction<number>) => {
             state.items = state.items.filter(item => item.id !== action.payload);
@@ -49,20 +58,16 @@ const employersSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(fetchItems.pending, (state) => {
+            .addCase(subscribeToItems.pending, (state) => {
                 state.loading = true;
                 state.error = undefined;
             })
-            .addCase(fetchItems.fulfilled, (state, action) => {
-                state.items = action.payload;
+            .addCase(subscribeToItems.rejected, (state, action) => {
                 state.loading = false;
-            })
-            .addCase(fetchItems.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload || 'Failed to fetch employers';
+                state.error = action.payload || 'Failed to fetch items in real-time.';
             });
     }
 });
 
-export const { addEmployee, removeEmployee } = employersSlice.actions;
-export default employersSlice.reducer;
+export const { setItems, addEmployee, removeEmployee } = itemsSlice.actions;
+export default itemsSlice.reducer;
