@@ -1,18 +1,19 @@
-import React from 'react';
-import {
-    CarryOutOutlined,
-    EditOutlined,
-    EllipsisOutlined,
-    FormOutlined,
-    SettingOutlined
-} from '@ant-design/icons';
-import {Breadcrumb, Card, Divider, Row, Statistic, Tree} from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Breadcrumb, Card, Divider, List, Row, Statistic, Table, Tree } from 'antd';
 import { useAppSelector } from "../../hooks/storeHooks";
 import Col from "antd/es/grid/col";
-import Text from "antd/es/typography/Text"; // Adjust this path if needed
 
 const App: React.FC = () => {
     const { items } = useAppSelector(state => state.robots); // Retrieve items from the Redux store
+
+    const [reversed, setReversed] = useState<any[]>([]);
+
+    useEffect(() => {
+        if (items) {
+            const reversedItems = items.slice().reverse(); // Use slice() to avoid mutating the original array
+            setReversed(reversedItems);
+        }
+    }, [items]); // Add items as a dependency
 
     return (
         <div>
@@ -30,24 +31,17 @@ const App: React.FC = () => {
             </Row>
             <Divider>Items list</Divider>
             <Row gutter={16}>
-                {items.map((item, i) => {
-
-                    return (
-                        <Col span={8} key={`col-${item.id}`}>
-                            <Card
-                                style={{ marginTop: 6 }}
-                                title={item.element[1]}
-                                actions={[
-                                    <SettingOutlined key="setting" />,
-                                    <EditOutlined key="edit" />,
-                                    <EllipsisOutlined key="ellipsis" />,
-                                ]}
-                            >
-                                <Text type="secondary">{item.full_date}</Text>
-                            </Card>
-                        </Col>
-                    );
-                })}
+                <Table
+                    style={{ width: "100%" }}
+                    columns={[
+                        { title: "ID", dataIndex: "id" },
+                        { title: "Full Date", dataIndex: "full_date" },
+                        { title: "Item Code", dataIndex: "item_code" },
+                        { title: "Timestamp", dataIndex: "timestamp" },
+                    ]}
+                    dataSource={reversed}
+                    rowKey="id" // Use a unique key if available for React optimization
+                />
             </Row>
         </div>
     );
