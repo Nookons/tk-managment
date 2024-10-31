@@ -1,18 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from "antd/es/form/Form";
-import { Form, Input, Select, Space } from "antd";
+import { Form, Input, Select, Space, Modal, message, Spin } from "antd";
 import Button from "antd/es/button";
 import InputMask from 'react-input-mask';
-import {db} from "../../firebase";
-import {doc, setDoc} from "firebase/firestore";
+import { db } from "../../firebase";
+import { doc, setDoc } from "firebase/firestore";
+
+interface FormValues {
+    type: string;
+    name: string;
+    code: string;
+}
 
 const CreateOption = () => {
     const [form] = useForm();
+    const [loading, setLoading] = useState(false);
 
-    const onFormFinish = async (values: any) => {
-        await setDoc(doc(db, "item_library", values.code), {
-            ...values,
-        });
+    const onFormFinish = async (values: FormValues) => {
+        setLoading(true);
+        try {
+            await setDoc(doc(db, "item_library", values.code), {
+                id: Date.now(),
+                value: values.name,
+                label: values.code,
+            });
+            message.success("Data submitted successfully!");
+            form.resetFields();
+        } catch (error) {
+            message.error("Failed to submit data!");
+            console.error("Submission Error:", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const onFormFinishFailed = (errorInfo: any) => {
@@ -25,6 +44,16 @@ const CreateOption = () => {
 
     return (
         <div>
+            <Modal
+                open={loading}
+                footer={null}
+                closable={false}
+                centered
+                bodyStyle={{ display: 'flex', justifyContent: 'center' }}
+            >
+                <Spin size="large" />
+            </Modal>
+
             <Form
                 form={form}
                 name="basic"
@@ -35,7 +64,11 @@ const CreateOption = () => {
                 onFinish={onFormFinish}
                 onFinishFailed={onFormFinishFailed}
             >
-                <Form.Item name="type" label="Item type">
+                <Form.Item
+                    name="type"
+                    label="Item type"
+                    rules={[{ required: true, message: "Please select an item type!" }]}
+                >
                     <Select>
                         <Select.Option value="plastic">Plastic</Select.Option>
                         <Select.Option value="wheel">Wheel</Select.Option>
@@ -48,11 +81,19 @@ const CreateOption = () => {
                     </Select>
                 </Form.Item>
 
-                <Form.Item label="Item Name" name="name">
+                <Form.Item
+                    label="Item Name"
+                    name="name"
+                    rules={[{ required: true, message: "Please enter the item name!" }]}
+                >
                     <Input />
                 </Form.Item>
 
-                <Form.Item label="Material Code" name="code">
+                <Form.Item
+                    label="Material Code"
+                    name="code"
+                    rules={[{ required: true, message: "Please enter the material code!" }]}
+                >
                     <InputMask mask="99.99.99999">
                         {(inputProps: any) => <Input {...inputProps} />}
                     </InputMask>
@@ -60,7 +101,7 @@ const CreateOption = () => {
 
                 <Form.Item wrapperCol={{ offset: 3, span: 24 }}>
                     <Space>
-                        <Button type="primary" htmlType="submit">
+                        <Button type="primary" htmlType="submit" loading={loading}>
                             Submit
                         </Button>
                         <Button htmlType="button" onClick={onFormClearClick}>

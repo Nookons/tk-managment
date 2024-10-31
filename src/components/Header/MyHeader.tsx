@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Cascader, Col, Divider, Drawer, Form, Input, InputNumber, message, Row, Space} from "antd";
 import Button from "antd/es/button";
 import {FileAddOutlined, SearchOutlined} from "@ant-design/icons";
-import {doc, setDoc} from 'firebase/firestore';
+import {collection, doc, onSnapshot, query, setDoc} from 'firebase/firestore';
 import {db} from "../../firebase";
 import dayjs from "dayjs";
 
@@ -71,8 +71,19 @@ const MyHeader = () => {
     const [open, setOpen] = useState(false);
     const [form] = Form.useForm(); // Initialize the form instance
 
+    const [drawerData, setDrawerData] = useState<any[]>([]);
+
     const showDrawer = () => {
         setOpen(true);
+
+        const q = query(collection(db, "item_library"));
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            const items: any[] = [];
+            querySnapshot.forEach((doc) => {
+                items.push(doc.data());
+            });
+            console.log(items);
+        });
     };
 
     const onClose = () => {
