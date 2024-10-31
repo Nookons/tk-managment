@@ -4,11 +4,14 @@ import MyHeader from "./components/Header/MyHeader";
 import Sider from "antd/es/layout/Sider";
 import {Breadcrumb, Menu, MenuProps, theme} from 'antd';
 import {
+    AppstoreAddOutlined,
     HomeOutlined,
 } from '@ant-design/icons';
 import Layout, {Content, Footer, Header} from "antd/es/layout/layout";
 import {useAppDispatch} from "./hooks/storeHooks";
 import {subscribeToItems} from "./store/reducers/items";
+import {useNavigate} from "react-router-dom";
+import {CREATE_OPTION, HOME_ROUTE} from "./utils/const";
 
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -27,13 +30,27 @@ function getItem(
     } as MenuItem;
 }
 
-const items: MenuItem[] = [
-    getItem('Home', '1', <HomeOutlined />),
-];
 
 const App = () => {
     const disptach = useAppDispatch();
+    const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState(false);
+
+
+    const items = [
+        {
+            key: '1',
+            icon: <HomeOutlined />,
+            label: 'Home',
+            onClick: () => navigate(HOME_ROUTE),
+        },
+        {
+            key: '2',
+            icon: <AppstoreAddOutlined />,
+            label: 'Create Option',
+            onClick: () => navigate(CREATE_OPTION),
+        },
+    ];
 
     const {
         token: { colorBgContainer, borderRadiusLG },

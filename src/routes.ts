@@ -1,6 +1,7 @@
 import Home from "./pages/Home/Home";
 import SignIn from "./pages/SignIn/SignIn";
-import {HOME_ROUTE, SIGN_IN_ROUTE} from "./utils/const";
+import {CREATE_OPTION, HOME_ROUTE, SIGN_IN_ROUTE} from "./utils/const";
+import CreateOption from "./pages/CreateOption/CreateOption";
 
 
 interface Route {
@@ -22,5 +23,10 @@ export const publicRoutes: PublicRoutes = [
         path: SIGN_IN_ROUTE,
         Component: SignIn,
         label: 'SignIn',
+    },
+    {
+        path: CREATE_OPTION,
+        Component: CreateOption,
+        label: 'Create Option',
     },
 ];
