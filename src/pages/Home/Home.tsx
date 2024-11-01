@@ -35,8 +35,9 @@ const App: React.FC = () => {
                     style={{ width: "100%" }}
                     columns={[
                         { title: "ID", dataIndex: "id" },
+                        { title: "name", dataIndex: "name" },
                         { title: "Full Date", dataIndex: "full_date" },
-                        { title: "Item Code", dataIndex: "item_code" },
+                        { title: "code", dataIndex: "code" },
                         { title: "Timestamp", dataIndex: "timestamp" },
                     ]}
                     dataSource={reversed}
