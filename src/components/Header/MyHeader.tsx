@@ -1,19 +1,17 @@
 import React, {useEffect, useState} from 'react';
-import {AutoComplete, Col, Drawer, Form, Input, message, Row, Space, Button, Result} from "antd";
+import {AutoComplete, Col, Drawer, Form, Input, message, Row, Space, Button, Result, InputProps} from "antd";
 import {FileAddOutlined, SearchOutlined} from "@ant-design/icons";
-import {collection, doc, onSnapshot, query, setDoc} from 'firebase/firestore';
+import {arrayUnion, collection, doc, onSnapshot, query, setDoc} from 'firebase/firestore';
 import {db} from "../../firebase";
 import dayjs from "dayjs";
-import InputMask from "react-input-mask";
-import ItemDescription from "./dep/ItemDescription";
-import Title from "antd/es/typography/Title";
 import Text from "antd/es/typography/Text";
+import InputMask from "react-input-mask";
 
 const MyHeader = () => {
     const [open, setOpen] = useState(false);
-    const [form] = Form.useForm(); // Initialize form instance
 
     const [value, setValue] = useState<string>('');
+    const [box_number, setBox_number] = useState<string>('');
     const [data, setData] = useState<any[]>([]);
 
     const [optionsData, setOptionsData] = useState<any[]>([]);
@@ -61,10 +59,20 @@ const MyHeader = () => {
         try {
             await setDoc(doc(db, "warehouse", Date.now().toString()), {
                 ...currentPick,
+                box_number: box_number.slice(0,7),
                 timestamp: dayjs().valueOf(),
                 full_date: dayjs().format("dddd, MMMM DD, YYYY [at] HH:mm:ss"),
-                id: Date.now()
+                id: Date.now(),
+                key: Date.now()
             });
+
+            await setDoc(doc(db, "tote_info", box_number.slice(0, 7)), {
+                item_inside: arrayUnion(currentPick), // Добавляет currentPick в массив item_inside
+                timestamp: dayjs().valueOf(),
+                update_time: dayjs().format("dddd, MMMM DD, YYYY [at] HH:mm:ss"),
+                id: Date.now(),
+            }, { merge: true });
+
             setValue("")
             onClose();
             message.success("Item successfully added");
@@ -107,6 +115,20 @@ const MyHeader = () => {
                 </Row>
                 {currentPick &&
                     <Row gutter={16}>
+                        <Col span={18}>
+                            <Text>
+                                Hey there! Could you please take a moment to care of the box number and write it down below? This is just a placeholder for now,
+                                until you have a special box for it or you decide to hold it in a special area.
+                                It's totally fine if you missed this input — we're all human!
+                            </Text>
+                        </Col>
+
+                        <Col span={6}>
+                            <InputMask mask="99-9999" value={box_number} onChange={(e: any) => setBox_number(e.target.value)}>
+                                {(inputProps: any) => <Input {...inputProps} />}
+                            </InputMask>
+                        </Col>
+
                         <Col span={24}>
                             <Result
                                 status="success"

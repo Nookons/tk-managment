@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Breadcrumb, Card, Divider, List, Row, Statistic, Table, Tree } from 'antd';
+import { Card, Divider, Row, Statistic, Table } from 'antd';
 import { useAppSelector } from "../../hooks/storeHooks";
 import Col from "antd/es/grid/col";
+import {useNavigate} from "react-router-dom";
+import {TOTE_INFO_ROUTE} from "../../utils/const";
 
 const App: React.FC = () => {
+    const navigate = useNavigate();
     const { items } = useAppSelector(state => state.robots); // Retrieve items from the Redux store
 
     const [reversed, setReversed] = useState<any[]>([]);
@@ -14,6 +17,10 @@ const App: React.FC = () => {
             setReversed(reversedItems);
         }
     }, [items]); // Add items as a dependency
+
+    const onToteClick = (tote: string) => {
+        navigate(`${TOTE_INFO_ROUTE}?id=${tote}`);
+    };
 
     return (
         <div>
@@ -34,10 +41,26 @@ const App: React.FC = () => {
                 <Table
                     style={{ width: "100%" }}
                     columns={[
-                        { title: "ID", dataIndex: "id" },
-                        { title: "name", dataIndex: "name" },
-                        { title: "Full Date", dataIndex: "full_date" },
-                        { title: "code", dataIndex: "code" },
+                        {
+                            title: "ID",
+                            dataIndex: "id",
+                            key: "id",
+                            render: (text) => <a>{text}</a>,
+                        },
+                        {
+                            title: "Uniq number",
+                            dataIndex: "code",
+                            key: "code",
+                            render: (text) => <a>{text}</a>,
+                        },
+                        {
+                            title: "Place",
+                            dataIndex: "box_number",
+                            key: "box_number",
+                            render: (text) => <a onClick={() => onToteClick(text)}>{text}</a>,
+                        },
+                        { title: "Name", dataIndex: "name" },
+                        { title: "Add Date", dataIndex: "full_date" },
                         { title: "Timestamp", dataIndex: "timestamp" },
                     ]}
                     dataSource={reversed}
