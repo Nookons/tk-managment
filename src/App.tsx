@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import AppRouter from "./components/AppRouter";
 import MyHeader from "./components/Header/MyHeader";
 import Sider from "antd/es/layout/Sider";
-import {Breadcrumb, Menu, MenuProps, theme} from 'antd';
+import {Breadcrumb, Menu, MenuProps, message, theme} from 'antd';
 import {
     AppstoreAddOutlined, BugOutlined, CarryOutOutlined, CheckCircleOutlined,
     HomeOutlined, RobotOutlined,
@@ -39,7 +39,7 @@ const App = () => {
 
 
     const test = () => {
-        alert("test")
+        message.error("Doesn't work at this moment")
     }
 
     const items = [
@@ -95,6 +95,12 @@ const App = () => {
                                     navigate(CREATE_OPTION);
                                     break;
                                 case '4': // Repair item
+                                    test();
+                                    break;
+                                case '5': // Repair item
+                                    test();
+                                    break;
+                                case '6': // Repair item
                                     test();
                                     break;
                                 // Add more cases as needed
