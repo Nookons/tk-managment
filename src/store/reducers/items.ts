@@ -48,12 +48,8 @@ const itemsSlice = createSlice({
             state.loading = false;
             state.error = undefined;
         },
-        addEmployee: (state, action: PayloadAction<IItem>) => {
-            const filteredItems = state.items.filter(item => item.id !== action.payload.id);
-            state.items = [...filteredItems, action.payload];
-        },
-        removeEmployee: (state, action: PayloadAction<number>) => {
-            state.items = state.items.filter(item => item.id !== action.payload);
+        removeItems: (state, action: PayloadAction<any[]>) => {
+            state.items = state.items.filter(item => !action.payload.includes(item.id));
         },
     },
     extraReducers: (builder) => {
@@ -69,5 +65,5 @@ const itemsSlice = createSlice({
     }
 });
 
-export const { setItems, addEmployee, removeEmployee } = itemsSlice.actions;
+export const { setItems, removeItems } = itemsSlice.actions;
 export default itemsSlice.reducer;
