@@ -30,16 +30,7 @@ const ToteInfo = () => {
 
     const handleDelete =  () => {
         if (selectedRowKeys.length > 0) {
-
-            const foundTote = totes.filter(item => item.tote_number === toteId).pop()
-
-            const result: any[] = [];
-
-            selectedRowKeys.forEach(key => {
-            })
-
-            console.log(result);
-
+            // Here function to delete item from tote adn also delete from warehouse
             dispatch(removeItems(selectedRowKeys));
             message.success('Selected items have been deleted.');
             setSelectedRowKeys([]); // Очищаем выбранные элементы
