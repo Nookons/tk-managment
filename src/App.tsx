@@ -4,14 +4,17 @@ import MyHeader from "./components/Header/MyHeader";
 import Sider from "antd/es/layout/Sider";
 import {Breadcrumb, Menu, MenuProps, theme} from 'antd';
 import {
-    AppstoreAddOutlined,
-    HomeOutlined,
+    AppstoreAddOutlined, BugOutlined, CarryOutOutlined, CheckCircleOutlined,
+    HomeOutlined, RobotOutlined,
 } from '@ant-design/icons';
 import Layout, {Content, Footer, Header} from "antd/es/layout/layout";
-import {useAppDispatch} from "./hooks/storeHooks";
+import {useAppDispatch, useAppSelector} from "./hooks/storeHooks";
 import {subscribeToItems} from "./store/reducers/items";
 import {useNavigate} from "react-router-dom";
 import {CREATE_OPTION, HOME_ROUTE} from "./utils/const";
+import SignIn from "./pages/SignIn/SignIn";
+import {Simulate} from "react-dom/test-utils";
+import click = Simulate.click;
 
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -35,22 +38,32 @@ const App = () => {
     const disptach = useAppDispatch();
     const navigate = useNavigate();
     const [collapsed, setCollapsed] = useState(false);
+    const {user, loading, error} = useAppSelector(state => state.user)
 
+
+    const test = () => {
+        alert("test")
+    }
 
     const items = [
         {
             key: '1',
             icon: <HomeOutlined />,
             label: 'Home',
-            onClick: () => navigate(HOME_ROUTE),
         },
         {
             key: '2',
             icon: <AppstoreAddOutlined />,
             label: 'Create Option',
-            onClick: () => navigate(CREATE_OPTION),
         },
+        getItem('Robots', 'sub1', <RobotOutlined />, [
+            getItem('Repair', '4', <BugOutlined />),
+            getItem('Solved', '5', <CheckCircleOutlined />),
+            getItem('Inspection', '6', <CarryOutOutlined />),
+        ]),
     ];
+
+
 
     const {
         token: { colorBgContainer, borderRadiusLG },
@@ -61,13 +74,39 @@ const App = () => {
     }, []);
 
 
+    if (!user) {
+        return (
+            <SignIn />
+        )
+    }
 
     return (
         <>
             <Layout style={{ minHeight: '100vh' }}>
                 <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
                     <div className="demo-logo-vertical" />
-                    <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+                    <Menu
+                        theme="dark"
+                        defaultSelectedKeys={['1']}
+                        mode="inline"
+                        onClick={(e) => {
+                            switch (e.key) {
+                                case '1':
+                                    navigate(HOME_ROUTE);
+                                    break;
+                                case '2':
+                                    navigate(CREATE_OPTION);
+                                    break;
+                                case '4': // Repair item
+                                    test();
+                                    break;
+                                // Add more cases as needed
+                                default:
+                                    break;
+                            }
+                        }}
+                        items={items}
+                    />
                 </Sider>
                 <Layout>
                     <Header style={{ padding: 0, background: colorBgContainer }} > <MyHeader /> </Header>

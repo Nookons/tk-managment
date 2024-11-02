@@ -1,8 +1,9 @@
 import Home from "./pages/Home/Home";
 import SignIn from "./pages/SignIn/SignIn";
-import {CREATE_OPTION, HOME_ROUTE, SIGN_IN_ROUTE, TOTE_INFO_ROUTE} from "./utils/const";
+import {CREATE_OPTION, HOME_ROUTE, SIGN_IN_ROUTE, TOTE_INFO_ROUTE, UNIQ_NUMBER_ROUTE} from "./utils/const";
 import CreateOption from "./pages/CreateOption/CreateOption";
 import ToteInfo from "./pages/Tote/ToteInfo/ToteInfo";
+import UniqNumber from "./pages/UniqNumber/UniqNumber";
 
 
 interface Route {
@@ -34,5 +35,10 @@ export const publicRoutes: PublicRoutes = [
         path: TOTE_INFO_ROUTE,
         Component: ToteInfo,
         label: 'Tote Info',
+    },
+    {
+        path: UNIQ_NUMBER_ROUTE,
+        Component: UniqNumber,
+        label: 'Uniq Number',
     },
 ];

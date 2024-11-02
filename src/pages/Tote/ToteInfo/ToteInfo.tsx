@@ -10,7 +10,7 @@ const ToteInfo = () => {
     const params = new URLSearchParams(location.search);
     const toteId = params.get("id"); // Извлекаем значение параметра id
 
-    const {items, error, loading} = useAppSelector(state => state.robots)
+    const {items, error, loading} = useAppSelector(state => state.items)
 
     const [tote_data, setTote_data] = useState<any[]>([]);
 

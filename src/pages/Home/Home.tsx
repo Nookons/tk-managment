@@ -3,11 +3,13 @@ import { Card, Divider, Row, Statistic, Table } from 'antd';
 import { useAppSelector } from "../../hooks/storeHooks";
 import Col from "antd/es/grid/col";
 import {useNavigate} from "react-router-dom";
-import {TOTE_INFO_ROUTE} from "../../utils/const";
+import {TOTE_INFO_ROUTE, UNIQ_NUMBER_ROUTE} from "../../utils/const";
+import Text from "antd/es/typography/Text";
+import Title from "antd/es/typography/Title";
 
 const App: React.FC = () => {
     const navigate = useNavigate();
-    const { items } = useAppSelector(state => state.robots); // Retrieve items from the Redux store
+    const { items } = useAppSelector(state => state.items); // Retrieve items from the Redux store
 
     const [reversed, setReversed] = useState<any[]>([]);
 
@@ -20,6 +22,10 @@ const App: React.FC = () => {
 
     const onToteClick = (tote: string) => {
         navigate(`${TOTE_INFO_ROUTE}?id=${tote}`);
+    };
+
+    const onUniqNumberClick = (tote: string) => {
+        navigate(`${UNIQ_NUMBER_ROUTE}?id=${tote}`);
     };
 
     return (
@@ -42,30 +48,34 @@ const App: React.FC = () => {
                     style={{ width: "100%" }}
                     columns={[
                         {
-                            title: "ID",
-                            dataIndex: "id",
-                            key: "id",
-                            render: (text) => <a>{text}</a>,
-                        },
-                        {
                             title: "Uniq number",
                             dataIndex: "code",
                             key: "code",
-                            render: (text) => <a>{text}</a>,
+                            render: (text) => <a onClick={() => onUniqNumberClick(text)}>{text}</a>,
                         },
                         {
                             title: "Place",
                             dataIndex: "box_number",
                             key: "box_number",
-                            render: (text) => <a onClick={() => onToteClick(text)}>{text}</a>,
+                            render: (text) => <a onClick={() => onToteClick(text)}>📦 {text}</a>,
                         },
-                        { title: "Name", dataIndex: "name" },
-                        { title: "Add Date", dataIndex: "full_date" },
-                        { title: "Timestamp", dataIndex: "timestamp" },
+                        {
+                            title: "Name",
+                            dataIndex: "name",
+                            key: "name",
+                            render: (text) => <Text strong>{text}</Text>,
+                        },
+                        {
+                            title: "Add Date",
+                            dataIndex: "full_date",
+                            key: "full_date",
+                            render: (text) => <Text type="secondary">{text}</Text>,
+                        },
                     ]}
                     dataSource={reversed}
                     rowKey="id" // Use a unique key if available for React optimization
-                />
+                >
+                </Table>
             </Row>
         </div>
     );

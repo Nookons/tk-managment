@@ -6,9 +6,11 @@ import {db} from "../../firebase";
 import dayjs from "dayjs";
 import Text from "antd/es/typography/Text";
 import InputMask from "react-input-mask";
+import {useAppSelector} from "../../hooks/storeHooks";
 
 const MyHeader = () => {
     const [open, setOpen] = useState(false);
+    const {user, error} = useAppSelector(state => state.user)
 
     const [value, setValue] = useState<string>('');
     const [box_number, setBox_number] = useState<string>('');
@@ -84,6 +86,11 @@ const MyHeader = () => {
     return (
         <div style={{display: 'flex', justifyContent: "flex-end", marginRight: 12}}>
             <Space direction="horizontal">
+                {user &&
+                    <div>
+                        {user.email}
+                    </div>
+                }
                 <Button onClick={showDrawer} type="default" shape="circle" icon={<FileAddOutlined/>}/>
                 <Button type="default" shape="circle" icon={<SearchOutlined/>}/>
             </Space>
