@@ -7,4 +7,5 @@ export interface IItem {
     remark: string;
     timestamp: number;
     id: number;
+    tote_number: string;
 }

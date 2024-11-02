@@ -13,6 +13,7 @@ import {subscribeToItems} from "./store/reducers/items";
 import {useNavigate} from "react-router-dom";
 import {CREATE_OPTION, HOME_ROUTE} from "./utils/const";
 import SignIn from "./pages/SignIn/SignIn";
+import {subscribeToTotes} from "./store/reducers/totes";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -68,6 +69,7 @@ const App = () => {
 
     useEffect(() => {
         disptach(subscribeToItems());
+        disptach(subscribeToTotes());
     }, []);
 
 

@@ -4,6 +4,8 @@ import { useAppSelector, useAppDispatch } from "../../../hooks/storeHooks";
 import { Divider, Table, Button, message } from "antd";
 import { LinkOutlined } from '@ant-design/icons';
 import { removeItems } from '../../../store/reducers/items';
+import {arrayRemove, doc, updateDoc} from "firebase/firestore";
+import {db} from "../../../firebase";
 
 const ToteInfo = () => {
     const location = useLocation();
@@ -11,7 +13,9 @@ const ToteInfo = () => {
     const toteId = params.get("id"); // Извлекаем значение параметра id
 
     const dispatch = useAppDispatch();
-    const { items, error, loading } = useAppSelector(state => state.items);
+    const { items} = useAppSelector(state => state.items);
+
+    const {totes} = useAppSelector(state => state.totes)
 
     const [tote_data, setTote_data] = useState<any[]>([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
@@ -23,12 +27,18 @@ const ToteInfo = () => {
         }
     }, [toteId, items]);
 
-    const handleDelete = () => {
+
+    const handleDelete =  () => {
         if (selectedRowKeys.length > 0) {
 
-            selectedRowKeys.forEach(el => {
-                message.success(el.toString())
+            const foundTote = totes.filter(item => item.tote_number === toteId).pop()
+
+            const result: any[] = [];
+
+            selectedRowKeys.forEach(key => {
             })
+
+            console.log(result);
 
             dispatch(removeItems(selectedRowKeys));
             message.success('Selected items have been deleted.');

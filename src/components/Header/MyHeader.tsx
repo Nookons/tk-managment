@@ -71,6 +71,7 @@ const MyHeader = () => {
             await setDoc(doc(db, "tote_info", box_number.slice(0, 7)), {
                 item_inside: arrayUnion(currentPick), // Добавляет currentPick в массив item_inside
                 timestamp: dayjs().valueOf(),
+                tote_number: box_number.slice(0, 7),
                 update_time: dayjs().format("dddd, MMMM DD, YYYY [at] HH:mm:ss"),
                 id: Date.now(),
             }, { merge: true });
