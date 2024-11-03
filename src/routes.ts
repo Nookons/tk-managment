@@ -1,9 +1,17 @@
 import Home from "./pages/Home/Home";
 import SignIn from "./pages/SignIn/SignIn";
-import {CREATE_OPTION, HOME_ROUTE, SIGN_IN_ROUTE, TOTE_INFO_ROUTE, UNIQ_NUMBER_ROUTE} from "./utils/const";
+import {
+    ADD_BROKEN_ROBOT,
+    CREATE_OPTION,
+    HOME_ROUTE,
+    SIGN_IN_ROUTE,
+    TOTE_INFO_ROUTE,
+    UNIQ_NUMBER_ROUTE
+} from "./utils/const";
 import CreateOption from "./pages/CreateOption/CreateOption";
 import ToteInfo from "./pages/Tote/ToteInfo/ToteInfo";
 import UniqNumber from "./pages/UniqNumber/UniqNumber";
+import AddBroken from "./pages/Robots/AddBroken/AddBroken";
 
 
 interface Route {
@@ -40,5 +48,10 @@ export const publicRoutes: PublicRoutes = [
         path: UNIQ_NUMBER_ROUTE,
         Component: UniqNumber,
         label: 'Uniq Number',
+    },
+    {
+        path: ADD_BROKEN_ROBOT,
+        Component: AddBroken,
+        label: 'Add Broken',
     },
 ];

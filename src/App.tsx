@@ -11,7 +11,7 @@ import Layout, {Content, Footer, Header} from "antd/es/layout/layout";
 import {useAppDispatch, useAppSelector} from "./hooks/storeHooks";
 import {subscribeToItems} from "./store/reducers/items";
 import {useNavigate} from "react-router-dom";
-import {CREATE_OPTION, HOME_ROUTE} from "./utils/const";
+import {ADD_BROKEN_ROBOT, CREATE_OPTION, HOME_ROUTE} from "./utils/const";
 import SignIn from "./pages/SignIn/SignIn";
 import {subscribeToTotes} from "./store/reducers/totes";
 import {subscribeToOptions} from "./store/reducers/options";
@@ -36,11 +36,11 @@ function getItem(
 const App = () => {
     const disptach = useAppDispatch();
     const navigate = useNavigate();
-    const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState(true);
     const {user, loading, error} = useAppSelector(state => state.user)
 
 
-    const test = () => {
+    const redirect = () => {
         message.error("Doesn't work at this moment")
     }
 
@@ -103,16 +103,15 @@ const App = () => {
                                 case '2':
                                     navigate(CREATE_OPTION);
                                     break;
-                                case '4': // Repair item
-                                    test();
+                                case '4':
+                                    navigate(ADD_BROKEN_ROBOT);
                                     break;
-                                case '5': // Repair item
-                                    test();
+                                case '5':
+                                    redirect();
                                     break;
-                                case '6': // Repair item
-                                    test();
+                                case '6':
+                                    redirect();
                                     break;
-                                // Add more cases as needed
                                 default:
                                     break;
                             }
