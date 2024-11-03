@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import itemsReducer from './reducers/items';
 import totesReducer from './reducers/totes';
 import userReducer from './reducers/user';
+import optionsReducer from './reducers/options';
 
 const store = configureStore({
     reducer: {
         items: itemsReducer,
         totes: totesReducer,
-        user: userReducer
+        user: userReducer,
+        options: optionsReducer
     }
 });
 

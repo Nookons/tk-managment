@@ -3,9 +3,9 @@ import { useLocation } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../../hooks/storeHooks";
 import { Divider, Table, Button, message } from "antd";
 import { LinkOutlined } from '@ant-design/icons';
-import { removeItems } from '../../../store/reducers/items';
-import {arrayRemove, doc, updateDoc} from "firebase/firestore";
-import {db} from "../../../firebase";
+import {removeItem} from "../../../utils/Item/RemoveItem";
+import {ITote} from "../../../types/Tote";
+import {removeItems} from "../../../store/reducers/items";
 
 const ToteInfo = () => {
     const location = useLocation();
@@ -28,10 +28,13 @@ const ToteInfo = () => {
     }, [toteId, items]);
 
 
-    const handleDelete =  () => {
+    const handleDelete = () => {
         if (selectedRowKeys.length > 0) {
-            // Here function to delete item from tote adn also delete from warehouse
             dispatch(removeItems(selectedRowKeys));
+
+            const tote: ITote = totes.find(item => item.tote_number === toteId)
+            removeItem({selectedRowKeys, tote});
+
             message.success('Selected items have been deleted.');
             setSelectedRowKeys([]); // Очищаем выбранные элементы
         } else {

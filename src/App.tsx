@@ -5,7 +5,7 @@ import Sider from "antd/es/layout/Sider";
 import {Breadcrumb, Menu, MenuProps, message, theme} from 'antd';
 import {
     AppstoreAddOutlined, BugOutlined, CarryOutOutlined, CheckCircleOutlined,
-    HomeOutlined, RobotOutlined,
+    HomeOutlined, MergeCellsOutlined, RobotOutlined,
 } from '@ant-design/icons';
 import Layout, {Content, Footer, Header} from "antd/es/layout/layout";
 import {useAppDispatch, useAppSelector} from "./hooks/storeHooks";
@@ -14,6 +14,7 @@ import {useNavigate} from "react-router-dom";
 import {CREATE_OPTION, HOME_ROUTE} from "./utils/const";
 import SignIn from "./pages/SignIn/SignIn";
 import {subscribeToTotes} from "./store/reducers/totes";
+import {subscribeToOptions} from "./store/reducers/options";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -59,6 +60,11 @@ const App = () => {
             getItem('Solved', '5', <CheckCircleOutlined />),
             getItem('Inspection', '6', <CarryOutOutlined />),
         ]),
+        getItem('Work Stations', 'sub2', <MergeCellsOutlined  />, [
+            getItem('Repair', '7', <BugOutlined />),
+            getItem('Solved', '8', <CheckCircleOutlined />),
+            getItem('Inspection', '9', <CarryOutOutlined />),
+        ]),
     ];
 
 
@@ -70,6 +76,7 @@ const App = () => {
     useEffect(() => {
         disptach(subscribeToItems());
         disptach(subscribeToTotes());
+        disptach(subscribeToOptions());
     }, []);
 
 

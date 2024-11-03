@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { Card, Divider, Row, Statistic, Table } from 'antd';
-import { useAppSelector } from "../../hooks/storeHooks";
+import React, {useEffect, useState} from 'react';
+import {Card, Divider, Row, Statistic, Table} from 'antd';
+import {useAppSelector} from "../../hooks/storeHooks";
 import Col from "antd/es/grid/col";
 import {useNavigate} from "react-router-dom";
 import {TOTE_INFO_ROUTE, UNIQ_NUMBER_ROUTE} from "../../utils/const";
 import Text from "antd/es/typography/Text";
 import Title from "antd/es/typography/Title";
+import {ITote} from "../../types/Tote";
 
 const App: React.FC = () => {
     const navigate = useNavigate();
-    const { items } = useAppSelector(state => state.items); // Retrieve items from the Redux store
+    const {items} = useAppSelector(state => state.items); // Retrieve items from the Redux store
+    const {totes} = useAppSelector(state => state.totes); // Retrieve items from the Redux store
 
     const [reversed, setReversed] = useState<any[]>([]);
 
@@ -28,24 +30,42 @@ const App: React.FC = () => {
         navigate(`${UNIQ_NUMBER_ROUTE}?id=${tote}`);
     };
 
+    let totes_count = totes.length;
+    const [fullTotes, setFullTotes] = useState(0);
+
+    useEffect(() => {
+        const count = totes.reduce((acc, el) => {
+            return acc + (el.item_inside.length > 0 ? 1 : 0);
+        }, 0);
+
+        setFullTotes(count);
+    }, [totes]);
+
     return (
         <div>
             <Row gutter={16}>
-                <Col span={12}>
+                <Col span={8}>
                     <Card>
-                        <Statistic title="Items in Warehouse" value={items.length} />
+                        <Statistic title="Items in Warehouse" value={items.length}/>
                     </Card>
                 </Col>
-                <Col span={12}>
+                <Col span={8}>
                     <Card>
-                        <Statistic title="Robots to repair" value={0} />
+                        <Row gutter={16}>
+                            <Statistic title="Totes in warehouse" value={totes.length}/>
+                        </Row>
+                    </Card>
+                </Col>
+                <Col span={8}>
+                    <Card>
+                        <Statistic title="Robots to repair" value={0}/>
                     </Card>
                 </Col>
             </Row>
             <Divider>Items list</Divider>
             <Row gutter={16}>
                 <Table
-                    style={{ width: "100%" }}
+                    style={{width: "100%"}}
                     columns={[
                         {
                             title: "Uniq number",
