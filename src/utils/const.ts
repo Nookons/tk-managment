@@ -5,4 +5,7 @@ export const SIGN_IN_ROUTE = "/sign-in"
 
 export const TOTE_INFO_ROUTE = "/tote-info"
 export const UNIQ_NUMBER_ROUTE = "/uniq-number"
+
+
 export const ADD_BROKEN_ROBOT = "/add-broken-robot"
+export const ROBOTS_DISPLAY = "/robots-display"

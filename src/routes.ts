@@ -3,7 +3,7 @@ import SignIn from "./pages/SignIn/SignIn";
 import {
     ADD_BROKEN_ROBOT,
     CREATE_OPTION,
-    HOME_ROUTE,
+    HOME_ROUTE, ROBOTS_DISPLAY,
     SIGN_IN_ROUTE,
     TOTE_INFO_ROUTE,
     UNIQ_NUMBER_ROUTE
@@ -12,6 +12,7 @@ import CreateOption from "./pages/CreateOption/CreateOption";
 import ToteInfo from "./pages/Tote/ToteInfo/ToteInfo";
 import UniqNumber from "./pages/UniqNumber/UniqNumber";
 import AddBroken from "./pages/Robots/AddBroken/AddBroken";
+import RobotsDisplay from "./pages/Robots/RobotsDisplay/RobotsDisplay";
 
 
 interface Route {
@@ -52,6 +53,11 @@ export const publicRoutes: PublicRoutes = [
     {
         path: ADD_BROKEN_ROBOT,
         Component: AddBroken,
+        label: 'Add Broken',
+    },
+    {
+        path: ROBOTS_DISPLAY,
+        Component: RobotsDisplay,
         label: 'Add Broken',
     },
 ];

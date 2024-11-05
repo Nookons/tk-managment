@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useForm } from "antd/es/form/Form";
 import {
-    AutoComplete,
     Col,
     Form,
     Input,
@@ -58,19 +57,6 @@ const AddBroken: React.FC = () => {
                 }
             );
         });
-    };
-
-    const handleUploadComplete = async (fileList: File[]) => {
-        setUploading(true);
-        try {
-            const urls = await Promise.all(fileList.map(file => handleUploadFiles(file)));
-            setFilesUrls(urls);
-            message.success("All files uploaded successfully.");
-        } catch (error) {
-            message.error("File upload failed.");
-        } finally {
-            setUploading(false);
-        }
     };
 
     const uploadData = async (values: FormValues) => {

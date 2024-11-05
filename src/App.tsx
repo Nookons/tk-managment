@@ -4,6 +4,7 @@ import MyHeader from "./components/Header/MyHeader";
 import Sider from "antd/es/layout/Sider";
 import {Breadcrumb, Menu, MenuProps, message, theme} from 'antd';
 import {
+    AlertOutlined,
     AppstoreAddOutlined, BugOutlined, CarryOutOutlined, CheckCircleOutlined,
     HomeOutlined, MergeCellsOutlined, RobotOutlined,
 } from '@ant-design/icons';
@@ -11,10 +12,11 @@ import Layout, {Content, Footer, Header} from "antd/es/layout/layout";
 import {useAppDispatch, useAppSelector} from "./hooks/storeHooks";
 import {subscribeToItems} from "./store/reducers/items";
 import {useNavigate} from "react-router-dom";
-import {ADD_BROKEN_ROBOT, CREATE_OPTION, HOME_ROUTE} from "./utils/const";
+import {ADD_BROKEN_ROBOT, CREATE_OPTION, HOME_ROUTE, ROBOTS_DISPLAY} from "./utils/const";
 import SignIn from "./pages/SignIn/SignIn";
 import {subscribeToTotes} from "./store/reducers/totes";
 import {subscribeToOptions} from "./store/reducers/options";
+import {subscribeToBroken_robots} from "./store/reducers/broken_robots";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -57,13 +59,14 @@ const App = () => {
         },
         getItem('Robots', 'sub1', <RobotOutlined />, [
             getItem('Repair', '4', <BugOutlined />),
-            getItem('Solved', '5', <CheckCircleOutlined />),
-            getItem('Inspection', '6', <CarryOutOutlined />),
+            getItem('Robots display', '5', <AlertOutlined />),
+            getItem('Solved', '6', <CheckCircleOutlined />),
+            getItem('Inspection', '7', <CarryOutOutlined />),
         ]),
         getItem('Work Stations', 'sub2', <MergeCellsOutlined  />, [
-            getItem('Repair', '7', <BugOutlined />),
-            getItem('Solved', '8', <CheckCircleOutlined />),
-            getItem('Inspection', '9', <CarryOutOutlined />),
+            getItem('Repair', '8', <BugOutlined />),
+            getItem('Solved', '9', <CheckCircleOutlined />),
+            getItem('Inspection', '10', <CarryOutOutlined />),
         ]),
     ];
 
@@ -77,6 +80,7 @@ const App = () => {
         disptach(subscribeToItems());
         disptach(subscribeToTotes());
         disptach(subscribeToOptions());
+        disptach(subscribeToBroken_robots());
     }, []);
 
 
@@ -104,9 +108,12 @@ const App = () => {
                                     navigate(CREATE_OPTION);
                                     break;
                                 case '4':
-                                    navigate(ADD_BROKEN_ROBOT);
+                                    navigate(CREATE_OPTION);
                                     break;
                                 case '5':
+                                    navigate(ROBOTS_DISPLAY);
+                                    break;
+                                case '6':
                                     redirect();
                                     break;
                                 case '6':
