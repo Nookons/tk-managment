@@ -5,8 +5,6 @@ import Col from "antd/es/grid/col";
 import {useNavigate} from "react-router-dom";
 import {TOTE_INFO_ROUTE, UNIQ_NUMBER_ROUTE} from "../../utils/const";
 import Text from "antd/es/typography/Text";
-import Title from "antd/es/typography/Title";
-import {ITote} from "../../types/Tote";
 
 const App: React.FC = () => {
     const navigate = useNavigate();
@@ -29,17 +27,6 @@ const App: React.FC = () => {
     const onUniqNumberClick = (tote: string) => {
         navigate(`${UNIQ_NUMBER_ROUTE}?id=${tote}`);
     };
-
-    let totes_count = totes.length;
-    const [fullTotes, setFullTotes] = useState(0);
-
-    useEffect(() => {
-        const count = totes.reduce((acc, el) => {
-            return acc + (el.item_inside.length > 0 ? 1 : 0);
-        }, 0);
-
-        setFullTotes(count);
-    }, [totes]);
 
     return (
         <div>
