@@ -74,6 +74,7 @@ const AddBroken: React.FC = () => {
             ...values,
             crash_time: values.crash_time ? values.crash_time.valueOf() : undefined,
             files_array: filesUrls,
+            timestamp: serverTimestamp(),
             user: user ? user.email : "unknown",
             error_id: Date.now(),
             change_items: values.change_items || [],

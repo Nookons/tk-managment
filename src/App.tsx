@@ -108,7 +108,7 @@ const App = () => {
                                     navigate(CREATE_OPTION);
                                     break;
                                 case '4':
-                                    navigate(CREATE_OPTION);
+                                    navigate(ADD_BROKEN_ROBOT);
                                     break;
                                 case '5':
                                     navigate(ROBOTS_DISPLAY);
