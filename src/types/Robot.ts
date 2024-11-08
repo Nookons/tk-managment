@@ -19,7 +19,7 @@ export interface IRobotError {
     user: string;
     isRemove: boolean;
     isLog: boolean;
-    change_items: string[];
+    change_items: string[] | string;
     robot_number: string;
     files_array: string[];
     upload: {
