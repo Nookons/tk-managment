@@ -10,7 +10,7 @@ import {
     Switch,
     Upload,
     Checkbox,
-    TimePicker, Select,
+    TimePicker, Select, Space,
 } from "antd";
 import Button from "antd/es/button";
 import { InboxOutlined } from "@ant-design/icons";
@@ -119,6 +119,16 @@ const AddBroken: React.FC = () => {
     return (
         <Form form={form} layout="vertical" onFinish={handleFormFinish}>
             <Row gutter={16}>
+                <Col>
+                    <Form.Item label="Removed" name="isRemove" valuePropName="checked">
+                        <Switch />
+                    </Form.Item>
+                </Col>
+                <Col>
+                    <Form.Item label="Log" name="isLog" valuePropName="checked">
+                        <Switch />
+                    </Form.Item>
+                </Col>
                 <Col span={24}>
                     <Form.Item
                         label="Robot Number"
@@ -131,28 +141,18 @@ const AddBroken: React.FC = () => {
                         <Input maxLength={7} />
                     </Form.Item>
                 </Col>
-                <Col span={6}>
+                <Col span={2}>
                     <Form.Item label="Crash Time" name="crash_time">
                         <TimePicker format={format} />
                     </Form.Item>
                 </Col>
-                <Col span={3}>
-                    <Form.Item label="Is Removed" name="isRemove" valuePropName="checked">
-                        <Switch />
-                    </Form.Item>
-                </Col>
-                <Col span={3}>
-                    <Form.Item label="Log Present" name="isLog" valuePropName="checked">
-                        <Switch />
-                    </Form.Item>
-                </Col>
-                <Col span={12}>
+                <Col span={10}>
                     {loading ? (
                         <Spin size="large" />
                     ) : (
                         <Form.Item label="Items to Change" name="change_items">
                             <Select
-                                mode={isMultipleItems ? "tags" : undefined} // Use mode "tags" for multiple selections
+                                mode={"tags"} // Use mode "tags" for multiple selections
                                 style={{ width: "100%" }}
                                 options={options.map((item) => ({ value: item.code }))}
                                 placeholder="Select or type items"
@@ -160,14 +160,9 @@ const AddBroken: React.FC = () => {
                         </Form.Item>
                     )}
                 </Col>
-                <Col span={6}>
-                    <Checkbox onChange={() => setIsMultipleItems(!isMultipleItems)}>
-                        Multiple items
-                    </Checkbox>
-                </Col>
-                <Col span={24}>
+                <Col span={12}>
                     <Form.Item label="Notes" name="note">
-                        <Input.TextArea rows={4} />
+                        <Input.TextArea rows={3} />
                     </Form.Item>
                 </Col>
                 <Col span={24}>
@@ -190,12 +185,14 @@ const AddBroken: React.FC = () => {
                 </Col>
             </Row>
             <Row justify="center" gutter={8}>
-                <Button type="primary" htmlType="submit" disabled={uploading}>
-                    Submit
-                </Button>
-                <Button onClick={() => form.resetFields()} disabled={uploading}>
-                    Clear
-                </Button>
+                <Space>
+                    <Button type="primary" htmlType="submit" disabled={uploading}>
+                        Submit
+                    </Button>
+                    <Button onClick={() => form.resetFields()} disabled={uploading}>
+                        Clear
+                    </Button>
+                </Space>
             </Row>
         </Form>
     );

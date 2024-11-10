@@ -51,18 +51,18 @@ const RobotsDisplay = () => {
     return (
         <>
             <RobotStatisticDisplay />
+
             <Row>
                 {broken_robots && broken_robots.map((robot: IBrokenRobots, index) => {
                     let isRemove = false;
 
                     return <Col style={{
-                        margin: 18,
                         justifyContent: "center",
                         alignItems: "center",
                         padding: 14,
                         boxShadow: "0 0 4px rgba(0,0,0, 0.15)",
                         borderRadius: 14
-                    }} key={robot.error_array[0]?.robot_number}>
+                    }} key={robot.error_array[0]?.robot_number} span={12}>
                         <Divider><AlertOutlined/> {robot.error_array[0]?.robot_number}</Divider>
                         <img src={robot_logo} style={{
                             position: "absolute",

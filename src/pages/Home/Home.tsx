@@ -6,6 +6,7 @@ import {useNavigate} from "react-router-dom";
 import {TOTE_INFO_ROUTE, UNIQ_NUMBER_ROUTE} from "../../utils/const";
 import Text from "antd/es/typography/Text";
 import RobotsCard from "./dep/RobotsCard";
+import {RobotOutlined} from "@ant-design/icons";
 
 const App: React.FC = () => {
     const navigate = useNavigate();
@@ -32,15 +33,16 @@ const App: React.FC = () => {
     return (
         <div>
             <Row gutter={16}>
-                <Col span={8}>
+                <Col span={16}>
                     <Card>
-                        <Statistic title="Items in Warehouse" value={items.length}/>
-                    </Card>
-                </Col>
-                <Col span={8}>
-                    <Card>
+                        <Divider>Items Card</Divider>
                         <Row gutter={16}>
-                            <Statistic title="Totes in warehouse" value={totes.length}/>
+                            <Col span={16}>
+                                <Card><Statistic title="Items in totes" value={items.length} prefix={<span>🔧</span>}/></Card>
+                            </Col>
+                            <Col span={8}>
+                                <Card><Statistic title="Totes in system" value={totes.length} prefix={<span>📦</span>}/></Card>
+                            </Col>
                         </Row>
                     </Card>
                 </Col>
