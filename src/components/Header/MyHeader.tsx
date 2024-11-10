@@ -19,7 +19,7 @@ const MyHeader = () => {
     return (
         <div style={{ display: 'flex', justifyContent: "flex-end", marginRight: 12 }}>
             <Space>
-                {user && <div>{user.email}</div>}
+                {user && <span>{user.email}</span>}
                 <Button onClick={showDrawer} icon={<FileAddOutlined />} />
                 <Button icon={<SearchOutlined />} />
             </Space>

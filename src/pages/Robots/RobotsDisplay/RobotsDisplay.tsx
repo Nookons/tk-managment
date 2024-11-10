@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {useAppSelector} from "../../../hooks/storeHooks";
 import {IBrokenRobots, IFileUpload, IRobotError} from "../../../types/Robot";
-import {Avatar, Descriptions, Divider, Image, message, QRCode, Row, Tabs, Timeline, Tree} from "antd";
+import {Avatar, Descriptions, Divider, Image, message, Modal, QRCode, Row, Tabs, Timeline, Tree} from "antd";
 import robot_logo from "../../../assets/robot.webp"
 import Col from "antd/es/grid/col";
 import dayjs from "dayjs";
@@ -18,6 +18,7 @@ import {
 } from '@ant-design/icons';
 import RobotStatisticDisplay from "./RobotStatisticDisplay";
 import Button from "antd/es/button";
+import {removeRobotReport} from "../../../utils/Robot/RemoveRobotReport";
 
 const RobotsDisplay = () => {
     const navigate = useNavigate();
@@ -43,11 +44,16 @@ const RobotsDisplay = () => {
         }
     };
 
+    const removeClick = async (id: string) => {
+        const response = await removeRobotReport(id);
+    }
+
     return (
         <>
             <RobotStatisticDisplay />
             <Row>
                 {broken_robots && broken_robots.map((robot: IBrokenRobots, index) => {
+                    let isRemove = false;
 
                     return <Col style={{
                         margin: 18,
@@ -65,10 +71,16 @@ const RobotsDisplay = () => {
                             right: -34,
                             zIndex: 2
                         }} alt=""/>
+                        <Modal title="Remove robot modal" open={isRemove} onOk={() => removeClick(robot.error_array[0].robot_number)} okText="Confirm" cancelText="Cancel">
+                            <p>
+                                Hello there! Just wanted to check in and make sure you're sure about removing this robot.
+                                Once it's gone, we won't have any more history of this error in the system.
+                            </p>
+                        </Modal>
                         <Button style={{margin: "0 4px"}}><ArrowsAltOutlined /> Open</Button>
                         <Button style={{margin: "0 4px"}}><RetweetOutlined /> Update</Button>
                         <Button type={"primary"} style={{margin: "0 4px"}}><CheckCircleOutlined /> Solved</Button>
-                        <Button danger type={"primary"} style={{margin: "0 4px"}}><DeleteOutlined /> Remove</Button>
+                        <Button onClick={() => removeClick(robot.error_array[0].robot_number)} danger type={"primary"} style={{margin: "0 4px"}}><DeleteOutlined /> Remove</Button>
                         <Tabs>
                             <Tabs.TabPane tab="Main Info" key="1" closable={true} animated={true} active={true}>
                                 <Descriptions title="" bordered>

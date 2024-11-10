@@ -1,0 +1,7 @@
+.background {
+    background: url('../../assets/logo.jpg') center / cover no-repeat;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

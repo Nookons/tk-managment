@@ -5,6 +5,7 @@ import Col from "antd/es/grid/col";
 import {useNavigate} from "react-router-dom";
 import {TOTE_INFO_ROUTE, UNIQ_NUMBER_ROUTE} from "../../utils/const";
 import Text from "antd/es/typography/Text";
+import RobotsCard from "./dep/RobotsCard";
 
 const App: React.FC = () => {
     const navigate = useNavigate();
@@ -43,11 +44,7 @@ const App: React.FC = () => {
                         </Row>
                     </Card>
                 </Col>
-                <Col span={8}>
-                    <Card>
-                        <Statistic title="Robots to repair" value={0}/>
-                    </Card>
-                </Col>
+                <RobotsCard />
             </Row>
             <Divider>Items list</Divider>
             <Row gutter={16}>
