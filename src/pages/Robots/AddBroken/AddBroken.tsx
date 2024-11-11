@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useForm } from "antd/es/form/Form";
+import React, {useEffect, useState} from 'react';
+import {useForm} from "antd/es/form/Form";
 import {
     Col,
     Form,
@@ -9,19 +9,20 @@ import {
     Spin,
     Switch,
     Upload,
-    Checkbox,
     TimePicker, Select, Space,
 } from "antd";
 import Button from "antd/es/button";
-import { InboxOutlined } from "@ant-design/icons";
+import {InboxOutlined} from "@ant-design/icons";
 import useFetchOptions from "../../../hooks/useFetchOptions";
-import { db, storage } from "../../../firebase";
-import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import {db, storage} from "../../../firebase";
+import {ref, getDownloadURL, uploadBytesResumable} from 'firebase/storage';
+import {doc, getDoc, setDoc, serverTimestamp} from 'firebase/firestore';
 import dayjs from "dayjs";
 import {useAppSelector} from "../../../hooks/storeHooks";
+import SelectItems from "./dep/SelectItems";
+import {IItem, IOption} from "../../../types/Item";
 
-const { Dragger } = Upload;
+const {Dragger} = Upload;
 
 interface FormValues {
     robot_number: string;
@@ -36,10 +37,11 @@ const AddBroken: React.FC = () => {
     const [form] = useForm<FormValues>();
     const {user} = useAppSelector(state => state.user)
     const format = 'HH:mm';
-    const { options, loading } = useFetchOptions();
     const [filesUrls, setFilesUrls] = useState<string[]>([]);
     const [uploading, setUploading] = useState(false);
-    const [isMultipleItems, setIsMultipleItems] = useState(false);
+
+    const [change_data, setChange_data] = useState<IOption[]>([]);
+
 
     const handleUploadFiles = async (file: File): Promise<string> => {
         const robotNumber = form.getFieldValue("robot_number");
@@ -77,7 +79,7 @@ const AddBroken: React.FC = () => {
             timestamp: serverTimestamp(),
             user: user ? user.email : "unknown",
             error_id: Date.now(),
-            change_items: values.change_items || [],
+            change_items: change_data,
         };
 
         // Ensure all values are serialized correctly before uploading
@@ -90,7 +92,7 @@ const AddBroken: React.FC = () => {
         await setDoc(robotRef, {
             last_update: serverTimestamp(),
             error_array: updatedErrorArray
-        }, { merge: true });
+        }, {merge: true});
         message.success("Data saved successfully.");
     };
 
@@ -104,7 +106,7 @@ const AddBroken: React.FC = () => {
         }
     };
 
-    const customUpload = async ({ file, onSuccess, onError }: any) => {
+    const customUpload = async ({file, onSuccess, onError}: any) => {
         try {
             const url = await handleUploadFiles(file);
             setFilesUrls((prev) => [...prev, url]);
@@ -121,12 +123,12 @@ const AddBroken: React.FC = () => {
             <Row gutter={16}>
                 <Col>
                     <Form.Item label="Removed" name="isRemove" valuePropName="checked">
-                        <Switch />
+                        <Switch/>
                     </Form.Item>
                 </Col>
                 <Col>
                     <Form.Item label="Log" name="isLog" valuePropName="checked">
-                        <Switch />
+                        <Switch/>
                     </Form.Item>
                 </Col>
                 <Col span={24}>
@@ -134,35 +136,26 @@ const AddBroken: React.FC = () => {
                         label="Robot Number"
                         name="robot_number"
                         rules={[
-                            { required: true, message: "Please input the robot number!" },
-                            { len: 7, message: "Robot number must be exactly 7 characters." }
+                            {required: true, message: "Please input the robot number!"},
+                            {len: 7, message: "Robot number must be exactly 7 characters."}
                         ]}
                     >
-                        <Input maxLength={7} />
+                        <Input maxLength={7}/>
                     </Form.Item>
                 </Col>
                 <Col span={2}>
                     <Form.Item label="Crash Time" name="crash_time">
-                        <TimePicker format={format} />
+                        <TimePicker format={format}/>
                     </Form.Item>
                 </Col>
                 <Col span={10}>
-                    {loading ? (
-                        <Spin size="large" />
-                    ) : (
-                        <Form.Item label="Items to Change" name="change_items">
-                            <Select
-                                mode={"tags"} // Use mode "tags" for multiple selections
-                                style={{ width: "100%" }}
-                                options={options.map((item) => ({ value: item.code }))}
-                                placeholder="Select or type items"
-                            />
-                        </Form.Item>
-                    )}
+                    <Form.Item label="Items to Change" name="change_items">
+                        <SelectItems setChange_data={setChange_data}/>
+                    </Form.Item>
                 </Col>
                 <Col span={12}>
                     <Form.Item label="Notes" name="note">
-                        <Input.TextArea rows={3} />
+                        <Input.TextArea rows={3}/>
                     </Form.Item>
                 </Col>
                 <Col span={24}>
@@ -170,13 +163,13 @@ const AddBroken: React.FC = () => {
                         <Dragger
                             customRequest={customUpload}
                             multiple
-                            showUploadList={{ showRemoveIcon: true }}
+                            showUploadList={{showRemoveIcon: true}}
                             onRemove={(file) => {
                                 setFilesUrls((prev) => prev.filter((url) => !url.includes(file.name)));
                             }}
                         >
                             <p className="ant-upload-drag-icon">
-                                <InboxOutlined />
+                                <InboxOutlined/>
                             </p>
                             <p className="ant-upload-text">Click or drag files to this area to upload</p>
                             <p className="ant-upload-hint">Upload logs, images, or videos for verification.</p>

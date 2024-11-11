@@ -1,3 +1,5 @@
+import {IOption} from "./Item";
+
 export interface IFileUpload {
     uid: string;
     status: 'done' | 'pending' | 'failed';
@@ -19,7 +21,7 @@ export interface IRobotError {
     user: string;
     isRemove: boolean;
     isLog: boolean;
-    change_items: string[] | string;
+    change_items: IOption[];
     robot_number: string;
     files_array: string[];
     upload: {

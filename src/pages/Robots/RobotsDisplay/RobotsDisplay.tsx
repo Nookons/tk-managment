@@ -5,7 +5,6 @@ import {Avatar, Descriptions, Divider, Image, message, Modal, QRCode, Row, Tabs,
 import robot_logo from "../../../assets/robot.webp"
 import Col from "antd/es/grid/col";
 import dayjs from "dayjs";
-import {IItem} from "../../../types/Item";
 import {useNavigate} from "react-router-dom";
 import {UNIQ_NUMBER_ROUTE} from "../../../utils/const";
 import {
@@ -19,6 +18,7 @@ import {
 import RobotStatisticDisplay from "./RobotStatisticDisplay";
 import Button from "antd/es/button";
 import {removeRobotReport} from "../../../utils/Robot/RemoveRobotReport";
+import FullScreen from "./FullScreen";
 
 const RobotsDisplay = () => {
     const navigate = useNavigate();
@@ -45,24 +45,26 @@ const RobotsDisplay = () => {
     };
 
     const removeClick = async (id: string) => {
-        const response = await removeRobotReport(id);
+        await removeRobotReport(id);
     }
 
     return (
         <>
             <RobotStatisticDisplay />
 
-            <Row>
+            <Row wrap={true}>
                 {broken_robots && broken_robots.map((robot: IBrokenRobots, index) => {
                     let isRemove = false;
 
                     return <Col style={{
                         justifyContent: "center",
                         alignItems: "center",
+                        marginRight: 14,
+                        marginTop: 14,
                         padding: 14,
                         boxShadow: "0 0 4px rgba(0,0,0, 0.15)",
                         borderRadius: 14
-                    }} key={robot.error_array[0]?.robot_number} span={12}>
+                    }} key={robot.error_array[0]?.robot_number} >
                         <Divider><AlertOutlined/> {robot.error_array[0]?.robot_number}</Divider>
                         <img src={robot_logo} style={{
                             position: "absolute",
@@ -148,14 +150,14 @@ const RobotsDisplay = () => {
                                                         {
                                                             title: "Items to Change",
                                                             key: `error-${errorIndex}-changes`,
-                                                            children: error.change_items.map((item: string) => ({
+                                                            children: error.change_items.map((item) => ({
                                                                 title: (
                                                                     <span
-                                                                        onClick={() => navigate(`${UNIQ_NUMBER_ROUTE}?id=${item}`)}
-                                                                        style={{ color: "green", cursor: "pointer" }}
-                                                                        aria-label={`Navigate to change item ${item}`}
+                                                                        onClick={() => navigate(`${UNIQ_NUMBER_ROUTE}?id=${item.code}`)}
+                                                                        style={{ color: "red", cursor: "pointer" }}
+                                                                        aria-label={`Navigate to change item ${item.code}`}
                                                                     >
-                                                                        {item}
+                                                                        {item.code} | {item.name}
                                                                     </span>
                                                                 ),
                                                                 key: `error-${item}-single-change`
@@ -164,7 +166,7 @@ const RobotsDisplay = () => {
                                                     );
                                                 } else if (error.change_items && error.change_items.length) {
                                                     // Check if `error.change_items` is an array or a string
-                                                    const title: string = Array.isArray(error.change_items)
+                                                    const title = Array.isArray(error.change_items)
                                                         ? error.change_items[0]  // If it's an array, take the first item
                                                         : error.change_items;     // If it's a string, use it directly
 
@@ -176,11 +178,11 @@ const RobotsDisplay = () => {
                                                                 {
                                                                     title: (
                                                                         <span
-                                                                            onClick={() => navigate(`${UNIQ_NUMBER_ROUTE}?id=${title}`)}
+                                                                            onClick={() => navigate(`${UNIQ_NUMBER_ROUTE}?id=${title.code}`)}
                                                                             style={{ color: "green", cursor: "pointer" }}
-                                                                            aria-label={`Navigate to change item ${title}`}
+                                                                            aria-label={`Navigate to change item ${title.code}`}
                                                                         >
-                                                                            {title}
+                                                                            {title.name} | {title.code}
                                                                         </span>
                                                                     ),
                                                                     key: `error-${title}-single-change`
@@ -190,8 +192,6 @@ const RobotsDisplay = () => {
                                                     );
                                                 }
 
-
-                                                // Проверяем наличие файлов и добавляем узел с файлами только если они есть
                                                 if (error.upload?.fileList && error.upload.fileList.length > 0) {
                                                     errorChildren.push({
                                                         title: `Files:`,
@@ -218,6 +218,7 @@ const RobotsDisplay = () => {
                     </Col>
                 })}
             </Row>
+            <FullScreen />
         </>
     );
 };
