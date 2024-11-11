@@ -7,6 +7,7 @@ import robot_logo from '../../../assets/robot.webp'
 import {BugOutlined, RobotOutlined} from "@ant-design/icons";
 import {useNavigate} from "react-router-dom";
 import {ROBOTS_DISPLAY} from "../../../utils/const";
+import robots_data from '../../../utils/Robots.json'
 
 const RobotsCard = () => {
     const navigate = useNavigate();
@@ -38,13 +39,13 @@ const RobotsCard = () => {
                 <Row gutter={18}>
                     <Col span={12}>
                         <Card>
-                            <Button onClick={() => navigate(ROBOTS_DISPLAY)} style={{margin: "0 14px 14px 0"}} size={"small"}>Go to display</Button>
+                            <Button type={"primary"} onClick={() => navigate(ROBOTS_DISPLAY)} style={{margin: "0 14px 14px 0"}} size={"small"}>Go to display</Button>
                             <Statistic title="Robots to repair" value={broken_robots.length} prefix={<BugOutlined style={{fontSize: 14}} />}/>
                         </Card>
                     </Col>
                     <Col span={12}>
                         <Card>
-                            <Statistic title="Robots in system" value={0} prefix={<RobotOutlined style={{fontSize: 14}} />}/>
+                            <Statistic title="Robots in system" value={robots_data.length} prefix={<RobotOutlined style={{fontSize: 14}} />}/>
                         </Card>
                     </Col>
                 </Row>

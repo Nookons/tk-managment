@@ -145,7 +145,7 @@ const App = () => {
                         </div>
                     </Content>
                     <Footer style={{ textAlign: 'center' }}>
-                        Powered by Nookon ©{new Date().getFullYear()}
+                        <span>Powered by <a href={"https://github.com/Nookons"}>Nookon</a> ©{new Date().getFullYear()} version 0.0.3</span>
                     </Footer>
                 </Layout>
             </Layout>

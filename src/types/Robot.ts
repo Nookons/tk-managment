@@ -17,6 +17,7 @@ export interface IFileUpload {
 export interface IRobotError {
     error_id: number;
     crash_time: number;
+    chines_time: number;
     note: string;
     user: string;
     isRemove: boolean;

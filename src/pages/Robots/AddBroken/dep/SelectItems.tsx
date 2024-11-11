@@ -1,7 +1,8 @@
-import React, {FC} from 'react';
-import {Select, Spin} from "antd";
+import React, {FC, useState} from 'react';
+import {Select, Spin, Tag} from "antd";
 import useFetchOptions from "../../../../hooks/useFetchOptions";
 import {IOption} from "../../../../types/Item";
+import {CheckCircleOutlined, YoutubeOutlined} from "@ant-design/icons";
 
 interface SelectItemsProps {
     setChange_data: (item: IOption[]) => void; // Ожидаем IItem[]
@@ -9,6 +10,8 @@ interface SelectItemsProps {
 
 const SelectItems: FC<SelectItemsProps> = ({setChange_data}) => {
     const {options, loading} = useFetchOptions();
+
+    const [localData, setLocalData] = useState<IOption[]>([]);
 
     const handleChange = (value: string[]) => {
         const result: IOption[] = [];
@@ -19,6 +22,7 @@ const SelectItems: FC<SelectItemsProps> = ({setChange_data}) => {
         })
 
         setChange_data(result);
+        setLocalData(result);
     };
 
     if (loading) {
@@ -31,13 +35,24 @@ const SelectItems: FC<SelectItemsProps> = ({setChange_data}) => {
     }));
 
     return (
-        <Select
-            mode="multiple"
-            style={{width: '100%'}}
-            placeholder="Select one country"
-            onChange={handleChange}
-            options={formattedOptions} // Теперь options содержит emoji и desc
-        />
+        <>
+            <Select
+                mode="multiple"
+                style={{width: '100%'}}
+                placeholder="Select items to change"
+                onChange={handleChange}
+                options={formattedOptions} // Теперь options содержит emoji и desc
+            />
+            <div style={{marginTop: 14}}>
+                {localData.map(el => {
+                    return (
+                        <Tag style={{marginTop: 8}} icon={<CheckCircleOutlined />} color="#1b7bad">
+                            <span>{el.name} | {el.code}</span>
+                        </Tag>
+                    )
+                })}
+            </div>
+        </>
     );
 };
 

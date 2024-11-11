@@ -6,23 +6,28 @@ import {
     Input,
     message,
     Row,
-    Spin,
-    Switch,
     Upload,
-    TimePicker, Select, Space,
+    TimePicker, Select, Space, Card, Descriptions, Slider, Popover,
 } from "antd";
 import Button from "antd/es/button";
-import {InboxOutlined} from "@ant-design/icons";
+import {FrownOutlined, InboxOutlined, SmileOutlined} from "@ant-design/icons";
 import useFetchOptions from "../../../hooks/useFetchOptions";
 import {db, storage} from "../../../firebase";
 import {ref, getDownloadURL, uploadBytesResumable} from 'firebase/storage';
 import {doc, getDoc, setDoc, serverTimestamp} from 'firebase/firestore';
-import dayjs from "dayjs";
+import dayjs, {Dayjs} from "dayjs";
 import {useAppSelector} from "../../../hooks/storeHooks";
 import SelectItems from "./dep/SelectItems";
 import {IItem, IOption} from "../../../types/Item";
+import all_robot_data from '../../../utils/Robots.json'
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import Text from "antd/es/typography/Text";
 
 const {Dragger} = Upload;
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 interface FormValues {
     robot_number: string;
@@ -47,6 +52,11 @@ const AddBroken: React.FC = () => {
         const robotNumber = form.getFieldValue("robot_number");
         const fileRef = ref(storage, `robots/${robotNumber}/${dayjs().format("YYYY-MM-DD")}/${file.name}`);
         const uploadTask = uploadBytesResumable(fileRef, file);
+
+        if (!robotNumber) {
+            message.error("Robot number is required.");
+            return Promise.reject("Robot number is required.");
+        }
 
         return new Promise((resolve, reject) => {
             uploadTask.on(
@@ -75,6 +85,7 @@ const AddBroken: React.FC = () => {
         const errorData = {
             ...values,
             crash_time: values.crash_time ? values.crash_time.valueOf() : undefined,
+            chines_time: time ? dayjs(time).tz("Asia/Shanghai").format("dddd, MMMM DD, YYYY [at] HH:mm:ss") : undefined,
             files_array: filesUrls,
             timestamp: serverTimestamp(),
             user: user ? user.email : "unknown",
@@ -118,19 +129,22 @@ const AddBroken: React.FC = () => {
         }
     };
 
+    const [current_robot, setCurrent_robot] = useState<any | null>(null);
+
+    const onChange = (value: string) => {
+        const founded = all_robot_data.find((r) => r.id.toString() === value);
+        setCurrent_robot(founded)
+    };
+
+    const [time, setTime] = useState<Dayjs | null>(null);
+
+    const handleTimeChange = (time: Dayjs | null) => {
+        setTime(time);
+    };
+
     return (
         <Form form={form} layout="vertical" onFinish={handleFormFinish}>
             <Row gutter={16}>
-                <Col>
-                    <Form.Item label="Removed" name="isRemove" valuePropName="checked">
-                        <Switch/>
-                    </Form.Item>
-                </Col>
-                <Col>
-                    <Form.Item label="Log" name="isLog" valuePropName="checked">
-                        <Switch/>
-                    </Form.Item>
-                </Col>
                 <Col span={24}>
                     <Form.Item
                         label="Robot Number"
@@ -140,25 +154,30 @@ const AddBroken: React.FC = () => {
                             {len: 7, message: "Robot number must be exactly 7 characters."}
                         ]}
                     >
-                        <Input maxLength={7}/>
+                        <Select
+                            showSearch
+                            placeholder="Select a robot"
+                            optionFilterProp="label"
+                            maxLength={7}
+                            value={current_robot ? current_robot.id.toString() : ""}
+                            onChange={onChange}
+                            options={all_robot_data.map(el => ({value: el.id.toString(), label: el.id.toString()}))}
+                        />
+                        {current_robot &&
+                            <Descriptions style={{marginTop: 14}} title="" size="small">
+                                <Descriptions.Item label="Robot IP">{current_robot.ip}</Descriptions.Item>
+                                <Descriptions.Item label="Robot Type">{current_robot.robotType}</Descriptions.Item>
+                                <Descriptions.Item label="Version">{current_robot.version}</Descriptions.Item>
+                            </Descriptions>
+                        }
                     </Form.Item>
                 </Col>
-                <Col span={2}>
-                    <Form.Item label="Crash Time" name="crash_time">
-                        <TimePicker format={format}/>
-                    </Form.Item>
-                </Col>
-                <Col span={10}>
+                <Col span={12}>
                     <Form.Item label="Items to Change" name="change_items">
                         <SelectItems setChange_data={setChange_data}/>
                     </Form.Item>
                 </Col>
-                <Col span={12}>
-                    <Form.Item label="Notes" name="note">
-                        <Input.TextArea rows={3}/>
-                    </Form.Item>
-                </Col>
-                <Col span={24}>
+                <Col span={6}>
                     <Form.Item label="Upload" name="upload">
                         <Dragger
                             customRequest={customUpload}
@@ -174,6 +193,25 @@ const AddBroken: React.FC = () => {
                             <p className="ant-upload-text">Click or drag files to this area to upload</p>
                             <p className="ant-upload-hint">Upload logs, images, or videos for verification.</p>
                         </Dragger>
+                    </Form.Item>
+                </Col>
+                <Col span={6}>
+                    <Space>
+                        <Form.Item label="Crash Time" name="crash_time">
+                            <TimePicker format={format} onChange={handleTimeChange}/>
+                        </Form.Item>
+                        <Popover content={<span>It's time for logs, my friends!</span>} title="Chine time">
+                            <Button style={{marginTop: 4}} type="dashed">
+                                {time
+                                    ? dayjs(time).tz("Asia/Shanghai").format("HH:mm")
+                                    : "🙈"
+                                }
+                            </Button>
+                        </Popover>
+                    </Space>
+                    <Form.Item label="Notes" name="note">
+                        <Input.TextArea placeholder={"Please leave here some notes about error or bad condition"}
+                                        rows={4}/>
                     </Form.Item>
                 </Col>
             </Row>
