@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { db } from "../../firebase";
-import { IItem } from "../../types/Item";
+import {ITote} from "../../types/Tote";
 
 type ItemsState = {
-    totes: any[];
+    totes: ITote[];
     loading: boolean;
     error: string | undefined;
 };
@@ -27,7 +27,7 @@ export const subscribeToTotes = createAsyncThunk<void, undefined, { rejectValue:
                 const items: any[] = [];
                 querySnapshot.forEach((doc) => {
                     items.push({
-                        ...doc.data() as IItem,
+                        ...doc.data() as ITote,
                     });
                 });
                 dispatch(setItems(items));
@@ -42,13 +42,10 @@ const totesSlicer = createSlice({
     name: 'totes',
     initialState,
     reducers: {
-        setItems: (state, action: PayloadAction<any[]>) => {
+        setItems: (state, action: PayloadAction<ITote[]>) => {
             state.totes = action.payload;
             state.loading = false;
             state.error = undefined;
-        },
-        removeTote: (state, action: PayloadAction<any[]>) => {
-            state.totes = state.totes.filter(item => !action.payload.includes(item.id));
         },
     },
     extraReducers: (builder) => {
@@ -64,5 +61,5 @@ const totesSlicer = createSlice({
     }
 });
 
-export const { setItems, removeTote } = totesSlicer.actions;
+export const { setItems } = totesSlicer.actions;
 export default totesSlicer.reducer;

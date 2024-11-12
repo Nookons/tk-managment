@@ -7,6 +7,8 @@ import {TOTE_INFO_ROUTE, UNIQ_NUMBER_ROUTE} from "../../utils/const";
 import Text from "antd/es/typography/Text";
 import RobotsCard from "./dep/RobotsCard";
 import {RobotOutlined} from "@ant-design/icons";
+import Button from "antd/es/button";
+import DataTransfer from "./dep/DataTransfer";
 
 const App: React.FC = () => {
     const navigate = useNavigate();
@@ -48,6 +50,9 @@ const App: React.FC = () => {
                 </Col>
                 <RobotsCard />
             </Row>
+
+            <DataTransfer />
+
             <Divider>Items list</Divider>
             <Row gutter={16}>
                 <Table

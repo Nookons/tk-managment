@@ -32,15 +32,23 @@ const ToteInfo = () => {
         if (selectedRowKeys.length > 0) {
             dispatch(removeItems(selectedRowKeys));
 
-            const tote: ITote = totes.find(item => item.tote_number === toteId)
-            removeItem({selectedRowKeys, tote});
+            if (totes && toteId) {
+                const tote = totes.find(item => item.tote_number === toteId);
+
+                if (tote) {
+                    removeItem({ selectedRowKeys, tote });
+                } else {
+                    message.warning('Tote not found.');
+                }
+            }
 
             message.success('Selected items have been deleted.');
-            setSelectedRowKeys([]); // Очищаем выбранные элементы
+            setSelectedRowKeys([]); // Clear selected items
         } else {
             message.warning('Please select items to delete.');
         }
     };
+
 
     const rowSelection = {
         selectedRowKeys,

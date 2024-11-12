@@ -1,5 +1,5 @@
 import React, {FC, useEffect, useState} from 'react';
-import {Col, Input, message, Result, Row, Skeleton} from "antd";
+import {Col, Form, Input, message, Result, Row, Skeleton} from "antd";
 import {useAppSelector} from "../../../hooks/storeHooks";
 import {IOption} from "../../../types/Item";
 import Button from "antd/es/button";
@@ -8,23 +8,18 @@ import Text from "antd/es/typography/Text";
 import {addItem} from "../../../utils/Item/AddItem";
 import dayjs from "dayjs";
 
-enum ToteStatus {
-    Default = "",
-    Error = "error",
-}
-
 interface ItemScreenProps {
     current_pick: string;
     setCurrent_pick: (value: string) => void;
+    item_sum: number;
 }
 
-const ItemScreen:FC <ItemScreenProps> = ({current_pick, setCurrent_pick}) => {
+const ItemScreen:FC <ItemScreenProps> = ({current_pick, setCurrent_pick, item_sum}) => {
     const {options, loading} = useAppSelector(state => state.options)
 
     const [picked_item, setPicked_item] = useState<IOption | null>(null);
     const [tote_number, setTote_number] = useState<string>("");
 
-    const [tote_status, setTote_status] = useState<ToteStatus>(ToteStatus.Default);
     const [isButtonLoading, setIsButtonLoading] = useState<boolean>(false);
 
     useEffect(() => {
@@ -37,33 +32,36 @@ const ItemScreen:FC <ItemScreenProps> = ({current_pick, setCurrent_pick}) => {
     const submitData = async () => {
         setIsButtonLoading(true);
 
-        if (tote_number.length !== 8) {
+        if (tote_number.length <= 0) {
             message.error("Item not added, please write a tote number before adding tote to system")
-            setTote_status(ToteStatus.Error)
+            setIsButtonLoading(false);
+            return;
+        }
+        if (item_sum <= 0) {
+            message.error("Item not added, sum of items can't be less then or 0")
             setIsButtonLoading(false);
             return;
         }
 
-        setTote_status(ToteStatus.Default)
+        for (let i = 0; i < item_sum; i++) {
+            const item = {
+                ...picked_item,
+                box_number: tote_number,
+                timestamp: dayjs().valueOf(),
+                full_date: dayjs().format("dddd, MMMM DD, YYYY [at] HH:mm:ss"),
+                id: Date.now(),
+                key: Date.now()
+            }
 
-        const item = {
-            ...picked_item,
-            box_number: tote_number.slice(0,7),
-            timestamp: dayjs().valueOf(),
-            full_date: dayjs().format("dddd, MMMM DD, YYYY [at] HH:mm:ss"),
-            id: Date.now(),
-            key: Date.now()
+            try {
+                await addItem({item});
+                message.success("Item added")
+                setTote_number("")
+                setIsButtonLoading(false);
+            } catch (err) {
+                err && message.error(err.toString())
+            }
         }
-
-        try {
-            await addItem({item});
-            message.success("Item added")
-            setTote_number("")
-            setIsButtonLoading(false);
-        } catch (err) {
-            err && message.error(err.toString())
-        }
-
     }
 
     if (loading) { return <Skeleton/>}
@@ -79,9 +77,12 @@ const ItemScreen:FC <ItemScreenProps> = ({current_pick, setCurrent_pick}) => {
             </Col>
 
             <Col span={6}>
-                <InputMask mask="99-9999" value={tote_number} onChange={(e: any) => setTote_number(e.target.value)}>
+                {/*<InputMask mask="" value={tote_number} onChange={(e: any) => setTote_number(e.target.value)}>
                     {(inputProps: any) => <Input status={tote_status} {...inputProps} />}
-                </InputMask>
+                </InputMask>*/}
+                <Form.Item label="Box number" name="box_number">
+                    <Input value={tote_number} onChange={(e: any) => setTote_number(e.target.value.toUpperCase())}/>
+                </Form.Item>
             </Col>
             <Col span={24}>
                 <Result

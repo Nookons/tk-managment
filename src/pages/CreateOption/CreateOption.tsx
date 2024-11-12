@@ -5,6 +5,7 @@ import Button from "antd/es/button";
 import InputMask from 'react-input-mask';
 import {db} from "../../firebase";
 import {doc, setDoc} from "firebase/firestore";
+import useFetchOptions from "../../hooks/useFetchOptions";
 
 interface FormValues {
     type: string;
@@ -14,11 +15,28 @@ interface FormValues {
 
 
 const CreateOption = () => {
+    const {options} = useFetchOptions();
     const [form] = useForm();
     const [loading, setLoading] = useState(false);
 
     const onFormFinish = async (values: FormValues) => {
         setLoading(true);
+
+        const isHaveName = options.some(item => item.name === values.name)
+        const isHaveCode = options.some(item => item.code === values.code)
+
+
+        if (isHaveName) {
+            message.error("This name already exists!");
+            setLoading(false);
+            return;
+        }
+        if (isHaveCode) {
+            message.error("This code already exists!");
+            setLoading(false);
+            return;
+        }
+
         try {
             await setDoc(doc(db, "item_library", values.code.slice(0, 11)), {
                 ...values,
