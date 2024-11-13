@@ -51,7 +51,7 @@ const App: React.FC = () => {
                 <RobotsCard />
             </Row>
 
-            <DataTransfer />
+            {/*<DataTransfer />*/}
 
             <Divider>Items list</Divider>
             <Row gutter={16}>

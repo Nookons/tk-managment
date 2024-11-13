@@ -12,7 +12,14 @@ import Layout, {Content, Footer, Header} from "antd/es/layout/layout";
 import {useAppDispatch, useAppSelector} from "./hooks/storeHooks";
 import {subscribeToItems} from "./store/reducers/items";
 import {useNavigate} from "react-router-dom";
-import {ADD_BROKEN_ROBOT, CREATE_OPTION, HOME_ROUTE, ROBOTS_DISPLAY} from "./utils/const";
+import {
+    ADD_BROKEN_ROBOT,
+    CREATE_OPTION,
+    ERROR_TRANSLATION,
+    HOME_ROUTE,
+    ROBOTS_DISPLAY,
+    WORK_STATION_DISPLAY
+} from "./utils/const";
 import SignIn from "./pages/SignIn/SignIn";
 import {subscribeToTotes} from "./store/reducers/totes";
 import {subscribeToOptions} from "./store/reducers/options";
@@ -64,10 +71,16 @@ const App = () => {
             getItem('Inspection', '7', <CarryOutOutlined />),
         ]),
         getItem('Work Stations', 'sub2', <MergeCellsOutlined  />, [
-            getItem('Repair', '8', <BugOutlined />),
-            getItem('Solved', '9', <CheckCircleOutlined />),
-            getItem('Inspection', '10', <CarryOutOutlined />),
+            getItem('Display', '8', <BugOutlined />),
+            getItem('Repair', '9', <BugOutlined />),
+            getItem('Solved', '10', <CheckCircleOutlined />),
+            getItem('Inspection', '11', <CarryOutOutlined />),
         ]),
+        {
+            key: '12',
+            icon: <AppstoreAddOutlined />,
+            label: 'Errors Translation',
+        },
     ];
 
 
@@ -116,8 +129,14 @@ const App = () => {
                                 case '6':
                                     redirect();
                                     break;
-                                case '6':
+                                case '7':
                                     redirect();
+                                    break;
+                                case '8':
+                                    navigate(WORK_STATION_DISPLAY);
+                                    break;
+                                case '12':
+                                    navigate(ERROR_TRANSLATION);
                                     break;
                                 default:
                                     break;

@@ -9,3 +9,9 @@ export const UNIQ_NUMBER_ROUTE = "/uniq-number"
 
 export const ADD_BROKEN_ROBOT = "/add-broken-robot"
 export const ROBOTS_DISPLAY = "/robots-display"
+
+
+export const WORK_STATION_DISPLAY = "/work-station-display"
+
+
+export const ERROR_TRANSLATION = "/error-translation"
