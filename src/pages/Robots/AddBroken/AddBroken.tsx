@@ -23,6 +23,7 @@ import all_robot_data from '../../../utils/Robots.json'
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import Text from "antd/es/typography/Text";
+import {BrokenReportToHistory} from "../../../utils/Robot/AddBrokenReport";
 
 const {Dragger} = Upload;
 
@@ -101,9 +102,11 @@ const AddBroken: React.FC = () => {
             : [serializedData];
 
         await setDoc(robotRef, {
+            robot_number: values.robot_number,
             last_update: serverTimestamp(),
             error_array: updatedErrorArray
         }, {merge: true});
+
         message.success("Data saved successfully.");
     };
 

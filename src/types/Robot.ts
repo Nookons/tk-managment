@@ -33,10 +33,49 @@ export interface IRobotError {
 
 export interface IBrokenRobots {
     error_array: IRobotError[];
+    robot_number: string;
     last_update: {
         seconds: number;
         nanoseconds: number;
     };
 }
+
+export type IRobot = {
+    locationCellCode: string | null;
+    robotPathMode: string;
+    waitPoint: string;
+    batteryTemperature: string;
+    errorType: string[];
+    errorCode: string[];
+    powerPercent: string;
+    endCellCode: string | null;
+    taskType: string | null;
+    taskState: string | null;
+    taskShelfCode: string | null;
+    dist2WaitPoint: number;
+    taskPhase: string | null;
+    id: number;
+    errorSolution: string[];
+    batteryDischargeCurrent: string;
+    stationId: string | null;
+    product: string;
+    batteryVoltage: string;
+    ip: string;
+    chargerId: string | null;
+    errorCreateTime: string[];
+    version: string;
+    onLoadShelfCode: string | null;
+    errorLevel: string[];
+    exeStatus: string | null;
+    endPoint: string | null;
+    errorCategory: string[];
+    robotStatus: string;
+    instruction: string | null;
+    robotType: string;
+    location: string;
+    taskId: string | null;
+    robotSeries: string;
+};
+
 
 

@@ -6,7 +6,7 @@ import robot_logo from "../../../assets/robot.webp";
 import Col from "antd/es/grid/col";
 import dayjs from "dayjs";
 import {useNavigate} from "react-router-dom";
-import {UNIQ_NUMBER_ROUTE} from "../../../utils/const";
+import {SINGLE_ROBOT, UNIQ_NUMBER_ROUTE} from "../../../utils/const";
 import {
     AlertOutlined,
     ArrowsAltOutlined,
@@ -66,7 +66,6 @@ const RobotsDisplay = () => {
             {all_robot_data &&
                 <Row wrap={true}>
                     {broken_robots && broken_robots.map((robot: IBrokenRobots) => {
-                        const current_robot = all_robot_data.find(item => item.id.toString() === robot.error_array[0].robot_number);
 
                         return (
                             <Col
@@ -116,7 +115,7 @@ const RobotsDisplay = () => {
 
                                     <DeleteOutlined/> Remove
                                 </Button>
-                                <Button style={{margin: "0 4px"}}><ArrowsAltOutlined/></Button>
+                                <Button onClick={() => navigate(`${SINGLE_ROBOT}?id=${robot.error_array[0].robot_number}`)} style={{margin: "0 4px"}}><ArrowsAltOutlined/></Button>
                                 <Button style={{margin: "0 4px"}}><RetweetOutlined/></Button>
                                 <Divider dashed/>
 
@@ -161,7 +160,7 @@ const RobotsDisplay = () => {
                                                                             {item.code} | {item.name}
                                                                         </span>
                                                             ),
-                                                            key: `error-${item}-single-change`
+                                                            key: `error-${item.code}-single-change`
                                                         }))
                                                     }] : []),
                                                     ...(error.upload?.fileList?.length ? [{

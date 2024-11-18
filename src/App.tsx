@@ -5,7 +5,7 @@ import Sider from "antd/es/layout/Sider";
 import {Breadcrumb, Menu, MenuProps, message, theme} from 'antd';
 import {
     AlertOutlined,
-    AppstoreAddOutlined, BugOutlined, CarryOutOutlined, CheckCircleOutlined,
+    AppstoreAddOutlined, BarcodeOutlined, BugOutlined, CarryOutOutlined, CheckCircleOutlined,
     HomeOutlined, MergeCellsOutlined, RobotOutlined,
 } from '@ant-design/icons';
 import Layout, {Content, Footer, Header} from "antd/es/layout/layout";
@@ -17,7 +17,7 @@ import {
     CREATE_OPTION,
     ERROR_TRANSLATION,
     HOME_ROUTE,
-    ROBOTS_DISPLAY,
+    ROBOTS_DISPLAY, TOTE_DISPLAY,
     WORK_STATION_DISPLAY
 } from "./utils/const";
 import SignIn from "./pages/SignIn/SignIn";
@@ -81,6 +81,11 @@ const App = () => {
             icon: <AppstoreAddOutlined />,
             label: 'Errors Translation',
         },
+        {
+            key: '13',
+            icon: <BarcodeOutlined />,
+            label: 'Totes display',
+        },
     ];
 
 
@@ -137,6 +142,9 @@ const App = () => {
                                     break;
                                 case '12':
                                     navigate(ERROR_TRANSLATION);
+                                    break;
+                                case '13':
+                                    navigate(TOTE_DISPLAY);
                                     break;
                                 default:
                                     break;

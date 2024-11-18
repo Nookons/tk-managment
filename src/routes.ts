@@ -4,7 +4,7 @@ import {
     ADD_BROKEN_ROBOT,
     CREATE_OPTION, ERROR_TRANSLATION,
     HOME_ROUTE, ROBOTS_DISPLAY,
-    SIGN_IN_ROUTE,
+    SIGN_IN_ROUTE, SINGLE_ROBOT, TOTE_DISPLAY,
     TOTE_INFO_ROUTE,
     UNIQ_NUMBER_ROUTE, WORK_STATION_DISPLAY
 } from "./utils/const";
@@ -15,6 +15,8 @@ import AddBroken from "./pages/Robots/AddBroken/AddBroken";
 import RobotsDisplay from "./pages/Robots/RobotsDisplay/RobotsDisplay";
 import WorkStationDisplay from "./pages/WorkStation/Display/WorkStationDisplay";
 import ErrorsTranslation from "./pages/ErrorsTranslation/ErrorsTranslation";
+import SingleRobot from "./pages/Robots/Single/SingleRobot";
+import ToteDisplay from "./pages/Tote/ToteDisplay/ToteDisplay";
 
 
 interface Route {
@@ -71,5 +73,15 @@ export const publicRoutes: PublicRoutes = [
         path: ERROR_TRANSLATION,
         Component: ErrorsTranslation,
         label: 'Errors Translation',
+    },
+    {
+        path: SINGLE_ROBOT,
+        Component: SingleRobot,
+        label: 'Single Robot',
+    },
+    {
+        path: TOTE_DISPLAY,
+        Component: ToteDisplay,
+        label: 'Tote Display',
     },
 ];
