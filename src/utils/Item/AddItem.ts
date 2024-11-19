@@ -20,6 +20,7 @@ export const addItem = async ({ item }: { item: IItem }) => {
             timestamp,
             tote_number: boxId,
             update_time: formattedDate,
+            updated_by: item.user,
             id: timestamp,
         }, { merge: true });
 

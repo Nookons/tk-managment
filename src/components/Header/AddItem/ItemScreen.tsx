@@ -16,6 +16,7 @@ interface ItemScreenProps {
 
 const ItemScreen:FC <ItemScreenProps> = ({current_pick, setCurrent_pick, item_sum}) => {
     const {options, loading} = useAppSelector(state => state.options)
+    const {user} = useAppSelector(state => state.user)
 
     const [picked_item, setPicked_item] = useState<IOption | null>(null);
     const [tote_number, setTote_number] = useState<string>("");
@@ -46,6 +47,7 @@ const ItemScreen:FC <ItemScreenProps> = ({current_pick, setCurrent_pick, item_su
         for (let i = 0; i < item_sum; i++) {
             const item = {
                 ...picked_item,
+                user: user ? user.email : "Unknown",
                 box_number: tote_number,
                 timestamp: dayjs().valueOf(),
                 full_date: dayjs().format("dddd, MMMM DD, YYYY [at] HH:mm:ss"),
