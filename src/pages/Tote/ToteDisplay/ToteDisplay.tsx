@@ -2,7 +2,6 @@ import React from 'react';
 import {useAppSelector} from "../../../hooks/storeHooks";
 import {Card, Collapse, Descriptions, Row, Skeleton, Tag} from "antd";
 import Col from "antd/es/grid/col";
-import Text from "antd/es/typography/Text";
 import {FilePdfOutlined, SettingOutlined, ToolOutlined, UploadOutlined, YoutubeOutlined} from "@ant-design/icons";
 
 const ToteDisplay = () => {
@@ -26,9 +25,9 @@ const ToteDisplay = () => {
                                 </Descriptions>
                                 <Collapse ghost>
                                     <Collapse.Panel header="Items inside" key="1">
-                                        {tote.item_inside.map((item, index) => (
-                                            <Tag icon={<SettingOutlined />} style={{margin: 4}}><span>{item.code} | {item.name}</span></Tag>
-                                        ))}
+                                        {tote.item_inside.reduce((acc, curr, index) => {
+                                            return acc;
+                                        }, [])}
                                     </Collapse.Panel>
                                 </Collapse>
                             </Card>

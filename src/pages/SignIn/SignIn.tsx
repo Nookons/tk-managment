@@ -45,7 +45,7 @@ const SignIn: React.FC = () => {
                 message.success("Logged in successfully");
             }
         } catch (err) {
-            message.error("An error occurred during login. Please try again.");
+            err && message.error(err.toString());
         } finally {
             setLoading(false);
         }
