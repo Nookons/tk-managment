@@ -50,18 +50,6 @@ const WorkStationDisplay = () => {
             });
     };
 
-    // Initial data fetch and set up interval
-    useEffect(() => {
-        fetchData(); // Initial fetch
-
-        const intervalId = setInterval(() => {
-            fetchData(); // Fetch data every second
-        }, 1000);
-
-        // Cleanup function to clear interval on component unmount
-        return () => clearInterval(intervalId);
-    }, []);
-
     useEffect(() => {
         console.log(workstation_data);
     }, [workstation_data]);
