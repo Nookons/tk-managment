@@ -88,6 +88,7 @@ const AddBroken: React.FC = () => {
             crash_time: values.crash_time ? values.crash_time.valueOf() : undefined,
             chines_time: time ? dayjs(time).tz("Asia/Shanghai").format("dddd, MMMM DD, YYYY [at] HH:mm:ss") : undefined,
             files_array: filesUrls,
+            status: "Broken",
             timestamp: serverTimestamp(),
             user: user ? user.email : "unknown",
             error_id: Date.now(),

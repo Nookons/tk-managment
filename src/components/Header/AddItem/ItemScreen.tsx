@@ -11,14 +11,16 @@ import dayjs from "dayjs";
 interface ItemScreenProps {
     current_pick: string;
     setCurrent_pick: (value: string) => void;
-    item_sum: number;
 }
 
-const ItemScreen:FC <ItemScreenProps> = ({current_pick, setCurrent_pick, item_sum}) => {
+const ItemScreen:FC <ItemScreenProps> = ({current_pick, setCurrent_pick}) => {
     const {options, loading} = useAppSelector(state => state.options)
+    const {user} = useAppSelector(state => state.user)
 
     const [picked_item, setPicked_item] = useState<IOption | null>(null);
     const [tote_number, setTote_number] = useState<string>("");
+
+    const [item_sum, setItem_sum] = useState<number>(1);
 
     const [isButtonLoading, setIsButtonLoading] = useState<boolean>(false);
 
@@ -46,6 +48,7 @@ const ItemScreen:FC <ItemScreenProps> = ({current_pick, setCurrent_pick, item_su
         for (let i = 0; i < item_sum; i++) {
             const item = {
                 ...picked_item,
+                user: user ? user.email : "Unknown",
                 box_number: tote_number,
                 timestamp: dayjs().valueOf(),
                 full_date: dayjs().format("dddd, MMMM DD, YYYY [at] HH:mm:ss"),
@@ -55,33 +58,35 @@ const ItemScreen:FC <ItemScreenProps> = ({current_pick, setCurrent_pick, item_su
 
             try {
                 await addItem({item});
-                message.success("Item added")
-                setTote_number("")
-                setIsButtonLoading(false);
             } catch (err) {
                 err && message.error(err.toString())
             }
         }
+
+        message.success("Items was added")
+        setTote_number("")
+        setItem_sum(1)
+        setCurrent_pick("")
+        setIsButtonLoading(false);
     }
 
     if (loading) { return <Skeleton/>}
 
     return (
         <Row gutter={16}>
-            <Col span={18}>
-                <Text>
-                    Hey there! Could you please take a moment to care of the box number and write it down below? This is just a placeholder for now,
-                    until you have a special box for it or you decide to hold it in a special area.
-                    It's totally fine if you missed this input — we're all human!
-                </Text>
-            </Col>
-
-            <Col span={6}>
-                {/*<InputMask mask="" value={tote_number} onChange={(e: any) => setTote_number(e.target.value)}>
-                    {(inputProps: any) => <Input status={tote_status} {...inputProps} />}
-                </InputMask>*/}
+            <Col span={12}>
                 <Form.Item label="Box number" name="box_number">
                     <Input value={tote_number} onChange={(e: any) => setTote_number(e.target.value.toUpperCase())}/>
+                </Form.Item>
+            </Col>
+            <Col span={12}>
+                <Form.Item label="Items count" name="items_count">
+                    <Input
+                        value={item_sum}
+                        defaultValue={item_sum}
+                        onChange={(e) => setItem_sum(Number(e.target.value))}
+                        type={"number"}
+                    />
                 </Form.Item>
             </Col>
             <Col span={24}>

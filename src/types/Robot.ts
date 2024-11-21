@@ -18,6 +18,7 @@ export interface IRobotError {
     error_id: number;
     crash_time: number;
     chines_time: number;
+    status: "Broken" | "Working but gotta check" | "Good";
     note: string;
     user: string;
     isRemove: boolean;

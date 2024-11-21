@@ -7,7 +7,8 @@ export interface IItem {
     id: number;
     key: number;
     code?: string;  // Make code optional
-    name?: string;  // If name is also optional
+    name?: string;
+    user: string;
 }
 
 export interface IOption {
