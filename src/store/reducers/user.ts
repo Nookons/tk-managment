@@ -20,8 +20,11 @@ const userReducer = createSlice({
         userEnter: (state, action: PayloadAction<IUser>) => {
             state.user = action.payload;
         },
+        userLeave: (state) => {
+            state.user = null;
+        },
     },
 });
 
-export const { userEnter } = userReducer.actions;
+export const { userEnter, userLeave } = userReducer.actions;
 export default userReducer.reducer;

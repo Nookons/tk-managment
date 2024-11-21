@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
 import {useForm} from "antd/es/form/Form";
-import {Form, Input, Select, Space, Modal, message, Spin} from "antd";
+import {Form, Input, Select, Space, Modal, message, Spin, Row} from "antd";
 import Button from "antd/es/button";
 import InputMask from 'react-input-mask';
 import {db} from "../../firebase";
 import {doc, setDoc} from "firebase/firestore";
 import useFetchOptions from "../../hooks/useFetchOptions";
+import Col from "antd/es/grid/col";
 
 interface FormValues {
     type: string;
@@ -65,41 +66,45 @@ const CreateOption = () => {
         <Form
             form={form}
             name="basic"
-            labelCol={{span: 3}}
             wrapperCol={{span: 24}}
             layout="horizontal"
             initialValues={{remember: true}}
             onFinish={onFormFinish}
             onFinishFailed={onFormFinishFailed}
         >
-            <Form.Item
-                label="Item Name"
-                name="name"
-                rules={[{required: true, message: "Please enter the item name!"}]}
-            >
-                <Input/>
-            </Form.Item>
-
-            <Form.Item
-                label="Material Code"
-                name="code"
-                rules={[{required: true, message: "Please enter the material code!"}]}
-            >
-                <InputMask mask="99.99.99999">
-                    {(inputProps: any) => <Input {...inputProps} />}
-                </InputMask>
-            </Form.Item>
-
-            <Form.Item wrapperCol={{offset: 3, span: 24}}>
-                <Space>
-                    <Button type="primary" htmlType="submit" loading={loading}>
-                        Submit
-                    </Button>
-                    <Button htmlType="button" onClick={onFormClearClick}>
-                        Clear
-                    </Button>
-                </Space>
-            </Form.Item>
+            <Row gutter={[16, 16]}>
+                <Col span={8}>
+                    <Form.Item
+                        label="Item Name"
+                        name="name"
+                        rules={[{required: true, message: "Please enter the item name!"}]}>
+                        <Input />
+                    </Form.Item>
+                </Col>
+                <Col span={8}>
+                    <Form.Item
+                        label="Material Code"
+                        name="code"
+                        rules={[{required: true, message: "Please enter the material code!"}]}
+                    >
+                        <InputMask mask="99.99.99999">
+                            {(inputProps: any) => <Input {...inputProps} />}
+                        </InputMask>
+                    </Form.Item>
+                </Col>
+                <Col span={8}>
+                    <Form.Item wrapperCol={{offset: 3, span: 24}}>
+                        <Space>
+                            <Button type="primary" htmlType="submit" loading={loading}>
+                                Submit
+                            </Button>
+                            <Button htmlType="button" onClick={onFormClearClick}>
+                                Clear
+                            </Button>
+                        </Space>
+                    </Form.Item>
+                </Col>
+            </Row>
         </Form>
     );
 };
