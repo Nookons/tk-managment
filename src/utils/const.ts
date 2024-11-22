@@ -17,3 +17,4 @@ export const WORK_STATION_DISPLAY = "/work-station-display"
 
 
 export const ERROR_TRANSLATION = "/error-translation"
+export const USER_PROFILE = "/user-profile"

@@ -1,10 +1,14 @@
 
 export interface IUser {
     id: string;
-    first_name: string;
-    last_name: string;
+    first_name?: string;
+    last_name?: string;
     email: string;
     password: string;
-    experience: number;
-    level: number;
+    last_modify?: string;
+    experience?: number;
+    position: string;
+    start_work_time?: number;
+    level?: number;
+    profilePicture?: string;
 }

@@ -6,7 +6,7 @@ import {
     HOME_ROUTE, ROBOTS_DISPLAY,
     SIGN_IN_ROUTE, SINGLE_ROBOT, TOTE_DISPLAY,
     TOTE_INFO_ROUTE,
-    UNIQ_NUMBER_ROUTE, WORK_STATION_DISPLAY
+    UNIQ_NUMBER_ROUTE, USER_PROFILE, WORK_STATION_DISPLAY
 } from "./utils/const";
 import CreateOption from "./pages/CreateOption/CreateOption";
 import ToteInfo from "./pages/Tote/ToteInfo/ToteInfo";
@@ -17,6 +17,7 @@ import WorkStationDisplay from "./pages/WorkStation/Display/WorkStationDisplay";
 import ErrorsTranslation from "./pages/ErrorsTranslation/ErrorsTranslation";
 import SingleRobot from "./pages/Robots/Single/SingleRobot";
 import ToteDisplay from "./pages/Tote/ToteDisplay/ToteDisplay";
+import Profile from "./pages/User/Profile";
 
 
 interface Route {
@@ -83,5 +84,10 @@ export const publicRoutes: PublicRoutes = [
         path: TOTE_DISPLAY,
         Component: ToteDisplay,
         label: 'Tote Display',
+    },
+    {
+        path: USER_PROFILE,
+        Component: Profile,
+        label: 'Profile page',
     },
 ];

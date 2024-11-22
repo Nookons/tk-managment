@@ -76,11 +76,11 @@ const App = () => {
             getItem('Solved', '10', <CheckCircleOutlined />),
             getItem('Inspection', '11', <CarryOutOutlined />),
         ]),
-        {
+        /*{
             key: '12',
             icon: <AppstoreAddOutlined />,
             label: 'Errors Translation',
-        },
+        },*/
         {
             key: '13',
             icon: <BarcodeOutlined />,

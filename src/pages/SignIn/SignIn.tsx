@@ -41,6 +41,7 @@ const SignIn: React.FC = () => {
             } else if (result.password !== values.password) {
                 message.error("Your password is incorrect");
             } else {
+                console.log(result);
                 dispatch(userEnter(result));
                 message.success("Logged in successfully");
             }
