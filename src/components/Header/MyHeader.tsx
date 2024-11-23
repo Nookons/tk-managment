@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Drawer, Space, Button, MenuProps, Dropdown, message} from "antd";
-import {DownOutlined, FileAddOutlined, SearchOutlined, SettingOutlined} from "@ant-design/icons";
+import {DiffOutlined, DownOutlined, FileAddOutlined, SearchOutlined, SettingOutlined} from "@ant-design/icons";
 import {useAppDispatch, useAppSelector} from "../../hooks/storeHooks";
 import AddItem from "./AddItem/AddItem";
 import {userLeave} from "../../store/reducers/user";
@@ -8,6 +8,7 @@ import {useNavigate} from "react-router-dom";
 import {USER_PROFILE} from "../../utils/const";
 import {collection, getDocs, query, where} from "firebase/firestore";
 import {db} from "../../firebase";
+import ReportForm from "./AddReport/ReportForm";
 
 const MyHeader = () => {
     const dispatch = useAppDispatch();
@@ -15,13 +16,10 @@ const MyHeader = () => {
     const [open, setOpen] = useState(false);
     const {user} = useAppSelector(state => state.user);
 
-    const showDrawer = () => {
-        setOpen(true);
-    };
-
-    const closeDrawer = () => {
-        setOpen(false);
-    };
+    const [drawer_options, setDrawer_options] = useState({
+        item_drawer: false,
+        report_drawer: false
+    });
 
     const logout = () => {
         dispatch(userLeave())
@@ -67,16 +65,26 @@ const MyHeader = () => {
                         </Button>
                     </Dropdown>
                 }
-                <Button onClick={showDrawer} icon={<FileAddOutlined/>}/>
+                <Button onClick={() => setDrawer_options((prev) => ({...prev, item_drawer: true}))} icon={<FileAddOutlined/>}/>
+                <Button onClick={() => setDrawer_options((prev) => ({...prev, report_drawer: true}))} icon={<DiffOutlined />}/>
             </Space>
 
             <Drawer
                 title="Add Item"
                 width={"45%"}
-                onClose={closeDrawer}
-                open={open}
+                onClose={() => setDrawer_options((prev) => ({...prev, item_drawer: false}))}
+                open={drawer_options.item_drawer}
             >
                 <AddItem/>
+            </Drawer>
+
+            <Drawer
+                title="Add Report"
+                width={"100%"}
+                onClose={() => setDrawer_options((prev) => ({...prev, report_drawer: false}))}
+                open={drawer_options.report_drawer}
+            >
+                <ReportForm />
             </Drawer>
         </div>
     );
