@@ -3,7 +3,6 @@ import { Mentions, Spin } from 'antd';
 import { IUser } from '../types/User';
 import useFetchUser from '../hooks/useFetchUser';
 import { MentionsOptionProps } from 'antd/es/mentions';
-import {useAppSelector} from "../hooks/storeHooks";
 
 interface UserSelectProps {
     set_array: (data: IUser[]) => void;
@@ -22,7 +21,7 @@ const UserSelect: FC<UserSelectProps> = ({ set_array }) => {
     }
 
     const formattedOptions = options.map((el: IUser) => ({
-        value: el.id,
+        value: `${el.id}`,
         label: el.email,
     }));
 
