@@ -12,7 +12,7 @@ export interface ITaskRecord {
     key: string;
     state: string;
     detection_date: IDate | null; // Can be either Date or dayjs object depending on usage
-    detection_time: string | null;
+    detection_time: IDate | null;
     solved_date?: IDate | null;
     solved_time?: string | null;
     finder_array: IUser[] | null;

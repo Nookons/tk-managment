@@ -21,7 +21,7 @@ const UserSelect: FC<UserSelectProps> = ({ set_array }) => {
     }
 
     const formattedOptions = options.map((el: IUser) => ({
-        value: `${el.id}`,
+        value: `${el.first_name}-${el.last_name}`,
         label: el.email,
     }));
 

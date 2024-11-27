@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useLocation} from "react-router-dom";
-import {Descriptions, Divider, Form, Image, Row, Select, Skeleton, Space} from "antd";
+import {Descriptions, Divider, Form, Image, message, Row, Select, Skeleton, Space} from "antd";
 import Text from "antd/es/typography/Text";
 import {useForm} from "antd/es/form/Form";
 import Button from "antd/es/button";
@@ -11,6 +11,8 @@ import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
 import SelectItems from "../Robots/AddBroken/dep/SelectItems";
 import {IOption} from "../../types/Item";
+import {deleteDoc, doc} from "firebase/firestore";
+import {db} from "../../firebase";
 
 const Task = () => {
     const location = useLocation();
@@ -19,7 +21,7 @@ const Task = () => {
 
     const {tasks, loading, error} = useAppSelector(state => state.tasks)
 
-    const [current_task, setCurrent_task] = useState<ITaskRecord | null>( null);
+    const [current_task, setCurrent_task] = useState<ITaskRecord | null>(null);
 
     const [change_parts, setChange_parts] = useState<IOption[]>([]);
 
@@ -38,12 +40,17 @@ const Task = () => {
         // todo handle form finish fail
     };
 
-    const onFormClearClick = () => {
+    const onFormClearClick = async () => {
         form.resetFields();
+        if (id) {
+            await deleteDoc(doc(db, "tasks_record", id));
+            message.success('Task was removed');
+            window.history.back();
+        }
     }; // Extract the id parameter
 
     if (loading || !current_task) {
-        return <Skeleton />
+        return <Skeleton/>
     }
 
     return (
@@ -65,17 +72,47 @@ const Task = () => {
                 <Col span={16}>
                     <Descriptions title="Main task info" bordered>
                         <Descriptions.Item span={3} label="Add Time">
-                                {dayjs
-                                    .unix(current_task.added_time.seconds) // Конвертируем секунды в Day.js объект
-                                    .tz("Europe/Paris") // Преобразуем в нужный часовой пояс (замените на нужный)
-                                    .format("dddd, MMMM DD, YYYY [at] HH:mm")
-                                }
+                            {dayjs
+                                .unix(current_task.added_time.seconds) // Конвертируем секунды в Day.js объект
+                                .tz("Europe/Paris") // Преобразуем в нужный часовой пояс (замените на нужный)
+                                .format("dddd, MMMM DD, YYYY [at] HH:mm")
+                            }
                         </Descriptions.Item>
                         <Descriptions.Item span={2} label="Add person">
                             {current_task.added_person.email}
                         </Descriptions.Item>
-                        <Descriptions.Item  label="Name">
+                        <Descriptions.Item label="Name">
                             {current_task.added_person.first_name} | {current_task.added_person.last_name}
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Type">
+                            {current_task.type}
+                        </Descriptions.Item>
+                        <Descriptions.Item label="ID">
+                            {current_task.report_id}
+                        </Descriptions.Item>
+                        {<Descriptions.Item label="Date">
+                            {current_task.detection_date &&
+                                <>
+                                    {dayjs
+                                        .unix(current_task.detection_date.seconds) // Конвертируем секунды в Day.js объект
+                                        .tz("Europe/Paris") // Преобразуем в нужный часовой пояс (замените на нужный)
+                                        .format("dddd, MMMM DD, YYYY")
+                                    }
+                                </>
+                            }
+                            <br/>
+                            {current_task.detection_time &&
+                                <>
+                                    {dayjs
+                                        .unix(current_task.detection_time.seconds) // Конвертируем секунды в Day.js объект
+                                        .tz("Europe/Paris") // Преобразуем в нужный часовой пояс (замените на нужный)
+                                        .format("HH:mm")
+                                    }
+                                </>
+                            }
+                        </Descriptions.Item>}
+                        <Descriptions.Item span={3} label="Task Note">
+                            {current_task.task_note}
                         </Descriptions.Item>
                     </Descriptions>
                 </Col>
@@ -90,7 +127,7 @@ const Task = () => {
                             <Button style={{width: "100%", marginTop: 14}}>Add / Change</Button>
                         </div>
                         <div>
-                            <Divider>Image before</Divider>
+                            <Divider>Image After</Divider>
                             <Image
                                 width={" 100%"}
                                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQs9gUXKwt2KErC_jWWlkZkGabxpeGchT-fyw&s"
@@ -100,7 +137,11 @@ const Task = () => {
                     </Space>
                 </Col>
 
-                <Col span={4}>
+                <Col span={24}>
+                    <Divider>Can change if need</Divider>
+                </Col>
+
+                <Col span={8}>
                     <Form.Item layout={"vertical"} required label="State" name={"state"}>
                         <Select defaultValue={current_task.state}>
                             <Select.Option value="disable">Disable Removal</Select.Option>
@@ -143,7 +184,7 @@ const Task = () => {
 
                 <Col span={2}>
                     <Form.Item required layout={"vertical"} label="SOP" name={"sop"}>
-                        <Select>
+                        <Select defaultValue={current_task.sop}>
                             <Select.Option value="yes">Yes</Select.Option>
                             <Select.Option value="no">No</Select.Option>
                         </Select>
@@ -158,15 +199,10 @@ const Task = () => {
                         />
                     </Form.Item>
                 </Col>
-                
+
                 <Col span={12}>
-                    <Form.Item layout={"vertical"} label="Material name">
-                        <SelectItems setChange_data={setChange_parts}/>
-                    </Form.Item>
-                </Col>
-                
-                <Col span={12}>
-                    <Form.Item style={{marginBottom: 44}} layout={"vertical"} label="Processing Steps" name="processing_steps">
+                    <Form.Item style={{marginBottom: 44}} layout={"vertical"} label="Processing Steps"
+                               name="processing_steps">
                         <TextArea
                             defaultValue={current_task.processing_steps ? current_task.processing_steps : ""}
                             rows={2}
