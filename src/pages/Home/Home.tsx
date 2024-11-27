@@ -1,14 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {Card, Divider, Row, Statistic, Table} from 'antd';
+import {Avatar, Card, Divider, List, Row, Statistic, Table} from 'antd';
 import {useAppSelector} from "../../hooks/storeHooks";
 import Col from "antd/es/grid/col";
 import {useNavigate} from "react-router-dom";
 import {TOTE_INFO_ROUTE, UNIQ_NUMBER_ROUTE} from "../../utils/const";
 import Text from "antd/es/typography/Text";
 import RobotsCard from "./dep/RobotsCard";
-import {RobotOutlined} from "@ant-design/icons";
-import Button from "antd/es/button";
-import DataTransfer from "./dep/DataTransfer";
+import TasksList from "./dep/TasksList";
 
 const App: React.FC = () => {
     const navigate = useNavigate();
@@ -36,17 +34,7 @@ const App: React.FC = () => {
         <div>
             <Row gutter={16}>
                 <Col span={16}>
-                    <Card>
-                        <Divider>Items Card</Divider>
-                        <Row gutter={16}>
-                            <Col span={16}>
-                                <Card><Statistic title="Items in totes" value={items.length} prefix={<span>🔧</span>}/></Card>
-                            </Col>
-                            <Col span={8}>
-                                <Card><Statistic title="Totes in system" value={totes.length} prefix={<span>📦</span>}/></Card>
-                            </Col>
-                        </Row>
-                    </Card>
+                    <TasksList />
                 </Col>
                 <RobotsCard />
             </Row>

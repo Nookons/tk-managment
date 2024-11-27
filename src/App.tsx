@@ -24,6 +24,7 @@ import SignIn from "./pages/SignIn/SignIn";
 import {subscribeToTotes} from "./store/reducers/totes";
 import {subscribeToOptions} from "./store/reducers/options";
 import {subscribeToBroken_robots} from "./store/reducers/broken_robots";
+import {subscribeToTasks} from "./store/reducers/tasks";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -99,6 +100,7 @@ const App = () => {
         disptach(subscribeToTotes());
         disptach(subscribeToOptions());
         disptach(subscribeToBroken_robots());
+        disptach(subscribeToTasks());
     }, []);
 
 

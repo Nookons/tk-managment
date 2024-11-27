@@ -1,37 +1,37 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { db } from "../../firebase";
-import { IItem } from "../../types/Item";
+import {ITaskRecord} from "../../types/Task";
 
 type ItemsState = {
-    items: IItem[];
+    tasks: ITaskRecord[];
     loading: boolean;
     error: string | undefined;
 };
 
 const initialState: ItemsState = {
-    items: [],
+    tasks: [],
     loading: false,
     error: undefined,
 };
 
 // Создание thunk для подписки на обновления данных
-export const subscribeToItems = createAsyncThunk<void, undefined, { rejectValue: string }>(
-    'items/subscribeToItems',
+export const subscribeToTasks = createAsyncThunk<void, undefined, { rejectValue: string }>(
+    'items/subscribeToTasks',
     async (_, { dispatch, rejectWithValue }) => {
         try {
-            const q = query(collection(db, "/warehouse"));
+            const q = query(collection(db, "/tasks_record"));
 
             // Подписка на изменения в коллекции
             onSnapshot(q, (querySnapshot) => {
-                const items: IItem[] = [];
+                const items: ITaskRecord[] = [];
                 querySnapshot.forEach((doc) => {
                     items.push({
-                        ...doc.data() as IItem,
+                        ...doc.data() as ITaskRecord,
                     });
                 });
                 // Обновляем состояние при каждом изменении
-                dispatch(setItems(items));
+                dispatch(setTasks(items));
             });
         } catch (error) {
             return rejectWithValue('There was an error setting up real-time data fetching.');
@@ -39,31 +39,31 @@ export const subscribeToItems = createAsyncThunk<void, undefined, { rejectValue:
     }
 );
 
-const itemsSlice = createSlice({
-    name: 'items',
+const tasksSlice = createSlice({
+    name: 'tasks',
     initialState,
     reducers: {
-        setItems: (state, action: PayloadAction<IItem[]>) => {
-            state.items = action.payload;
+        setTasks: (state, action: PayloadAction<ITaskRecord[]>) => {
+            state.tasks = action.payload;
             state.loading = false;
             state.error = undefined;
         },
-        removeItems: (state, action: PayloadAction<any[]>) => {
-            state.items = state.items.filter(item => !action.payload.includes(item.id));
+        removeTasks: (state, action: PayloadAction<any[]>) => {
+            state.tasks = state.tasks.filter(item => !action.payload.includes(item.id));
         },
     },
     extraReducers: (builder) => {
         builder
-            .addCase(subscribeToItems.pending, (state) => {
+            .addCase(subscribeToTasks.pending, (state) => {
                 state.loading = true;
                 state.error = undefined;
             })
-            .addCase(subscribeToItems.rejected, (state, action) => {
+            .addCase(subscribeToTasks.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload || 'Failed to fetch items in real-time.';
+                state.error = action.payload || 'Failed to fetch tasks in real-time.';
             });
     }
 });
 
-export const { setItems, removeItems } = itemsSlice.actions;
-export default itemsSlice.reducer;
+export const { setTasks, removeTasks } = tasksSlice.actions;
+export default tasksSlice.reducer;

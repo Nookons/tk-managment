@@ -31,6 +31,7 @@ const ReportForm = () => {
             repair_array: repair_array,
             change_data: change_data,
             added_person: user,
+            key: dayjs().valueOf().toString(),
             added_time: dayjs().toDate(),
             // Convert Moment.js dates to JavaScript Date objects or timestamps
             detection_date: values.detection_date ? values.detection_date.toDate() : null,
@@ -84,7 +85,7 @@ const ReportForm = () => {
                     <Divider><span>Main info</span></Divider>
                 </Col>
                 <Col span={4}>
-                    <Form.Item layout={"vertical"} required label="Equipment type">
+                    <Form.Item layout={"vertical"} required label="Equipment type" name={"type"}>
                         <Select
                         >
                             <Select.Option value="robot">Robot</Select.Option>
@@ -104,7 +105,7 @@ const ReportForm = () => {
                 </Col>
 
                 <Col span={7}>
-                    <Form.Item layout={"vertical"} required label="State">
+                    <Form.Item layout={"vertical"} required label="State" name={"state"}>
                         <Select>
                             <Select.Option value="disable">Disable Removal</Select.Option>
                             <Select.Option value="return">Return to use</Select.Option>

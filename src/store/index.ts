@@ -4,6 +4,7 @@ import totesReducer from './reducers/totes';
 import userReducer from './reducers/user';
 import brokenRobotsReducer from './reducers/broken_robots';
 import optionsReducer from './reducers/options';
+import tasksReducer from './reducers/tasks';
 
 const store = configureStore({
     reducer: {
@@ -11,7 +12,8 @@ const store = configureStore({
         totes: totesReducer,
         user: userReducer,
         options: optionsReducer,
-        broken_robots: brokenRobotsReducer
+        broken_robots: brokenRobotsReducer,
+        tasks: tasksReducer
     }
 });
 
