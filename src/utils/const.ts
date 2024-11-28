@@ -16,6 +16,9 @@ export const SINGLE_ROBOT = "/single-robot"
 export const SINGLE_TASK = "/single-task"
 
 
+export const REPORT_REFACTOR = "/report-refactor"
+
+
 export const WORK_STATION_DISPLAY = "/work-station-display"
 
 

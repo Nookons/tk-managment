@@ -5,7 +5,7 @@ import Sider from "antd/es/layout/Sider";
 import {Breadcrumb, Menu, MenuProps, message, theme} from 'antd';
 import {
     AlertOutlined,
-    AppstoreAddOutlined, BarcodeOutlined, BugOutlined, CarryOutOutlined, CheckCircleOutlined,
+    AppstoreAddOutlined, BarcodeOutlined, BugOutlined, CarryOutOutlined, CheckCircleOutlined, FormOutlined,
     HomeOutlined, MergeCellsOutlined, RobotOutlined,
 } from '@ant-design/icons';
 import Layout, {Content, Footer, Header} from "antd/es/layout/layout";
@@ -16,7 +16,7 @@ import {
     ADD_BROKEN_ROBOT,
     CREATE_OPTION,
     ERROR_TRANSLATION,
-    HOME_ROUTE,
+    HOME_ROUTE, REPORT_REFACTOR,
     ROBOTS_DISPLAY, TOTE_DISPLAY,
     WORK_STATION_DISPLAY
 } from "./utils/const";
@@ -62,6 +62,11 @@ const App = () => {
         },
         {
             key: '2',
+            icon: <FormOutlined />,
+            label: 'Report Refactor',
+        },
+        {
+            key: '3',
             icon: <AppstoreAddOutlined />,
             label: 'Create Option',
         },
@@ -125,6 +130,9 @@ const App = () => {
                                     navigate(HOME_ROUTE);
                                     break;
                                 case '2':
+                                    navigate(REPORT_REFACTOR);
+                                    break;
+                                case '3':
                                     navigate(CREATE_OPTION);
                                     break;
                                 case '4':

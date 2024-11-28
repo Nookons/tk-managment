@@ -3,7 +3,7 @@ import SignIn from "./pages/SignIn/SignIn";
 import {
     ADD_BROKEN_ROBOT,
     CREATE_OPTION, ERROR_TRANSLATION,
-    HOME_ROUTE, ROBOTS_DISPLAY,
+    HOME_ROUTE, REPORT_REFACTOR, ROBOTS_DISPLAY,
     SIGN_IN_ROUTE, SINGLE_ROBOT, SINGLE_TASK, TOTE_DISPLAY,
     TOTE_INFO_ROUTE,
     UNIQ_NUMBER_ROUTE, USER_PROFILE, WORK_STATION_DISPLAY
@@ -19,6 +19,7 @@ import SingleRobot from "./pages/Robots/Single/SingleRobot";
 import ToteDisplay from "./pages/Tote/ToteDisplay/ToteDisplay";
 import Profile from "./pages/User/Profile";
 import Task from "./pages/Task/Task";
+import Report from "./pages/Report/Report";
 
 
 interface Route {
@@ -82,5 +83,9 @@ export const publicRoutes: PublicRoutes = [
     {
         path: SINGLE_TASK,
         Component: Task,
+    },
+    {
+        path: REPORT_REFACTOR,
+        Component: Report,
     },
 ];
