@@ -1,14 +1,7 @@
-// Define the structure of a parsed log entry with optional fields
-import {Divider, Form, message, Space, Table} from "antd";
+import React, { useState } from "react";
+import {Divider, Form, message, Space, Table, Button, Row, Card} from "antd";
 import TextArea from "antd/es/input/TextArea";
-import {useForm} from "antd/es/form/Form";
-import Button from "antd/es/button";
-import React, {useState} from "react";
-import {SINGLE_ROBOT} from "../../utils/const";
-
-const arrayTemplate = [
-    {title: "The box couldn't go onto the position. Repackage the product.", number: 3}
-]
+import { useForm } from "antd/es/form/Form";
 
 interface IError {
     description: string;
@@ -19,64 +12,116 @@ interface IError {
 
 const Report = () => {
     const [form] = useForm();
-
     const [current_data, setCurrent_data] = useState<IError[]>([]);
+    const [cant_parse_array, setCant_parse_array] = useState<string[]>([]);
 
-    function parseLogLine(line: string) {
-        const lines = line.split("\n");
+    async function OtherParse(log: string[]) {
+        const parsedLogs: IError[] = [];
+        const unparsed: string[] = [];
+        const regex = /(?:Ws|WS)\s*(\d{4})\s*(.*?)(?:\s*Solution:\s*(.*?))?\s*(\d{1,2}:\d{2})\s*[-–;]?\s*(\d{1,2}:\d{2})/i;
 
-        const filteredLines = lines.filter(line => line.trim() !== "" && !line.includes("[Photo]"));
-        const linesContainingWS = filteredLines.filter(line => /ws/i.test(line));
-
-        const parsedLogs = linesContainingWS.map(line => {
-            const match = line.match(/(?:WS\s*(\d+)[\.]?\s*)(.*?)(\d{2}:\d{2})\s*-\s*(\d{2}:\d{2})/i);
-
-            console.log(match);
+        log.forEach((line, index) => {
+            const match = line.match(regex);
 
             if (match) {
-                const stationNumber = match[1].trim();  // Номер станции
-                const description = match[2].trim();    // Описание события
-                const startTime = match[3].trim();      // Время начала
-                const endTime = match[4].trim();        // Время окончания
+                const stationNumber = match[1]?.trim(); // Номер станции
+                const description = match[2]?.trim() || "Описание не распарсено"; // Описание
+                const solution = match[3]?.trim() || ""; // Решение (если есть)
+                const startTime = match[4]?.trim(); // Время начала
+                const endTime = match[5]?.trim(); // Время окончания
 
-                return {
+                parsedLogs.push({
+                    stationNumber,
+                    description: solution ? `${description}. Solution: ${solution}` : description, // Объединяем описание и решение
+                    startTime,
+                    endTime,
+                });
+            } else {
+                unparsed.push(line)
+                console.warn(`Line ${index + 1} could not be parsed: ${line}`);
+            }
+        });
+        return [parsedLogs, unparsed];
+    }
+
+    async function parseLogLine(log: string) {
+        const lines = log.split("\n").filter(line => line.trim()); // Убираем пустые строки
+        const parsedLogs: IError[] = [];
+        const unparsedLines: string[] = [];
+
+        // Универсальное регулярное выражение
+        const regex = /(?:Safe mode\.\s*)?(.*?Solution:.*?)?\s*(?:Ws\s*=?\s*(\d{4}))[.,]?\s*(\d{1,2}:\d{2})\s*[-–;]?\s*(\d{1,2}:\d{2})/i;
+
+        lines.forEach((line, index) => {
+            const match = line.match(regex);
+
+            if (match) {
+                const description = (match[1]?.trim() || "Описание не распарсено").replace(/\s+/g, " "); // Описание
+                const stationNumber = match[2]?.trim(); // Номер станции
+                const startTime = match[3]?.trim(); // Время начала
+                const endTime = match[4]?.trim(); // Время окончания
+
+                parsedLogs.push({
                     stationNumber,
                     description,
                     startTime,
-                    endTime
-                };
+                    endTime,
+                });
+            } else {
+                console.warn(`Line ${index + 1} could not be parsed: ${line}`);
+                unparsedLines.push(line); // Сохраняем непарсенные строки
             }
+        });
 
-            return null; // Если не совпало, возвращаем null
-        }).filter(log => log !== null);
+        const [parsed, unparsed] = await OtherParse(unparsedLines)
 
-        console.log(filteredLines);
-        console.log(linesContainingWS);
-        console.log(parsedLogs);
-        setCurrent_data(parsedLogs as IError[]);
+        if (parsed.length) {
+            parsed.forEach(el => {
+                parsedLogs.push(el as IError)
+            })
+        }
+
+        setCant_parse_array(unparsed as string[]);
+        setCurrent_data(parsedLogs); // Сохраняем разобранные данные в состояние
     }
 
     const onFormFinish = (values: any) => {
-       parseLogLine(values.textarea)
+        parseLogLine(values.textarea);
     };
-
 
     return (
         <div style={{ padding: "20px" }}>
             <Table
                 size="large"
+                rowKey={(record) => record.stationNumber}
                 columns={[
-                    {title: "startTime", dataIndex: "startTime"},
-                    {title: "endTime", dataIndex: "endTime"},
-                    {title: "*", dataIndex: ""},
-                    {title: "*", dataIndex: ""},
-                    {title: "*", dataIndex: ""},
-                    {title: "stationNumber", dataIndex: "stationNumber"},
-                    {title: "*", dataIndex: ""},
-                    {title: "description", dataIndex: "description"},
+                    { title: "Start Time", dataIndex: "startTime" },
+                    { title: "End Time", dataIndex: "endTime" },
+                    { title: "*", dataIndex: "" },
+                    { title: "*", dataIndex: "" },
+                    { title: "*", dataIndex: "" },
+                    { title: "Station Number", dataIndex: "stationNumber" },
+                    { title: "*", dataIndex: "" },
+                    {
+                        title: "Description",
+                        dataIndex: "description",
+                        render: (text) => {
+                            return text === "Описание не распарсено" ?<span style={{color: "red"}}>{text}</span> : <span>{text}</span>
+                        }},
                 ]}
                 dataSource={current_data}
             />
+            {cant_parse_array.length > 0 &&
+                <Row gutter={[16, 16]}>
+                    <Card style={{width: "100%"}} title="Logs what i can't parse">
+                        {cant_parse_array.map((item) => (
+                            <div>
+                                {item}
+                            </div>
+                        ))}
+                    </Card>
+                </Row>
+            }
             <Form
                 form={form}
                 name="logParserForm"
