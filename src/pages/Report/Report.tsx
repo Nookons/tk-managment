@@ -19,6 +19,7 @@ const Report = () => {
     const [sorted_data, setSorted_data] = useState<IError[]>([]);
 
     useEffect(() => {
+        setSorted_data([]);
         const sorted = [...current_data].sort((a, b) => {
             // Преобразуем время в timestamp (если startTime в строковом формате)
             const timeA = new Date(a.endTime).getTime();
@@ -63,16 +64,15 @@ const Report = () => {
     }
 
     function parseTime(line: string) {
-        const match = line.match(/(\d{1,2}:\d{2})(?:-(\d{1,2}:\d{2}))?/); // Извлекаем начальное и конечное время
+        const match = line.match(/(\d{1,2}:\d{2})\s*-\s*(\d{1,2}:\d{2})$/); // Ищем время в конце строки
         if (match) {
             const startTime = match[1]; // Стартовое время
-            const endTime = match[2] || null; // Конечное время (может отсутствовать)
-            return {startTime, endTime};
+            const endTime = match[2]; // Конечное время
+            return { startTime, endTime };
         }
         console.log("Временной диапазон не найден.");
         return null;
     }
-
 
     function parseWorkStation(line: string) {
         const ws_match = line.match(/WS\.?\s*=?\s*(\d+)/i); // Ищем номер станции
@@ -126,10 +126,50 @@ const Report = () => {
                     columns={[
                         {title: "Start Time", dataIndex: "startTime"},
                         {title: "End Time", dataIndex: "endTime"},
-                        {title: "*", dataIndex: ""},
-                        {title: "*", dataIndex: ""},
-                        {title: "*", dataIndex: ""},
-                        {title: "Station Number", dataIndex: "workStation"},
+                        {
+                            title: "FB-FD2",
+                            dataIndex: "",
+                            render: (text) => {
+                                // Функция для преобразования времени в минуты
+                                const timeToMinutes = (timeStr: string) => {
+                                    const [hours, minutes] = timeStr.split(':').map(Number);  // Разбиваем строку на часы и минуты
+                                    return hours * 60 + minutes;  // Преобразуем в минуты
+                                };
+
+                                let startTimeInMinutes = 0;
+                                let endTimeInMinutes = 0;
+
+                                if (text.startTime && text.endTime) {
+                                    startTimeInMinutes = timeToMinutes(text.startTime);
+                                    endTimeInMinutes = timeToMinutes(text.endTime);
+                                }
+
+                                const diffInMinutes = endTimeInMinutes - startTimeInMinutes;
+
+                                return <span>{diffInMinutes}</span>;
+                            }
+                        },
+                        {
+                            title: "Issue",
+                            dataIndex: "",
+                            render: (text) => {
+                                return <span style={{color: "red"}}>操作员问题 Worker factors</span>
+                            }
+                        },
+                        {
+                            title: "Issue ID 问题编号",
+                            dataIndex: "",
+                            render: (text) => {
+                                return <span style={{color: "red"}}>工作站 Workstation</span>
+                            }
+                        },
+                        {
+                            title: "work station",
+                            dataIndex: "workStation",
+                            render: (text) => {
+                                return <span>{text}</span>
+                            }
+                        },
                         {title: "*", dataIndex: ""},
                         {
                             title: "Description",
