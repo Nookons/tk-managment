@@ -89,11 +89,12 @@ const Report = () => {
 
     return (
         <Row gutter={[24, 24]}>
-            {sorted_data.length &&
+            {sorted_data.length ?
                 <Col span={24}>
                     <Badge style={{margin: "0 14px"}} status="success"/>
                     <Text type="secondary">Success parsed {sorted_data.length} errors</Text>
                 </Col>
+                : null
             }
             <Col span={6}>
                 <Form
