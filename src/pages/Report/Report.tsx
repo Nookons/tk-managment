@@ -21,8 +21,8 @@ const Report = () => {
     useEffect(() => {
         const sorted = [...current_data].sort((a, b) => {
             // Преобразуем время в timestamp (если startTime в строковом формате)
-            const timeA = new Date(a.startTime).getTime();
-            const timeB = new Date(b.startTime).getTime();
+            const timeA = new Date(a.endTime).getTime();
+            const timeB = new Date(b.endTime).getTime();
             return timeA - timeB;
         });
 
