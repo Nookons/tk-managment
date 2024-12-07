@@ -4,6 +4,9 @@ import TextArea from "antd/es/input/TextArea";
 import {useForm} from "antd/es/form/Form";
 import Col from "antd/es/grid/col";
 import Text from "antd/es/typography/Text";
+import {doc, setDoc} from "firebase/firestore";
+import {db} from "../../firebase";
+import dayjs from "dayjs";
 
 interface IError {
     text: string;
@@ -26,6 +29,20 @@ const Report = () => {
             const timeB = new Date(b.endTime).getTime();
             return timeA - timeB;
         });
+
+        if (current_data) {
+            current_data.forEach(el => {
+                if (el.workStation && el.startTime) {
+                    const date = dayjs().format("YYYY-MM-DD")
+
+                    setDoc(doc(db, "errors", `${el.workStation}-${el.startTime}-${date}`), {
+                        ...el
+                    });
+                } else {
+                    message.error(`Couldn't upload ${el.text}.`);
+                }
+            })
+        }
 
         setSorted_data(sorted);
     }, [current_data]);
@@ -64,7 +81,7 @@ const Report = () => {
     }
 
     function parseTime(line: string) {
-        const match = line.match(/(\d{1,2}:\d{2})\s*-\s*(\d{1,2}:\d{2})$/); // Ищем время в конце строки
+        const match = line.match(/(\d{1,2}:\d{2})\s*[- ]?\s*(\d{1,2}:\d{2})$/); // Учитываем дефис или пробел между временем
         if (match) {
             const startTime = match[1]; // Стартовое время
             const endTime = match[2]; // Конечное время
