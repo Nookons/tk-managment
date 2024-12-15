@@ -101,11 +101,11 @@ const App = () => {
     } = theme.useToken();
 
     useEffect(() => {
-        disptach(subscribeToItems());
+        //disptach(subscribeToItems());
         disptach(subscribeToTotes());
         disptach(subscribeToOptions());
-        disptach(subscribeToBroken_robots());
-        disptach(subscribeToTasks());
+        //disptach(subscribeToBroken_robots());
+        //disptach(subscribeToTasks());
     }, []);
 
 

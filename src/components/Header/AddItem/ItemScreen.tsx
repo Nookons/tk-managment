@@ -3,8 +3,6 @@ import {Col, Form, Input, message, Result, Row, Skeleton} from "antd";
 import {useAppSelector} from "../../../hooks/storeHooks";
 import {IOption} from "../../../types/Item";
 import Button from "antd/es/button";
-import InputMask from 'react-input-mask';
-import Text from "antd/es/typography/Text";
 import {addItem} from "../../../utils/Item/AddItem";
 import dayjs from "dayjs";
 
@@ -50,6 +48,8 @@ const ItemScreen:FC <ItemScreenProps> = ({current_pick, setCurrent_pick}) => {
                 ...picked_item,
                 user: user ? user.email : "Unknown",
                 box_number: tote_number,
+                name: options.filter(item => item.name === picked_item?.name).pop().name,
+                code: options.filter(item => item.code === picked_item?.code).pop().code,
                 timestamp: dayjs().valueOf(),
                 full_date: dayjs().format("dddd, MMMM DD, YYYY [at] HH:mm:ss"),
                 id: Date.now(),

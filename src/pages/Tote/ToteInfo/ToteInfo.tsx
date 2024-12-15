@@ -1,86 +1,148 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation } from "react-router-dom";
-import { useAppSelector, useAppDispatch } from "../../../hooks/storeHooks";
-import { Divider, Table, Button, message } from "antd";
-import { LinkOutlined } from '@ant-design/icons';
-import {removeItem} from "../../../utils/Item/RemoveItem";
+import React, {useEffect, useState} from 'react';
+import {useLocation} from "react-router-dom";
+import {
+    Descriptions,
+    Row,
+    Col,
+    Spin,
+    Alert,
+    Divider,
+    Card,
+    Statistic,
+    Tag,
+    message,
+    Table,
+    Space,
+    Collapse
+} from "antd";
+import {useAppSelector} from "../../../hooks/storeHooks";
 import {ITote} from "../../../types/Tote";
-import {removeItems} from "../../../store/reducers/items";
+import {IItem} from "../../../types/Item";
+import Button from "antd/es/button";
+import ButtonGroup from "antd/es/button/button-group";
+import {DeleteOutlined, FilePdfOutlined, SettingOutlined} from "@ant-design/icons";
+import dayjs from "dayjs";
+import {generatePDF} from "../../../utils/PDF/CreatePdf";
+import UserCard from "./UserCard";
+import Text from "antd/es/typography/Text";
+import {UseOneFromTote} from "../../../utils/Tote/UseOne";
 
 const ToteInfo = () => {
     const location = useLocation();
     const params = new URLSearchParams(location.search);
-    const toteId = params.get("id"); // Извлекаем значение параметра id
+    const toteId = params.get("id");
 
-    const dispatch = useAppDispatch();
-    const { items} = useAppSelector(state => state.items);
+    const [currentTote, setCurrentTote] = useState<ITote | null>(null);
+    const [uniqueItems, setUniqueItems] = useState<{ [key: string]: { item: IItem, count: number } }>({});
 
-    const {totes} = useAppSelector(state => state.totes)
-
-    const [tote_data, setTote_data] = useState<any[]>([]);
-    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+    const {totes, loading, error} = useAppSelector(state => state.totes);
 
     useEffect(() => {
-        if (toteId) {
-            const filteredItems = items.filter((item: any) => item.box_number === toteId);
-            setTote_data(filteredItems);
+        const found = totes.find((item) => item.tote_number === toteId);
+        if (found) {
+            setCurrentTote(found);
         }
-    }, [toteId, items]);
+    }, [totes, toteId]);
 
-
-    const handleDelete = () => {
-        if (selectedRowKeys.length > 0) {
-            dispatch(removeItems(selectedRowKeys));
-
-            if (totes && toteId) {
-                const tote = totes.find(item => item.tote_number === toteId);
-
-                if (tote) {
-                    removeItem({ selectedRowKeys, tote });
+    useEffect(() => {
+        if (currentTote) {
+            const itemCounts: { [key: string]: { item: IItem, count: number } } = {};
+            currentTote.item_inside.forEach(item => {
+                const itemKey = item.name || "unknown";
+                if (itemCounts[itemKey]) {
+                    itemCounts[itemKey].count += 1;
                 } else {
-                    message.warning('Tote not found.');
+                    itemCounts[itemKey] = { item, count: 1 };
                 }
-            }
-
-            message.success('Selected items have been deleted.');
-            setSelectedRowKeys([]); // Clear selected items
-        } else {
-            message.warning('Please select items to delete.');
+            });
+            setUniqueItems(itemCounts);
         }
-    };
+    }, [currentTote]);
 
+    if (loading) {
+        return <Spin size="large" />;
+    }
 
-    const rowSelection = {
-        selectedRowKeys,
-        onChange: (selectedKeys: React.Key[]) => {
-            setSelectedRowKeys(selectedKeys);
-        },
-    };
+    if (error) {
+        return <Alert message="Error" description="Failed to load totes data" type="error" />;
+    }
+
+    const onItemClick = async (item: IItem, type: string) => {
+        switch (type) {
+            case "useOne":
+                message.info(`Using one of ${item.name}`);
+                const results = UseOneFromTote(item, toteId);
+                console.log(results);
+                break;
+            case "useAll":
+                message.info(`Using all of ${item.name}`);
+                break;
+            case "setCount":
+                message.info(`Setting count for ${item.name}`);
+                break;
+            case "delete":
+                message.info(`Deleting ${item.name}`);
+                break;
+            default:
+                message.info("Unknown action");
+        }
+    }
+
+    if (!currentTote) {
+        return null;
+    }
 
     return (
-        <div>
-            <Divider><LinkOutlined /> {toteId}</Divider>
-            {selectedRowKeys.length > 0 &&
-                <Button
-                    type="primary"
-                    onClick={handleDelete}
-                    style={{ marginBottom: 16 }}
-                >
-                    Delete Selected Items
-                </Button>
-            }
-            <Table
-                rowSelection={rowSelection}
-                columns={[
-                    { title: "Item ID", dataIndex: "id" },
-                    { title: "Name", dataIndex: "name" },
-                    { title: "Unique Number", dataIndex: "code" },
-                    { title: "Full Date", dataIndex: "full_date" },
-                ]}
-                dataSource={tote_data}
-            />
-        </div>
+        <Row gutter={[16, 16]}>
+            <Col md={24} xl={7}>
+                <Descriptions title={`📦 Tote ID: ${toteId}`} bordered>
+                    <Descriptions.Item span={3} label="ID">{currentTote?.id}</Descriptions.Item>
+                    <Descriptions.Item span={3} label="Update Time">{currentTote?.update_time}</Descriptions.Item>
+                    <Descriptions.Item span={3} label="Updated By">{currentTote?.updated_by}</Descriptions.Item>
+                </Descriptions>
+                <ButtonGroup style={{ marginTop: 24 }}>
+                    <Button type="primary">Add Item Here</Button>
+                    <Button onClick={() => generatePDF(currentTote, `${currentTote?.tote_number}-${dayjs().format("YYYY-MM-DD HH-mm-ss")}`)}><FilePdfOutlined /></Button>
+                </ButtonGroup>
+            </Col>
+            <Col md={24} xl={17}>
+                <Divider>Items in this Tote:</Divider>
+                <Row gutter={[8, 8]}>
+                    {Object.values(uniqueItems).map((el) => {
+                        const that_array = currentTote?.item_inside.filter(item => item.code === el.item.code);
+
+                        return (
+                            <Col key={el.item.code} xs={24} md={12} xl={12}>
+                                <Card title={<span>{el.item.name} <Tag style={{marginLeft: 14}}>🔧 {el.count}</Tag></span>}>
+                                    <Divider><Text type="secondary">{el.item.code}</Text></Divider>
+                                    <ButtonGroup>
+                                        <Button onClick={() => onItemClick(el.item, "useOne")} type="primary">Use one</Button>
+                                        <Button onClick={() => onItemClick(el.item, "useAll")}>Use All</Button>
+                                        <Button onClick={() => onItemClick(el.item, "setCount")}>Set count</Button>
+                                        <Button onClick={() => onItemClick(el.item, "delete")} danger><DeleteOutlined /></Button>
+                                    </ButtonGroup>
+
+                                    <Collapse style={{ marginTop: 14 }} ghost>
+                                        <Collapse.Panel style={{ width: "100%" }} header="Items Data" key="1">
+                                            {that_array && that_array.map(that => (
+                                                <Tag key={that.id} style={{margin: 4, backgroundColor: "white"}}>
+                                                    <Space direction={"vertical"}>
+                                                        <Text type="secondary" style={{fontWeight: 600, fontSize: 12}}>➕ {that.full_date}</Text>
+                                                        <UserCard user={that.user} />
+                                                    </Space>
+                                                </Tag>
+                                            ))}
+                                        </Collapse.Panel>
+                                    </Collapse>
+                                </Card>
+                            </Col>
+                        )
+                    })}
+                </Row>
+            </Col>
+        </Row>
     );
 };
 
 export default ToteInfo;
+

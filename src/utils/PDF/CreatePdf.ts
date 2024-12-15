@@ -1,14 +1,7 @@
 import { jsPDF } from "jspdf";
 import { ITote } from "../../types/Tote";
 import { IItem } from "../../types/Item";
-import {message} from "antd";
 import dayjs from "dayjs";
-
-/**
- * Функция для генерации PDF с данными о контейнере (Tote) и его элементах (Items).
- * @param tote Объект контейнера с товарами
- * @param fileName Имя файла PDF
- */
 
 export const AllToteToPDF = (totes: ITote[]) => {
     const doc = new jsPDF('portrait');

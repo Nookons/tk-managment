@@ -6,8 +6,8 @@ export interface IItem {
     full_date: string;
     id: number;
     key: number;
-    code?: string;  // Make code optional
-    name?: string;
+    code: string;  // Make code optional
+    name: string;
     user: string;
 }
 

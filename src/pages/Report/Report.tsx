@@ -1,52 +1,20 @@
 import React, {useEffect, useState} from "react";
-import {Divider, Form, message, Space, Table, Button, Row, Card, Badge} from "antd";
+import {Divider, Form, message, Space, Table, Button, Row, Card, Badge, Switch} from "antd";
 import TextArea from "antd/es/input/TextArea";
 import {useForm} from "antd/es/form/Form";
 import Col from "antd/es/grid/col";
-import Text from "antd/es/typography/Text";
-import {doc, setDoc} from "firebase/firestore";
-import {db} from "../../firebase";
+import TableDrawer from "./TableDrawer/TableDrawer";
+import {IError} from "../../types/Error";
+import ErrorControl from "./ErrorControl/ErrorControl";
 import dayjs from "dayjs";
 
-interface IError {
-    text: string;
-    endTime: string;
-    startTime: string;
-    workStation: string;
-}
 
 const Report = () => {
     const [form] = useForm();
     const [current_data, setCurrent_data] = useState<IError[]>([]);
 
-    const [sorted_data, setSorted_data] = useState<IError[]>([]);
-
-    useEffect(() => {
-        setSorted_data([]);
-        const sorted = [...current_data].sort((a, b) => {
-            // Преобразуем время в timestamp (если startTime в строковом формате)
-            const timeA = new Date(a.endTime).getTime();
-            const timeB = new Date(b.endTime).getTime();
-            return timeA - timeB;
-        });
-
-        if (current_data) {
-            current_data.forEach(el => {
-                if (el.workStation && el.startTime) {
-                    const date = dayjs().format("YYYY-MM-DD")
-
-                    setDoc(doc(db, "errors", `${el.workStation}-${el.startTime}-${date}`), {
-                        ...el
-                    });
-                } else {
-                    message.error(`Couldn't upload ${el.text}.`);
-                }
-            })
-        }
-
-        setSorted_data(sorted);
-    }, [current_data]);
-
+    const [isDrawer, setIsDrawer] = useState<boolean>(false);
+    const [isErrorControl, setIsErrorControl] = useState<boolean>(false);
 
     async function parseLogLine(log: string) {
         const lines = log.split("\n").filter(line => line.trim()); // Убираем пустые строки
@@ -63,6 +31,7 @@ const Report = () => {
                         workStation: workStation,
                         startTime: time?.startTime,
                         endTime: time?.endTime,
+                        id: `${workStation}-${time?.startTime}-${dayjs().format("YYYY-MM-DD")}`,
                         text: text,
                     }
 
@@ -85,7 +54,7 @@ const Report = () => {
         if (match) {
             const startTime = match[1]; // Стартовое время
             const endTime = match[2]; // Конечное время
-            return { startTime, endTime };
+            return {startTime, endTime};
         }
         console.log("Временной диапазон не найден.");
         return null;
@@ -102,108 +71,59 @@ const Report = () => {
 
     const onFormFinish = (values: any) => {
         parseLogLine(values.textarea);
+        setIsDrawer(true)
     };
 
     return (
         <Row gutter={[24, 24]}>
-            {sorted_data.length ?
-                <Col span={24}>
-                    <Badge style={{margin: "0 14px"}} status="success"/>
-                    <Text type="secondary">Success parsed {sorted_data.length} errors</Text>
+            {!isErrorControl
+            ?
+                <Col span={18}>
+                    <Form
+                        form={form}
+                        name="logParserForm"
+                        layout="vertical"
+                        initialValues={{remember: true}}
+                        onFinish={onFormFinish}
+                    >
+                        <Row gutter={[4, 4]}>
+                            <Col span={24}>
+                                <Form.Item>
+                                    <Space>
+                                        <Button style={{width: "100%"}} type="primary" htmlType="submit">
+                                            Submit
+                                        </Button>
+                                    </Space>
+                                </Form.Item>
+                            </Col>
+                            <Col span={24}>
+                                <Form.Item
+                                    name="textarea"
+                                    rules={[{required: true, message: "Input is required!"}]}
+                                >
+                                    <TextArea style={{width: "100%"}} autoCapitalize={"words"} rows={18}
+                                              placeholder="Paste log entries here..."/>
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                    </Form>
                 </Col>
-                : null
+            :
+                <Col span={18}>
+                    <ErrorControl />
+                </Col>
             }
             <Col span={6}>
-                <Form
-                    form={form}
-                    name="logParserForm"
-                    layout="vertical"
-                    initialValues={{remember: true}}
-                    onFinish={onFormFinish}
-                >
-                    <Form.Item
-                        name="textarea"
-                        rules={[{required: true, message: "Input is required!"}]}
-                    >
-                        <TextArea rows={24} placeholder="Paste log entries here..."/>
+                <Divider>Control Menu</Divider>
+                <div style={{display: "flex", justifyContent: "flex-start", flexWrap: "wrap"}}>
+                    <Form.Item style={{width: "100%"}} label="Error control" name="error_control" valuePropName="checked">
+                        <Switch onChange={() => setIsErrorControl(!isErrorControl)} />
                     </Form.Item>
-                    <Form.Item>
-                        <Space>
-                            <Button type="primary" htmlType="submit">
-                                Submit
-                            </Button>
-                        </Space>
-                    </Form.Item>
-                </Form>
+                    <Button type={"primary"} style={{margin: 4}} onClick={() => setIsDrawer(true)}>Open error drawer</Button>
+                    <Button type={"primary"} style={{margin: 4}} danger>Remove all errors</Button>
+                </div>
             </Col>
-            <Col span={18}>
-                <Table
-                    size="large"
-                    rowKey={(record) => record.workStation}
-                    columns={[
-                        {title: "Start Time", dataIndex: "startTime"},
-                        {title: "End Time", dataIndex: "endTime"},
-                        {
-                            title: "FB-FD2",
-                            dataIndex: "",
-                            render: (text) => {
-                                // Функция для преобразования времени в минуты
-                                const timeToMinutes = (timeStr: string) => {
-                                    const [hours, minutes] = timeStr.split(':').map(Number);  // Разбиваем строку на часы и минуты
-                                    return hours * 60 + minutes;  // Преобразуем в минуты
-                                };
-
-                                let startTimeInMinutes = 0;
-                                let endTimeInMinutes = 0;
-
-                                if (text.startTime && text.endTime) {
-                                    startTimeInMinutes = timeToMinutes(text.startTime);
-                                    endTimeInMinutes = timeToMinutes(text.endTime);
-                                }
-
-                                const diffInMinutes = endTimeInMinutes - startTimeInMinutes;
-
-                                return <span>{diffInMinutes}</span>;
-                            }
-                        },
-                        {
-                            title: "Issue",
-                            dataIndex: "",
-                            render: (text) => {
-                                return <span style={{color: "red"}}>操作员问题 Worker factors</span>
-                            }
-                        },
-                        {
-                            title: "Issue ID 问题编号",
-                            dataIndex: "",
-                            render: (text) => {
-                                return <span style={{color: "red"}}>工作站 Workstation</span>
-                            }
-                        },
-                        {
-                            title: "work station",
-                            dataIndex: "workStation",
-                            render: (text) => {
-                                return <span>{text}</span>
-                            }
-                        },
-                        {title: "*", dataIndex: ""},
-                        {
-                            title: "Description",
-                            dataIndex: "text",
-                            render: (text) => {
-                                return text === "Описание не распарсено" ? <span style={{color: "red"}}>{text}</span> :
-                                    <span>{text}</span>
-                            }
-                        },
-                    ]}
-                    dataSource={sorted_data}
-                    pagination={{
-                        pageSize: 100,  // Количество строк на страницу
-                        showSizeChanger: false,  // Скрывает возможность смены количества строк на странице
-                    }}
-                />
-            </Col>
+            <TableDrawer isDrawer={isDrawer} setIsDrawer={setIsDrawer} current_data={current_data}/>
         </Row>
     );
 };
