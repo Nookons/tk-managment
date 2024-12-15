@@ -1,80 +1,27 @@
-import React, {useEffect, useState} from 'react';
-import {Avatar, Card, Divider, List, Row, Statistic, Table} from 'antd';
-import {useAppSelector} from "../../hooks/storeHooks";
+import React from 'react';
+import {Button, notification, Row} from 'antd';
 import Col from "antd/es/grid/col";
-import {useNavigate} from "react-router-dom";
-import {TOTE_INFO_ROUTE, UNIQ_NUMBER_ROUTE} from "../../utils/const";
-import Text from "antd/es/typography/Text";
 import RobotsCard from "./dep/RobotsCard";
-import TasksList from "./dep/TasksList";
 
 const App: React.FC = () => {
-    const navigate = useNavigate();
-    const {items} = useAppSelector(state => state.items); // Retrieve items from the Redux store
-    const {totes} = useAppSelector(state => state.totes); // Retrieve items from the Redux store
 
-    const [reversed, setReversed] = useState<any[]>([]);
-
-    useEffect(() => {
-        if (items) {
-            const reversedItems = items.slice().reverse(); // Use slice() to avoid mutating the original array
-            setReversed(reversedItems);
-        }
-    }, [items]); // Add items as a dependency
-
-    const onToteClick = (tote: string) => {
-        navigate(`${TOTE_INFO_ROUTE}?id=${tote}`);
-    };
-
-    const onUniqNumberClick = (tote: string) => {
-        navigate(`${UNIQ_NUMBER_ROUTE}?id=${tote}`);
+    const showNotification = () => {
+        notification.info({
+            message: 'Notification topLeft',
+            description: 'Hello, Ant Design!!',
+            placement: 'topLeft',
+        });
     };
 
     return (
         <div>
             <Row gutter={16}>
                 <Col span={16}>
-                    <TasksList />
+                    <Button type="primary" onClick={showNotification}>
+                        Open notification
+                    </Button>
                 </Col>
                 <RobotsCard />
-            </Row>
-
-            {/*<DataTransfer />*/}
-
-            <Divider>Items list</Divider>
-            <Row gutter={16}>
-                <Table
-                    style={{width: "100%"}}
-                    columns={[
-                        {
-                            title: "Uniq number",
-                            dataIndex: "code",
-                            key: "code",
-                            render: (text) => <a onClick={() => onUniqNumberClick(text)}>{text}</a>,
-                        },
-                        {
-                            title: "Place",
-                            dataIndex: "box_number",
-                            key: "box_number",
-                            render: (text) => <a onClick={() => onToteClick(text)}>📦 {text}</a>,
-                        },
-                        {
-                            title: "Name",
-                            dataIndex: "name",
-                            key: "name",
-                            render: (text) => <Text strong>{text}</Text>,
-                        },
-                        {
-                            title: "Add Date",
-                            dataIndex: "full_date",
-                            key: "full_date",
-                            render: (text) => <Text type="secondary">{text}</Text>,
-                        },
-                    ]}
-                    dataSource={reversed}
-                    rowKey="id" // Use a unique key if available for React optimization
-                >
-                </Table>
             </Row>
         </div>
     );
