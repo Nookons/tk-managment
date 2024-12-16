@@ -70,7 +70,7 @@ const App = () => {
             icon: <AppstoreAddOutlined />,
             label: 'Create Option',
         },
-        getItem('Robots', 'sub1', <RobotOutlined />, [
+        /*getItem('Robots', 'sub1', <RobotOutlined />, [
             getItem('Repair', '4', <BugOutlined />),
             getItem('Robots display', '5', <AlertOutlined />),
             getItem('Solved', '6', <CheckCircleOutlined />),
@@ -81,7 +81,7 @@ const App = () => {
             getItem('Repair', '9', <BugOutlined />),
             getItem('Solved', '10', <CheckCircleOutlined />),
             getItem('Inspection', '11', <CarryOutOutlined />),
-        ]),
+        ]),*/
         /*{
             key: '12',
             icon: <AppstoreAddOutlined />,
@@ -182,7 +182,7 @@ const App = () => {
                         </div>
                     </Content>
                     <Footer style={{ textAlign: 'center' }}>
-                        <span>Powered by <a href={"https://github.com/Nookons"}>Nookon</a> ©{new Date().getFullYear()} version 0.0.3</span>
+                        <span>Powered by <a href={"https://github.com/Nookons"}>Nookon</a> ©{new Date().getFullYear()} version 0.0.5</span>
                     </Footer>
                 </Layout>
             </Layout>

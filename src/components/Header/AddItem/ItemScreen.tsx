@@ -32,6 +32,10 @@ const ItemScreen:FC <ItemScreenProps> = ({current_pick, setCurrent_pick}) => {
     const submitData = async () => {
         setIsButtonLoading(true);
 
+        if (!user) {
+            return null
+        }
+
         if (tote_number.length <= 0) {
             message.error("Item not added, please write a tote number before adding tote to system")
             setIsButtonLoading(false);
@@ -44,6 +48,7 @@ const ItemScreen:FC <ItemScreenProps> = ({current_pick, setCurrent_pick}) => {
         }
 
         for (let i = 0; i < item_sum; i++) {
+
             const item = {
                 ...picked_item,
                 user: user ? user.email : "Unknown",
@@ -57,7 +62,7 @@ const ItemScreen:FC <ItemScreenProps> = ({current_pick, setCurrent_pick}) => {
             }
 
             try {
-                await addItem({item});
+                await addItem({item, user});
             } catch (err) {
                 err && message.error(err.toString())
             }

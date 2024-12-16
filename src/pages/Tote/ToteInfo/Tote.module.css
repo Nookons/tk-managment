@@ -1,0 +1,9 @@
+
+
+.History_action {
+    padding: 2px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: .3s all ease;
+    /*border: 1px dashed #c1c1c1;*/
+}
