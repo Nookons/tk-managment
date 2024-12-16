@@ -26,7 +26,7 @@ const RobotsCard = () => {
 
 
     return (
-        <Col span={8}>
+        <Col>
             <img style={{
                 position: "absolute",
                 zIndex: 1,

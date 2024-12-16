@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {Row, Col} from 'antd';
+import {Row, Col, Space} from 'antd';
 import {Bar} from "@ant-design/charts";
 import RobotsCard from "./dep/RobotsCard";
 import {useAppSelector} from "../../hooks/storeHooks";
+import DayCalendar from "./dep/DayCalandar";
 
 interface IBar {
     title: string;
@@ -32,11 +33,16 @@ const App: React.FC = () => {
 
     return (
         <div>
-            <Row gutter={16}>
-                <Col span={16}>
+            <Row gutter={[16, 16]}>
+                <Col span={12}>
                     <Bar {...config} />
                 </Col>
-                <RobotsCard/>
+                <Col style={{padding: 14}} span={12}>
+                    <Space>
+                        <DayCalendar />
+                        <RobotsCard/>
+                    </Space>
+                </Col>
             </Row>
         </div>
     );
