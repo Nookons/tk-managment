@@ -65,7 +65,7 @@ const SoloPart = ({option}: { option: IOption }) => {
                         </Col>
                         <Col span={24}>
                             <Descriptions size={"small"} bordered>
-                                <Descriptions.Item span={3} label="Name">{option.name}</Descriptions.Item>
+                                <Descriptions.Item span={3} label="Code">{option.code}</Descriptions.Item>
                                 {option.update_time &&
                                     <Descriptions.Item span={3} label="Updated">{option.update_time}</Descriptions.Item>}
                                 {option.person_update && <Descriptions.Item span={3}
