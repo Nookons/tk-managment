@@ -6,7 +6,7 @@ import {Breadcrumb, Menu, MenuProps, message, theme} from 'antd';
 import {
     AlertOutlined,
     AppstoreAddOutlined, BarcodeOutlined, BugOutlined, CarryOutOutlined, CheckCircleOutlined, FormOutlined,
-    HomeOutlined, MergeCellsOutlined, RobotOutlined,
+    HomeOutlined, InfoCircleOutlined, MergeCellsOutlined, RobotOutlined,
 } from '@ant-design/icons';
 import Layout, {Content, Footer, Header} from "antd/es/layout/layout";
 import {useAppDispatch, useAppSelector} from "./hooks/storeHooks";
@@ -16,7 +16,7 @@ import {
     ADD_BROKEN_ROBOT,
     CREATE_OPTION,
     ERROR_TRANSLATION,
-    HOME_ROUTE, REPORT_REFACTOR,
+    HOME_ROUTE, PARTS_INFO_ROUTE, REPORT_REFACTOR,
     ROBOTS_DISPLAY, TOTE_DISPLAY,
     WORK_STATION_DISPLAY
 } from "./utils/const";
@@ -92,6 +92,11 @@ const App = () => {
             icon: <BarcodeOutlined />,
             label: 'Totes display',
         },
+        {
+            key: '14',
+            icon: <InfoCircleOutlined />,
+            label: 'Parts Info',
+        },
     ];
 
 
@@ -155,6 +160,9 @@ const App = () => {
                                     break;
                                 case '13':
                                     navigate(TOTE_DISPLAY);
+                                    break;
+                                case '14':
+                                    navigate(PARTS_INFO_ROUTE);
                                     break;
                                 default:
                                     break;

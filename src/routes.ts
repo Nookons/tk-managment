@@ -3,7 +3,7 @@ import SignIn from "./pages/SignIn/SignIn";
 import {
     ADD_BROKEN_ROBOT,
     CREATE_OPTION, ERROR_TRANSLATION,
-    HOME_ROUTE, REPORT_REFACTOR, ROBOTS_DISPLAY,
+    HOME_ROUTE, PARTS_INFO_ROUTE, REPORT_REFACTOR, ROBOTS_DISPLAY,
     SIGN_IN_ROUTE, SINGLE_ROBOT, SINGLE_TASK, TOTE_DISPLAY,
     TOTE_INFO_ROUTE,
     UNIQ_NUMBER_ROUTE, USER_PROFILE, WORK_STATION_DISPLAY
@@ -20,6 +20,7 @@ import ToteDisplay from "./pages/Tote/ToteDisplay/ToteDisplay";
 import Profile from "./pages/User/Profile";
 import Task from "./pages/Task/Task";
 import Report from "./pages/Report/Report";
+import PartsInfo from "./pages/Info/PartsInfo";
 
 
 interface Route {
@@ -87,5 +88,9 @@ export const publicRoutes: PublicRoutes = [
     {
         path: REPORT_REFACTOR,
         Component: Report,
+    },
+    {
+        path: PARTS_INFO_ROUTE,
+        Component: PartsInfo,
     },
 ];

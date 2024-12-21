@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { db } from "../../firebase";
-import { IItem } from "../../types/Item";
+import {IOption} from "../../types/Option";
 
 type ItemsState = {
-    options: any[];
+    options: IOption[];
     loading: boolean;
     error: string | undefined;
 };
@@ -23,10 +23,10 @@ export const subscribeToOptions = createAsyncThunk<void, undefined, { rejectValu
 
             // Подписка на изменения в коллекции
             onSnapshot(q, (querySnapshot) => {
-                const items: any[] = [];
+                const items: IOption[] = [];
                 querySnapshot.forEach((doc) => {
                     items.push({
-                        ...doc.data() as IItem,
+                        ...doc.data() as IOption,
                     });
                 });
                 dispatch(setItems(items));
@@ -41,13 +41,10 @@ const optionsSlicer = createSlice({
     name: 'options',
     initialState,
     reducers: {
-        setItems: (state, action: PayloadAction<any[]>) => {
+        setItems: (state, action: PayloadAction<IOption[]>) => {
             state.options = action.payload;
             state.loading = false;
             state.error = undefined;
-        },
-        removeTote: (state, action: PayloadAction<any[]>) => {
-            state.options = state.options.filter(item => !action.payload.includes(item.id));
         },
     },
     extraReducers: (builder) => {
@@ -63,5 +60,5 @@ const optionsSlicer = createSlice({
     }
 });
 
-export const { setItems, removeTote } = optionsSlicer.actions;
+export const { setItems } = optionsSlicer.actions;
 export default optionsSlicer.reducer;

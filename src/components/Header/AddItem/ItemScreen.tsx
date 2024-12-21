@@ -25,7 +25,10 @@ const ItemScreen:FC <ItemScreenProps> = ({current_pick, setCurrent_pick}) => {
     useEffect(() => {
         if (options && current_pick) {
             const found = options.filter(item => item.code === current_pick).pop();
-            setPicked_item(found)
+
+            if (found) {
+                setPicked_item(found)
+            }
         }
     }, []);
 
@@ -48,25 +51,30 @@ const ItemScreen:FC <ItemScreenProps> = ({current_pick, setCurrent_pick}) => {
         }
 
         for (let i = 0; i < item_sum; i++) {
+            const matchedName = options?.filter(item => item.name === picked_item?.name).pop()?.name || "";
+            const matchedCode = options?.filter(item => item.code === picked_item?.code).pop()?.code || "";
 
             const item = {
                 ...picked_item,
                 user: user ? user.email : "Unknown",
                 box_number: tote_number,
-                name: options.filter(item => item.name === picked_item?.name).pop().name,
-                code: options.filter(item => item.code === picked_item?.code).pop().code,
+                name: matchedName, // Use the safely retrieved name
+                code: matchedCode, // Use the safely retrieved code
                 timestamp: dayjs().valueOf(),
                 full_date: dayjs().format("dddd, MMMM DD, YYYY [at] HH:mm:ss"),
-                id: Date.now(),
-                key: Date.now()
-            }
+                id: Date.now() + i, // Ensure unique id by adding loop index
+                key: Date.now() + i // Ensure unique key by adding loop index
+            };
 
             try {
-                await addItem({item, user});
+                await addItem({ item, user });
             } catch (err) {
-                err && message.error(err.toString())
+                if (err) {
+                    message.error(err.toString());
+                }
             }
         }
+
 
         message.success("Items was added")
         setTote_number("")
