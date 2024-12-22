@@ -2,7 +2,7 @@ import Home from "./pages/Home/Home";
 import SignIn from "./pages/SignIn/SignIn";
 import {
     ADD_BROKEN_ROBOT,
-    CREATE_OPTION, ERROR_TRANSLATION,
+    CREATE_OPTION,
     HOME_ROUTE, PARTS_INFO_ROUTE, REPORT_REFACTOR, ROBOTS_DISPLAY,
     SIGN_IN_ROUTE, SINGLE_ROBOT, SINGLE_TASK, TOTE_DISPLAY,
     TOTE_INFO_ROUTE,
@@ -14,7 +14,6 @@ import UniqNumber from "./pages/UniqNumber/UniqNumber";
 import AddBroken from "./pages/Robots/AddBroken/AddBroken";
 import RobotsDisplay from "./pages/Robots/RobotsDisplay/RobotsDisplay";
 import WorkStationDisplay from "./pages/WorkStation/Display/WorkStationDisplay";
-import ErrorsTranslation from "./pages/ErrorsTranslation/ErrorsTranslation";
 import SingleRobot from "./pages/Robots/Single/SingleRobot";
 import ToteDisplay from "./pages/Tote/ToteDisplay/ToteDisplay";
 import Profile from "./pages/User/Profile";
@@ -64,10 +63,6 @@ export const publicRoutes: PublicRoutes = [
     {
         path: WORK_STATION_DISPLAY,
         Component: WorkStationDisplay,
-    },
-    {
-        path: ERROR_TRANSLATION,
-        Component: ErrorsTranslation,
     },
     {
         path: SINGLE_ROBOT,

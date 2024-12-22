@@ -1,12 +1,9 @@
 import React, {useState} from 'react';
 import {useForm} from "antd/es/form/Form";
 import {useAppSelector} from "../../../hooks/storeHooks";
-import {DatePicker, Form, message, Row, Select, Steps, Switch, theme, TimePicker} from "antd";
-import Button from "antd/es/button";
-import dayjs from "dayjs";
+import {Form, Row, Select} from "antd";
 import Col from "antd/es/grid/col";
-import Robot from "./Steps/TypeComponents/Robot";
-import WorkStation from "./Steps/TypeComponents/WorkStation";
+import Robot from "./Robot/Robot";
 
 
 const ReportForm = () => {
@@ -61,7 +58,6 @@ const ReportForm = () => {
                 </Col>
                 <Col span={24}>
                     {error_type === "robot" && <Robot />}
-                    {error_type === "workstation" && <WorkStation />}
                 </Col>
             </Row>
         </Form>

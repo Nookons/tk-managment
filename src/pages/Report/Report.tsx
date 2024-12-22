@@ -7,6 +7,7 @@ import TableDrawer from "./TableDrawer/TableDrawer";
 import {IError} from "../../types/Error";
 import ErrorControl from "./ErrorControl/ErrorControl";
 import dayjs from "dayjs";
+import ApplicationMenu from "./Application/ApplicationMenu";
 
 
 const Report = () => {
@@ -122,6 +123,7 @@ const Report = () => {
                     <Button type={"primary"} style={{margin: 4}} onClick={() => setIsDrawer(true)}>Open error drawer</Button>
                     <Button type={"primary"} style={{margin: 4}} danger>Remove all errors</Button>
                 </div>
+                <ApplicationMenu />
             </Col>
             <TableDrawer isDrawer={isDrawer} setIsDrawer={setIsDrawer} current_data={current_data}/>
         </Row>
