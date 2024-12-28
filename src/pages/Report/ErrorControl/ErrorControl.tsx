@@ -10,21 +10,15 @@ import {DeleteOutlined, EditOutlined} from "@ant-design/icons";
 
 const ErrorControl = () => {
     const {errors_data, loading, error} = useErrorsFetch();
-
     const [sorted_data, setSorted_data] = useState<IError[]>([]);
 
     useEffect(() => {
         if (errors_data) {
             setSorted_data([]);
             const sorted = [...errors_data].sort((a, b) => {
-                // Parse time strings using dayjs
                 const timeA = dayjs(a.startTime, "H:mm").valueOf(); // Convert to timestamp
                 const timeB = dayjs(b.startTime, "H:mm").valueOf(); // Convert to timestamp
 
-                console.log(timeA); // Log timestamps for debugging
-                console.log(timeB);
-
-                // Compare the numeric timestamps
                 return timeA - timeB;
             });
             setSorted_data(sorted);
@@ -42,7 +36,6 @@ const ErrorControl = () => {
 
     return (
         <Table
-
             columns={[
                 {
                     title: <span>Work Station</span>,
