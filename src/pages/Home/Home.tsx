@@ -1,34 +1,27 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {
     Button,
     Descriptions,
-    Divider, Form,
-    Input,
+    Form,
     List, message,
-    Progress,
-    QRCode,
     Row, Select,
-    Space,
-    Steps,
-    Table,
+    Space, Switch,
     Tag,
     Timeline
 } from 'antd';
 import useTasks from "../../hooks/useTasks";
 import Col from "antd/es/grid/col";
 import {
-    CheckCircleOutlined, ClockCircleOutlined,
+    CheckCircleOutlined,
     EyeOutlined, FileSearchOutlined,
     LoadingOutlined,
-    SmileOutlined,
-    SolutionOutlined,
-    UserOutlined
 } from "@ant-design/icons";
 import Search from "antd/es/input/Search";
 import dayjs from "dayjs";
 import {doc, updateDoc} from "firebase/firestore";
 import {db} from "../../firebase";
 import {useAppSelector} from "../../hooks/storeHooks";
+import robot_img from '../../assets/robot.webp'
 
 const getColor = (status: string) => {
     switch (status) {
@@ -122,73 +115,83 @@ const App: React.FC = () => {
     return (
         <Row gutter={[16, 16]}>
             <Col span={16}>
-                <Form.Item label="Task search" name="input">
-                    <Search/>
-                </Form.Item>
+                <Space style={{alignItems: "center"}}>
+                    <Form.Item style={{margin: "0 8px 24px 0"}} label="Task search" name="input">
+                        <Search/>
+                    </Form.Item>
+                    <Form.Item style={{margin: "0 8px 24px 0"}} label="Only not complited" name="switch" valuePropName="checked">
+                        <Switch defaultChecked={true}/>
+                    </Form.Item>
+                    <Button style={{margin: "0 8px 24px 0"}}>Go to completed</Button>
+                </Space>
                 <List
                     dataSource={tasks.slice(0, 10)}
-                    renderItem={(item) =>
-                        <Row style={{
-                            boxShadow: "2px 2px 4px rgba(0,0,0, 0.25)",
-                            padding: 14,
-                            borderRadius: 4,
-                            marginBottom: 14
-                        }}>
-                            <Col span={6}>
-                                <QRCode
-                                    errorLevel="H"
-                                    size={200}
-                                    iconSize={50}
-                                    value={item.task_id}
-                                />
-                            </Col>
-                            <Col span={18}>
-                                <Descriptions
-                                    extra={
-                                        <Space>
-                                            <Button>Open</Button>
-                                            <Select
-                                                onChange={(e) => onTaskTypeChange(e, item)}
-                                                defaultValue={item.status}
-                                                style={{minWidth: 140}}
+                    renderItem={(item) => {
+
+                        if (item.status === "completed") {
+                            return null
+                        }
+
+                        return (
+                            <Row style={{
+                                boxShadow: "2px 2px 4px rgba(0,0,0, 0.25)",
+                                padding: 14,
+                                borderRadius: 4,
+                                marginBottom: 14
+                            }}>
+                                <Col span={6}>
+                                    <img style={{maxWidth: "90%"}} src={robot_img} alt=""/>
+                                </Col>
+                                <Col span={18}>
+                                    <Descriptions
+                                        extra={
+                                            <Space>
+                                                <Button>Open</Button>
+                                                <Select
+                                                    onChange={(e) => onTaskTypeChange(e, item)}
+                                                    defaultValue={item.status}
+                                                    style={{minWidth: 140}}
+                                                >
+                                                    <Select.Option value="founded">Founded</Select.Option>
+                                                    <Select.Option value="process">In process</Select.Option>
+                                                    <Select.Option value="completed">Completed</Select.Option>
+                                                    <Select.Option value="observation">Observation</Select.Option>
+                                                </Select>
+                                                <Button danger>Remove</Button>
+                                            </Space>
+                                        }
+                                        size={"small"}
+                                        title={getStatusIcon(item.status)}
+                                        bordered
+                                    >
+                                        <Descriptions.Item span={3}
+                                                           label="Start time">{item.start_time}</Descriptions.Item>
+                                        <Descriptions.Item span={2}
+                                                           label="Start by">{item.added_person.email}</Descriptions.Item>
+                                        <Descriptions.Item span={2}
+                                                           label="Chines Time">{dayjs(item.start_timestamp_chine).format("HH:mm")}</Descriptions.Item>
+                                        <Descriptions.Item label="Type">{item.type}</Descriptions.Item>
+                                        <Descriptions.Item label="Unit ID">{item.unit_id}</Descriptions.Item>
+                                        <Descriptions.Item label="Reason">{item.reason}</Descriptions.Item>
+                                        {item.isParts_to_change &&
+                                            <Descriptions.Item span={3} label="Change parts">
+                                                {item.change_parts.map((el: string) => (
+                                                    <Tag style={{marginBottom: 4}}><span>{el}</span></Tag>
+                                                ))}
+                                            </Descriptions.Item>
+                                        }
+                                        {item.isDescription &&
+                                            <Descriptions.Item
+                                                span={2}
+                                                label="Description"
                                             >
-                                                <Select.Option value="founded">Founded</Select.Option>
-                                                <Select.Option value="process">In process</Select.Option>
-                                                <Select.Option value="completed">Completed</Select.Option>
-                                                <Select.Option value="observation">Observation</Select.Option>
-                                            </Select>
-                                            <Button danger>Remove</Button>
-                                        </Space>
-                                    }
-                                    size={"small"}
-                                    title={getStatusIcon(item.status)}
-                                    bordered
-                                >
-                                    <Descriptions.Item span={3} label="Start time">{item.start_time}</Descriptions.Item>
-                                    <Descriptions.Item span={2}
-                                                       label="Start by">{item.added_person.email}</Descriptions.Item>
-                                    <Descriptions.Item span={2}
-                                                       label="Chines Time">{dayjs(item.start_timestamp_chine).format("HH:mm")}</Descriptions.Item>
-                                    <Descriptions.Item label="Type">{item.type}</Descriptions.Item>
-                                    <Descriptions.Item label="Unit ID">{item.unit_id}</Descriptions.Item>
-                                    <Descriptions.Item label="Reason">{item.reason}</Descriptions.Item>
-                                    {item.isParts_to_change &&
-                                        <Descriptions.Item span={3} label="Change parts">
-                                            {item.change_parts.map((el: string) => (
-                                                <Tag style={{marginBottom: 4}}><span>{el}</span></Tag>
-                                            ))}
-                                        </Descriptions.Item>
-                                    }
-                                    {item.isDescription &&
-                                        <Descriptions.Item
-                                            span={2}
-                                            label="Description"
-                                        >
-                                            {item.description}
-                                        </Descriptions.Item>}
-                                </Descriptions>
-                            </Col>
-                        </Row>
+                                                {item.description}
+                                            </Descriptions.Item>}
+                                    </Descriptions>
+                                </Col>
+                            </Row>
+                        )
+                    }
                     }
                 />
             </Col>

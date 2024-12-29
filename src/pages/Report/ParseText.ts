@@ -9,6 +9,7 @@ const uniqueKeywords = [
     { keyword: 'box could not go', errorCode: 1 },
     { keyword: 'oversized box stuck on shelf', errorCode: 1 },
     { keyword: 'A box couldn’t go', errorCode: 1 },
+    { keyword: 'Forbidden item blocked the sensor', errorCode: 1 },
 
     { keyword: 'worker triggered', errorCode: 2 },
     { keyword: 'worker triggered the sensor', errorCode: 2 },
@@ -67,6 +68,7 @@ export function parseText(line: string) {
     const withoutTime = withoutWorkStation.replace(/(\d{1,2}:\d{2}(?:-\d{1,2}:\d{2})?)/g, "").trim();
 
     console.log(withoutTime.toLowerCase());  // Debugging line
+
     let errorMessage = `⛔ ${withoutTime} This Error was not parsed`; // Default message
 
     for (let keywordObj of uniqueKeywords) {

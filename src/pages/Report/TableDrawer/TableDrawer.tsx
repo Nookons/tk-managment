@@ -13,6 +13,39 @@ interface TableDrawerProps {
     setIsDrawer: (isDrawer: boolean) => void
 }
 
+const getColor = (text: string) => {
+    switch (text) {
+        case "✅ the cargo container was overfull":
+            return "#0095ff"
+        case "✅ worker triggered the sensor":
+            return "#636363"
+        case "✅ box is stuck in the shelf":
+            return "#b1a800"
+        case "✅ item fell out of box":
+            return "#ff9eef"
+        case "✅ air compressor overload including fuse blown":
+            return "#2a9100"
+        case "✅ worker press emergency stop":
+            return "#ff6a00"
+        case "✅ motor alarm":
+            return "#0074c6"
+        case "✅ platform collision":
+            return "#0074c6"
+        case "✅ command buffer":
+            return "#0074c6"
+        case "✅ computer problem":
+            return "#0074c6"
+        case "✅ box flew out":
+            return "#0074c6"
+        case "✅ robot have collision":
+            return "#0074c6"
+        case "✅ system problem":
+            return "#0074c6"
+        default:
+            return "#333"
+    }
+}
+
 const TableDrawer: FC<TableDrawerProps> = ({isDrawer, setIsDrawer, current_data}) => {
 
     const [sorted_data, setSorted_data] = useState<IError[]>([]);
@@ -123,8 +156,7 @@ const TableDrawer: FC<TableDrawerProps> = ({isDrawer, setIsDrawer, current_data}
                         title: "Description",
                         dataIndex: "text",
                         render: (text) => {
-                            return text === "Описание не распарсено" ? <span style={{color: "red"}}>{text}</span> :
-                                <span>{text}</span>
+                            return <span style={{color: getColor(text)}} >{text}</span>
                         }
                     },
                 ]}

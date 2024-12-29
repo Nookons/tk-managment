@@ -1,12 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {Drawer, Space, Button, MenuProps, Dropdown, message, notification} from "antd";
+import {Drawer, Space, Button, MenuProps, Dropdown, notification} from "antd";
 import {
     DiffOutlined,
     DownOutlined,
     FileAddOutlined,
     GlobalOutlined,
-    SearchOutlined,
-    SettingOutlined
 } from "@ant-design/icons";
 import {useAppDispatch, useAppSelector} from "../../hooks/storeHooks";
 import AddItem from "./AddItem/AddItem";
@@ -14,6 +12,8 @@ import {userLeave} from "../../store/reducers/user";
 import {useNavigate} from "react-router-dom";
 import {USER_PROFILE} from "../../utils/const";
 import ReportForm from "./AddReport/ReportForm";
+import {getLanguage} from "../../utils/Cookies/Language";
+
 
 const MyHeader = () => {
     const dispatch = useAppDispatch();
@@ -25,19 +25,15 @@ const MyHeader = () => {
         report_drawer: false
     });
 
+    const [language, setLanguage] = useState<string>("");
+
+    useEffect(() => {
+        setLanguage(getLanguage());
+    }, [setLanguage]);
 
     if (!user) {
         return null
     }
-
-
-    const showNotification = () => {
-        notification.info({
-            message: 'Language notification',
-            description: `Hello, ${user.email} sorry but now language system is not working`,
-            placement: 'topRight',
-        });
-    };
 
     const logout = () => {
         dispatch(userLeave())
@@ -72,24 +68,25 @@ const MyHeader = () => {
 
     const items_lang: MenuProps['items'] = [
         {
-            key: '1',
-            label: 'Language List',
-            disabled: true,
-        },
-        {
-            type: 'divider',
-        },
-        {
             key: '2',
             label: 'English',
-            onClick: () => showNotification(),
+            onClick: () => setLanguage('en'),
             extra: '🇬🇧',
+            style: language === 'en' ? { fontWeight: 'bold', color: "rgba(0,33,255,0.66)"} : {}, // Подсвечиваем активный элемент
         },
         {
             key: '3',
-            label: '英语',
-            onClick: () => showNotification(),
+            label: 'Chinese',
+            onClick: () => setLanguage('cn'),
             extra: '🇨🇳',
+            style: language === 'cn' ? { fontWeight: 'bold', color: "rgba(0,33,255,0.66)"} : {}, // Подсвечиваем активный элемент
+        },
+        {
+            key: '4',
+            label: 'Ukrainian',
+            onClick: () => setLanguage('ua'),
+            extra: '🇺🇦',
+            style: language === 'ua' ? { fontWeight: 'bold', color: "rgba(0,33,255,0.66)"} : {}, // Подсвечиваем активный элемент
         },
     ];
 

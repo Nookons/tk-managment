@@ -34,6 +34,16 @@ declare module '*.svg' {
     export default content;
 }
 
+declare module 'js-cookie' {
+    const Cookies: {
+        get: (key: string) => string | undefined;
+        set: (key: string, value: string, options?: object) => void;
+        remove: (key: string, options?: object) => void;
+    };
+    export default Cookies;
+}
+
+
 // src/types/react-input-mask.d.ts
 declare module 'react-input-mask' {
     import * as React from 'react';
