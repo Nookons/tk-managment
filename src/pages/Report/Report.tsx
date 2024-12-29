@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Divider, Form, message, Space, Table, Button, Row, Card, Badge, Switch} from "antd";
+import {Divider, Form, message, Space, Table, Button, Row, Card, Badge, Switch, Alert} from "antd";
 import TextArea from "antd/es/input/TextArea";
 import {useForm} from "antd/es/form/Form";
 import Col from "antd/es/grid/col";
@@ -8,6 +8,8 @@ import {IError} from "../../types/Error";
 import ErrorControl from "./ErrorControl/ErrorControl";
 import dayjs from "dayjs";
 import ApplicationMenu from "./Application/ApplicationMenu";
+import {parseText} from "./ParseText";
+import {parseTime} from "./ParseTime";
 
 
 const Report = () => {
@@ -23,7 +25,8 @@ const Report = () => {
 
         lines.forEach(curr => {
             if (curr !== "[Photo]") {
-                if (/ws|WS|Ws/.test(curr)) { // Проверяем, содержит ли строка ws, WS или Ws
+                if (/ws|WS|Ws/.test(curr)) {
+
                     const workStation = parseWorkStation(curr);
                     const time = parseTime(curr);
                     const text = parseText(curr);
@@ -44,22 +47,6 @@ const Report = () => {
         setCurrent_data(result);
     }
 
-    function parseText(line: string) {
-        const withoutWorkStation = line.replace(/WS\.?\s*=?\s*\d+\s*/i, "").trim();
-        const withoutTime = withoutWorkStation.replace(/(\d{1,2}:\d{2}(?:-\d{1,2}:\d{2})?)/g, "").trim();
-        return withoutTime;
-    }
-
-    function parseTime(line: string) {
-        const match = line.match(/(\d{1,2}:\d{2})\s*[- ]?\s*(\d{1,2}:\d{2})$/); // Учитываем дефис или пробел между временем
-        if (match) {
-            const startTime = match[1]; // Стартовое время
-            const endTime = match[2]; // Конечное время
-            return {startTime, endTime};
-        }
-        console.log("Временной диапазон не найден.");
-        return null;
-    }
 
     function parseWorkStation(line: string) {
         const ws_match = line.match(/WS\.?\s*=?\s*(\d+)/i); // Ищем номер станции
@@ -96,6 +83,11 @@ const Report = () => {
                                         </Button>
                                     </Space>
                                 </Form.Item>
+                            </Col>
+                            <Col span={24}>
+                                <Alert message={<span>
+                                    From 00:00 am to 06:00 am time after 06:00 👉 will be equal to yesterday date
+                                </span>} banner/>
                             </Col>
                             <Col span={24}>
                                 <Form.Item

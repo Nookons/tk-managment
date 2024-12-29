@@ -16,8 +16,8 @@ const ErrorControl = () => {
         if (errors_data) {
             setSorted_data([]);
             const sorted = [...errors_data].sort((a, b) => {
-                const timeA = dayjs(a.startTime, "H:mm").valueOf(); // Convert to timestamp
-                const timeB = dayjs(b.startTime, "H:mm").valueOf(); // Convert to timestamp
+                const timeA = dayjs(a.startTime, "YYYY-MM-DD HH:mm").valueOf(); // Convert to timestamp
+                const timeB = dayjs(b.startTime, "YYYY-MM-DD HH:mm").valueOf(); // Convert to timestamp
 
                 return timeA - timeB;
             });
@@ -47,7 +47,7 @@ const ErrorControl = () => {
                     title: <span>Time</span>,
                     dataIndex: "",
                     key: "",
-                    render: (item: IError) => <span>{item.startTime} - {item.endTime}</span>,
+                    render: (item: IError) => <span>{item.startTime} - {item.endTime.slice(10)}</span>,
                 },
                 {
                     title: <span>Error</span>,
@@ -67,7 +67,6 @@ const ErrorControl = () => {
                 },
             ]}
             pagination={{
-                pageSize: 25,  // Количество строк на страницу
                 showSizeChanger: true,  // Скрывает возможность смены количества строк на странице
             }}
             dataSource={sorted_data}
