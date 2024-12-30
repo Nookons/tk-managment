@@ -1,11 +1,11 @@
 import React from 'react';
 
-const AddReport = () => {
+const VswForm = () => {
     return (
         <div>
-            
+            VswForm...
         </div>
     );
 };
 
-export default AddReport;
+export default VswForm;

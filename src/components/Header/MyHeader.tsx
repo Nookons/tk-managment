@@ -128,7 +128,7 @@ const MyHeader = () => {
 
             <Drawer
                 title="Add Report"
-                width={"100%"}
+                width={"45%"}
                 onClose={() => setDrawer_options((prev) => ({...prev, report_drawer: false}))}
                 open={drawer_options.report_drawer}
             >

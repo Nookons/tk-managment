@@ -1,29 +1,18 @@
 import React, {useState} from 'react';
-import {useForm} from "antd/es/form/Form";
 import {useAppSelector} from "../../../hooks/storeHooks";
 import {Form, Row, Select} from "antd";
 import Col from "antd/es/grid/col";
-import Robot from "./Robot/Robot";
+import RobotForm from "./Robot/RobotForm";
+import WorkStationForm from "./WorkStation/WorkStationForm";
+import ChargeStationForm from "./ChargeStation/ChargeStationForm";
+import CompressorForm from "./Compressor/CompressorForm";
+import VSWForm from "./VSW/VSWForm";
+import CodeForm from "./Code/CodeForm";
 
 
 const ReportForm = () => {
     const {user} = useAppSelector(state => state.user)
-    const [form] = useForm();
-
     const [error_type, setError_type] = useState<string>("");
-
-    const onFormFinish = (values: any) => {
-        // todo handle form finish
-    };
-
-    const onFormFinishFailed = (errorInfo: any) => {
-        // todo handle form finish fail
-    };
-
-    const onFormClearClick = () => {
-        form.resetFields();
-    };
-
 
     if (!user) {
         return null
@@ -31,16 +20,13 @@ const ReportForm = () => {
 
     return (
         <Form
-            form={form}
             name="basic"
             wrapperCol={{span: 24}}
             layout="horizontal"
             initialValues={{remember: true}}
-            onFinish={onFormFinish}
-            onFinishFailed={onFormFinishFailed}
         >
             <Row gutter={[16, 16]}>
-                <Col span={6}>
+                <Col span={24}>
                     <Form.Item label="Problem type">
                         <Select
                             value={error_type}
@@ -57,7 +43,12 @@ const ReportForm = () => {
                     </Form.Item>
                 </Col>
                 <Col span={24}>
-                    {error_type === "robot" && <Robot />}
+                    {error_type === "robot"         && <RobotForm />}
+                    {error_type === "workstation"   && <WorkStationForm />}
+                    {error_type === "charge"        && <ChargeStationForm />}
+                    {error_type === "air"           && <CompressorForm />}
+                    {error_type === "vsw"           && <VSWForm />}
+                    {error_type === "qr"            && <CodeForm />}
                 </Col>
             </Row>
         </Form>
