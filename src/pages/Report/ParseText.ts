@@ -39,6 +39,10 @@ const uniqueKeywords = [
     { keyword: 'box fell', errorCode: 4 },
     { keyword: 'box fell off', errorCode: 4 },
 
+    { keyword: 'Fuse of compressor is off', errorCode: 5},
+    { keyword: 'A compressor fuse is off', errorCode: 5},
+    { keyword: 'Fuse of the compressor is blown', errorCode: 5},
+
     { keyword: 'worker pressed the e', errorCode: 6 },
     { keyword: 'safe mode. the employee pressed the е-stop button', errorCode: 6 },
     { keyword: 'worker pressed emergency stop', errorCode: 6 },

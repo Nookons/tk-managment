@@ -98,13 +98,13 @@ const TableDrawer: FC<TableDrawerProps> = ({isDrawer, setIsDrawer, current_data}
                     {
                         title: "Start Time", dataIndex: "startTime",
                         render: (text) => {
-                            return <span>{text.slice(10)}</span>;
+                            return <span>{text ? text.slice(10) : "None"}</span>;
                         }
                     },
                     {
                         title: "End Time", dataIndex: "endTime",
                         render: (text) => {
-                            return <span>{text.slice(10)}</span>;
+                            return <span>{text ? text.slice(10) : "None"}</span>;
                         }
                     },
                     {

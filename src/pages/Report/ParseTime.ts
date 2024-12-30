@@ -15,7 +15,13 @@ export function parseTime(line: string) {
         if (isAfterSix) {
             return {startTime: start_date.format("YYYY-MM-DD HH:mm"), endTime: end_date.format("YYYY-MM-DD HH:mm")}
         } else {
-            return {startTime: dayjs(start_date).subtract(1, "day").format("YYYY-MM-DD HH:mm"), endTime: dayjs(end_date).subtract(1, "day").format("YYYY-MM-DD HH:mm")}
+            const isCurrentShift = dayjs().startOf('day').set('hour', 6).isAfter(start_date)
+
+            if (isCurrentShift) {
+                return {startTime: start_date.format("YYYY-MM-DD HH:mm"), endTime: end_date.format("YYYY-MM-DD HH:mm")}
+            } else {
+                return {startTime: dayjs(start_date).subtract(1, "day").format("YYYY-MM-DD HH:mm"), endTime: dayjs(end_date).subtract(1, "day").format("YYYY-MM-DD HH:mm")}
+            }
         }
     }
     console.log("Временной диапазон не найден.");
