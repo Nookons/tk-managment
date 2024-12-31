@@ -21,7 +21,7 @@ const RobotForm = () => {
                     option!.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
                 }
             />
-            <CollectDataForm unit_id={unit_id} />
+            {unit_id && <CollectDataForm unit_id={unit_id} type={"Robot"} />}
         </div>
     );
 };
