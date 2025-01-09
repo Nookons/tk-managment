@@ -12,7 +12,7 @@ const ApplicationMenu = () => {
             <Divider>Application Menu</Divider>
             <Col span={24}>
                 <Space>
-                    <span>Current version: 0.0.3</span>
+                    <span>Current version: 0.0.4</span>
                 </Space>
             </Col>
             <Col span={24}>

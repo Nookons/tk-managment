@@ -38,6 +38,8 @@ const uniqueKeywords = [
     { keyword: 'box dropped', errorCode: 4 },
     { keyword: 'box fell', errorCode: 4 },
     { keyword: 'box fell off', errorCode: 4 },
+    { keyword: 'Item triggered the sensors', errorCode: 4 },
+
 
     { keyword: 'Fuse of compressor is off', errorCode: 5},
     { keyword: 'A compressor fuse is off', errorCode: 5},
@@ -58,13 +60,15 @@ const uniqueKeywords = [
     { keyword: 'command buffer', errorCode: 9 },
 
     { keyword: 'computer problem', errorCode: 10 },
+    { keyword: 'Clear and check memory cache', errorCode: 10 },
 
     { keyword: 'box flew out', errorCode: 11 },
 
     { keyword: 'robot have collision', errorCode: 12 },
 
     { keyword: 'system problem', errorCode: 13 },
-    { keyword: 'System issues', errorCode: 13 }
+    { keyword: 'System issues', errorCode: 13 },
+    { keyword: 'Vision controller restart', errorCode: 13 }
 ];
 
 export function parseText(line: string) {

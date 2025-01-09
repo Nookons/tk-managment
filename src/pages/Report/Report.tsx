@@ -10,6 +10,9 @@ import dayjs from "dayjs";
 import ApplicationMenu from "./Application/ApplicationMenu";
 import {parseText} from "./ParseText";
 import {parseTime} from "./ParseTime";
+import ButtonGroup from "antd/es/button/button-group";
+import {collection, deleteDoc, doc, onSnapshot, query} from "firebase/firestore";
+import {db} from "../../firebase";
 
 
 const Report = () => {
@@ -62,6 +65,32 @@ const Report = () => {
         setIsDrawer(true)
     };
 
+    const onClearHandle = () => {
+        form.setFieldValue("textarea", "");
+    }
+
+    const onRemoveAllHandle = async () => {
+        const q = query(collection(db, "errors"));
+        const unsubscribe = onSnapshot(q, async (querySnapshot) => {
+            const errors: any = [];
+
+            querySnapshot.forEach((doc) => {
+                errors.push(doc);
+            });
+
+            if (errors.length > 0) {
+                for (const docSnapshot of errors) {
+                    const docId = docSnapshot.id;
+                    await deleteDoc(doc(db, "errors", docId));
+                }
+                console.log('All documents deleted');
+            }
+
+            unsubscribe();
+        });
+    };
+
+
     return (
         <Row gutter={[24, 24]}>
             {!isErrorControl
@@ -74,22 +103,18 @@ const Report = () => {
                         initialValues={{remember: true}}
                         onFinish={onFormFinish}
                     >
-                        <Row gutter={[4, 4]}>
-                            <Col span={20}>
+                        <Row gutter={[14, 14]}>
+                            <Col span={4}>
                                 <Form.Item>
                                     <Space>
-                                        <Button style={{width: "100%"}} type="primary" htmlType="submit">
-                                            Submit
-                                        </Button>
+                                        <ButtonGroup>
+                                            <Button type="primary" htmlType="submit">Submit</Button>
+                                            <Button onClick={onClearHandle}>Clear</Button>
+                                        </ButtonGroup>
                                     </Space>
                                 </Form.Item>
                             </Col>
-                            <Col span={4}>
-                                <Form.Item layout={"horizontal"} label="TK Shein Chat" name="switch" valuePropName="checked">
-                                    <Switch/>
-                                </Form.Item>
-                            </Col>
-                            <Col span={24}>
+                            <Col span={20}>
                                 <Alert message={
                                     <span>
                                         From 00:00 am to 06:00 am time after 06:00 👉 will be equal to yesterday date
@@ -115,17 +140,15 @@ const Report = () => {
             }
             <Col span={6}>
                 <Divider>Control Menu</Divider>
-                <div style={{display: "flex", justifyContent: "flex-start", flexWrap: "wrap"}}>
-                    <Space>
-                        <Form.Item style={{width: "100%"}} label="Error control" name="error_control"
-                                   valuePropName="checked">
-                            <Switch onChange={() => setIsErrorControl(!isErrorControl)}/>
-                        </Form.Item>
-                    </Space>
-                    <Button type={"primary"} style={{margin: 4}} onClick={() => setIsDrawer(true)}>Open error
-                        drawer</Button>
-                    <Button type={"primary"} style={{margin: 4}} danger>Remove all errors</Button>
-                </div>
+                <ButtonGroup>
+                    <Button type={"primary"} onClick={() => setIsDrawer(true)}>Open error drawer</Button>
+                    {isErrorControl &&
+                        <Button onClick={onRemoveAllHandle} type={"primary"} danger>Remove all errors</Button>}
+                </ButtonGroup>
+                <Form.Item style={{width: "100%", marginTop: 14}} label="Error control" name="error_control"
+                           valuePropName="checked">
+                    <Switch onChange={() => setIsErrorControl(!isErrorControl)}/>
+                </Form.Item>
                 <ApplicationMenu/>
             </Col>
             <TableDrawer isDrawer={isDrawer} setIsDrawer={setIsDrawer} current_data={current_data}/>
