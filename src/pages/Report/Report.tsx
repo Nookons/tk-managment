@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {Divider, Form, message, Space, Table, Button, Row, Card, Badge, Switch, Alert} from "antd";
+import React, {useState} from "react";
+import {Divider, Form, Space, Button, Row, Switch, Alert} from "antd";
 import TextArea from "antd/es/input/TextArea";
 import {useForm} from "antd/es/form/Form";
 import Col from "antd/es/grid/col";
@@ -29,7 +29,6 @@ const Report = () => {
         lines.forEach(curr => {
             if (curr !== "[Photo]") {
                 if (/ws|WS|Ws/.test(curr)) {
-
                     const workStation = parseWorkStation(curr);
                     const time = parseTime(curr);
                     const text = parseText(curr);
@@ -46,7 +45,6 @@ const Report = () => {
                 }
             }
         });
-
         setCurrent_data(result);
     }
 
@@ -100,7 +98,6 @@ const Report = () => {
                         form={form}
                         name="logParserForm"
                         layout="vertical"
-                        initialValues={{remember: true}}
                         onFinish={onFormFinish}
                     >
                         <Row gutter={[14, 14]}>

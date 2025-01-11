@@ -47,16 +47,13 @@ const getColor = (text: string) => {
 }
 
 const TableDrawer: FC<TableDrawerProps> = ({isDrawer, setIsDrawer, current_data}) => {
-
     const [sorted_data, setSorted_data] = useState<IError[]>([]);
 
     useEffect(() => {
         setSorted_data([]);
         const sorted = [...current_data].sort((a, b) => {
-            // Parse time strings using dayjs
             const timeA = dayjs(a.startTime, "YYYY-MM-DD HH:mm").valueOf(); // Convert to timestamp
             const timeB = dayjs(b.startTime, "YYYY-MM-DD HH:mm").valueOf(); // Convert to timestamp
-            // Compare the numeric timestamps
             return timeA - timeB;
         });
 
@@ -66,6 +63,9 @@ const TableDrawer: FC<TableDrawerProps> = ({isDrawer, setIsDrawer, current_data}
                     const date = dayjs().format("YYYY-MM-DD")
 
                     setDoc(doc(db, "errors", `${el.workStation}-${el.startTime}-${date}`), {
+                        ...el
+                    });
+                    setDoc(doc(db, "errors_history", `${el.workStation}-${el.startTime}-${date}`), {
                         ...el
                     });
                 } else {
@@ -111,7 +111,6 @@ const TableDrawer: FC<TableDrawerProps> = ({isDrawer, setIsDrawer, current_data}
                         title: "FB-FD2",
                         dataIndex: "",
                         render: (text) => {
-                            // Функция для преобразования времени в минуты
                             const timeToMinutes = (timeStr: string) => {
                                 const [hours, minutes] = timeStr.slice(10).split(':').map(Number);  // Разбиваем строку на часы и минуты
                                 return hours * 60 + minutes;  // Преобразуем в минуты

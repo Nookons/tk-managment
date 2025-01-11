@@ -1,7 +1,8 @@
 import dayjs from "dayjs";
 
 export function parseTime(line: string) {
-    const match = line.match(/(\d{1,2}:\d{2})\s*[- ]?\s*(\d{1,2}:\d{2})$/); // Учитываем дефис или пробел между временем
+    const match = line.match(/(\d{1,2}:\d{2})\s*[- ]?\s*(\d{1,2}:\d{2})\s*$/);
+
     if (match) {
         const startTime = match[1]; // Стартовое время
         const endTime = match[2]; // Конечное время

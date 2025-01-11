@@ -1,4 +1,3 @@
-import { message } from "antd";
 
 const uniqueKeywords = [
     { keyword: 'the box could not', errorCode: 1 },
@@ -74,8 +73,6 @@ const uniqueKeywords = [
 export function parseText(line: string) {
     const withoutWorkStation = line.replace(/WS\.?\s*=?\s*\d+\s*/i, "").trim();
     const withoutTime = withoutWorkStation.replace(/(\d{1,2}:\d{2}(?:-\d{1,2}:\d{2})?)/g, "").trim();
-
-    console.log(withoutTime.toLowerCase());  // Debugging line
 
     let errorMessage = `⛔ ${withoutTime} This Error was not parsed`; // Default message
 

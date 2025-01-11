@@ -22,6 +22,7 @@ import {doc, updateDoc} from "firebase/firestore";
 import {db} from "../../firebase";
 import {useAppSelector} from "../../hooks/storeHooks";
 import robot_img from '../../assets/robot.webp'
+import ErrorDisplay from "./dep/ErrorDisplay";
 
 const getColor = (status: string) => {
     switch (status) {
@@ -114,6 +115,9 @@ const App: React.FC = () => {
 
     return (
         <Row gutter={[16, 16]}>
+            <Col span={24}>
+                <ErrorDisplay />
+            </Col>
             <Col span={16}>
                 <Space style={{alignItems: "center"}}>
                     <Form.Item style={{margin: "0 8px 24px 0"}} label="Task search" name="input">
