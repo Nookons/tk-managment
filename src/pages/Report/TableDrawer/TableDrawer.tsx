@@ -63,10 +63,12 @@ const TableDrawer: FC<TableDrawerProps> = ({isDrawer, setIsDrawer, current_data}
                     const date = dayjs().format("YYYY-MM-DD")
 
                     setDoc(doc(db, "errors", `${el.workStation}-${el.startTime}-${date}`), {
-                        ...el
+                        ...el,
+                        date: el.startTime.slice(0, 10)
                     });
                     setDoc(doc(db, "errors_history", `${el.workStation}-${el.startTime}-${date}`), {
-                        ...el
+                        ...el,
+                        date: el.startTime.slice(0, 10)
                     });
                 } else {
                     message.error(`Couldn't upload ${el.text}.`);

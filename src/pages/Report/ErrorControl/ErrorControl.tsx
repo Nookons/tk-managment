@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import useErrorsFetch from "../../../hooks/useErrorFetch";
-import {Button, message, Select, Table} from "antd";
+import {Button, message, Row, Select, Table, Tag} from "antd";
 import {IError} from "../../../types/Error";
 import dayjs from "dayjs";
 import {deleteDoc, doc, updateDoc} from "firebase/firestore";
 import {db} from "../../../firebase";
 import ButtonGroup from "antd/es/button/button-group";
-import {DeleteOutlined} from "@ant-design/icons";
+import {DeleteOutlined, LoadingOutlined} from "@ant-design/icons";
 
 export const getBackColor = (text: string) => {
     switch (text) {
@@ -81,65 +81,72 @@ const ErrorControl = () => {
     }
 
     return (
-        <Table
-            columns={[
-                {
-                    title: <span>Work Station</span>,
-                    dataIndex: "workStation",
-                    key: "workStation",
-                    render: (item) => <span>{item}</span>,
-                },
-                {
-                    title: <span>Time</span>,
-                    dataIndex: "",
-                    key: "",
-                    render: (item: IError) => <span>{item.startTime} - {item.endTime.slice(10)}</span>,
-                },
-                {
-                    title: <span>Error</span>,
-                    dataIndex: "",
-                    key: "",
-                    render: (item) => (
-                        <Select style={{
-                            backgroundColor: getBackColor(item.text),
-                            padding: "4px 14px",
-                            borderRadius: 4
-                        }} onChange={(e) => onErrorTypeHandle(item, e)} bordered={false} defaultValue={item.text} size={"small"}>
-                            <Select.Option value="✅ the cargo container was overfull">Cargo container was overfull</Select.Option>
-                            <Select.Option value="✅ worker triggered the sensor">Worker triggered the sensor</Select.Option>
-                            <Select.Option value="✅ box is stuck in the shelf">Box is stuck in the shelf</Select.Option>
-                            <Select.Option value="✅ item fell out of box">Item fell out of box</Select.Option>
-                            <Select.Option value="✅ air compressor overload including fuse blown">air compressor overload including fuse blown</Select.Option>
-                            <Select.Option value="✅ worker press emergency stop">worker press emergency stop</Select.Option>
-                            <Select.Option value="✅ motor alarm">motor alarm</Select.Option>
-                            <Select.Option value="✅ platform collision">platform collision</Select.Option>
-                            <Select.Option value="✅ command buffer">command buffer</Select.Option>
-                            <Select.Option value="✅ computer problem">computer problem</Select.Option>
-                            <Select.Option value="✅ box flew out">box flew out</Select.Option>
-                            <Select.Option value="✅ robot have collision">robot have collision</Select.Option>
-                            <Select.Option value="✅ system problem">system problem</Select.Option>
-                        </Select>
-                    )
-                },
-                {
-                    title: <span>Buttons</span>,
-                    dataIndex: "",
-                    key: "",
-                    render: (item) =>
-                        <ButtonGroup>
-                            <Button onClick={() => onErrorRemove(item)} danger
-                                    type={"primary"}><DeleteOutlined/></Button>
-                        </ButtonGroup>,
-                },
-            ]}
-            pagination={{
-                showSizeChanger: true,  // Скрывает возможность смены количества строк на странице
-            }}
-            dataSource={sorted_data}
-            rowKey={(record) => record.id} // Обязательно для уникального ключа строки
-            size={"large"}
-            loading={loading}
-        />
+        <>
+            {sorted_data.length > 0 &&
+            <Row gutter={[4, 4]}>
+                <Button type={"primary"} style={{margin: "14px 0"}} >Start ticket entering  <Tag color={"processing"}><span>📝 {sorted_data.length}</span></Tag></Button>
+            </Row>
+            }
+            <Table
+                columns={[
+                    {
+                        title: <span>Work Station</span>,
+                        dataIndex: "workStation",
+                        key: "workStation",
+                        render: (item) => <span>{item}</span>,
+                    },
+                    {
+                        title: <span>Time</span>,
+                        dataIndex: "",
+                        key: "",
+                        render: (item: IError) => <span>{item.startTime} - {item.endTime.slice(10)}</span>,
+                    },
+                    {
+                        title: <span>Error</span>,
+                        dataIndex: "",
+                        key: "",
+                        render: (item) => (
+                            <Select style={{
+                                backgroundColor: getBackColor(item.text),
+                                padding: "4px 14px",
+                                borderRadius: 4
+                            }} onChange={(e) => onErrorTypeHandle(item, e)} bordered={false} defaultValue={item.text} size={"small"}>
+                                <Select.Option value="✅ the cargo container was overfull">Cargo container was overfull</Select.Option>
+                                <Select.Option value="✅ worker triggered the sensor">Worker triggered the sensor</Select.Option>
+                                <Select.Option value="✅ box is stuck in the shelf">Box is stuck in the shelf</Select.Option>
+                                <Select.Option value="✅ item fell out of box">Item fell out of box</Select.Option>
+                                <Select.Option value="✅ air compressor overload including fuse blown">air compressor overload including fuse blown</Select.Option>
+                                <Select.Option value="✅ worker press emergency stop">worker press emergency stop</Select.Option>
+                                <Select.Option value="✅ motor alarm">motor alarm</Select.Option>
+                                <Select.Option value="✅ platform collision">platform collision</Select.Option>
+                                <Select.Option value="✅ command buffer">command buffer</Select.Option>
+                                <Select.Option value="✅ computer problem">computer problem</Select.Option>
+                                <Select.Option value="✅ box flew out">box flew out</Select.Option>
+                                <Select.Option value="✅ robot have collision">robot have collision</Select.Option>
+                                <Select.Option value="✅ system problem">system problem</Select.Option>
+                            </Select>
+                        )
+                    },
+                    {
+                        title: <span>Buttons</span>,
+                        dataIndex: "",
+                        key: "",
+                        render: (item) =>
+                            <ButtonGroup>
+                                <Button onClick={() => onErrorRemove(item)} danger
+                                        type={"primary"}><DeleteOutlined/></Button>
+                            </ButtonGroup>,
+                    },
+                ]}
+                pagination={{
+                    showSizeChanger: true,  // Скрывает возможность смены количества строк на странице
+                }}
+                dataSource={sorted_data}
+                rowKey={(record) => record.id} // Обязательно для уникального ключа строки
+                size={"large"}
+                loading={loading}
+            />
+        </>
     );
 };
 

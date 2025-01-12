@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     Button,
-    Descriptions,
+    Descriptions, Divider,
     Form,
     List, message,
     Row, Select,
@@ -118,6 +118,9 @@ const App: React.FC = () => {
             <Col span={24}>
                 <ErrorDisplay />
             </Col>
+
+            <Divider dashed/>
+
             <Col span={16}>
                 <Space style={{alignItems: "center"}}>
                     <Form.Item style={{margin: "0 8px 24px 0"}} label="Task search" name="input">
