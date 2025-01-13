@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Drawer, Space, Button, MenuProps, Dropdown, notification} from "antd";
+import {Drawer, Space, Button, MenuProps, Dropdown} from "antd";
 import {
     DiffOutlined,
     DownOutlined,

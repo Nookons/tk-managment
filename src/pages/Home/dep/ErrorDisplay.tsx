@@ -1,10 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import useErrorHistory from "../../../hooks/useErrorHistory";
-import {Card, DatePicker, Form, Row, Space, Statistic, Switch, Tag, Tooltip} from "antd";
+import {Alert, DatePicker, Form, Row, Space, Statistic, Switch, Tooltip} from "antd";
 import Col from "antd/es/grid/col";
 import dayjs, {Dayjs} from "dayjs";
 import ErrorsChart from "./ErrorsChart";
 import {IError} from "../../../types/Error";
+import isBetween from 'dayjs/plugin/isBetween';
+import Button from "antd/es/button";
+import {ExclamationCircleOutlined, ExclamationOutlined} from "@ant-design/icons";
+
+dayjs.extend(isBetween);
 
 // Типизация данных
 interface FormattedError {
@@ -24,36 +29,70 @@ const ErrorDisplay = () => {
     const [formated_data, setFormated_data] = useState<FormattedError[]>([]);
 
     const [isSeparetedSides, setIsSeparetedSides] = useState<boolean>(false);
+    const [isDayShift, setIsDayShift] = useState<boolean>(false);
+    const [errorsInShiftCount, setErrorsInShiftCount] = useState<number>(0); // состояние для подсчета ошибок в смене
 
+    // Вспомогательная функция для формирования work_title
+    const getWorkTitle = (workStation: string): string => {
+        const removeZero = workStation.replace(/^0+/, ''); // Убираем ведущие нули
+        return removeZero.length > 3 ? removeZero.slice(0, isSeparetedSides ? 4 : 2) : removeZero.slice(0, isSeparetedSides ? 4 : 1);
+    };
+
+    // Вспомогательная функция для вычисления разницы во времени
+    const getTimeDifferenceInMinutes = (startTime: string, endTime: string): number => {
+        const startTimeInMinutes = timeToMinutes(startTime);
+        const endTimeInMinutes = timeToMinutes(endTime);
+        return endTimeInMinutes - startTimeInMinutes;
+    };
+
+    // Вспомогательная функция для обработки данных
+    const processItem = (item: IError, shift: string, uniqueItems: { [key: string]: FormattedError }) => {
+        let workTitle = getWorkTitle(item.workStation);
+        let diffInMinutes = 0;
+
+        if (item.startTime && item.endTime) {
+            diffInMinutes = getTimeDifferenceInMinutes(item.startTime, item.endTime);
+        }
+
+        const itemKey = workTitle || "unknown";
+
+        if (uniqueItems[itemKey]) {
+            uniqueItems[itemKey].count += 1;
+            uniqueItems[itemKey].stay_time += diffInMinutes;
+        } else {
+            uniqueItems[itemKey] = {Ws: workTitle, count: 1, stay_time: diffInMinutes};
+        }
+    };
+
+    // Функция обработки ошибок
     const processErrors = (errors: IError[]) => {
         const uniqueItems: { [key: string]: FormattedError } = {};
+        let shiftErrorsCount = 0;
 
         errors.forEach(item => {
-            const date = dayjs(item.startTime.slice(0, 10));
+            const date = dayjs(item.startTime, "YYYY-MM-DD HH:mm");
 
-            if (date.isSame(picked_date, 'day')) { // Сравнение по дню
-                let work_title = item.workStation.replace(/^0+/, '').slice(0, isSeparetedSides ? 4 : 2); // Убираем ведущие нули
+            if (date.isSame(picked_date, 'day')) {
+                const dayStart = dayjs(date).hour(6).minute(0).second(0); // 06:00
+                const dayEnd = dayjs(date).hour(18).minute(0).second(0);  // 18:00
+                const isDayShiftLocal = date.isBetween(dayStart, dayEnd, null, '[)');
 
-                let startTimeInMinutes = 0;
-                let endTimeInMinutes = 0;
-
-                if (item.startTime && item.endTime) {
-                    startTimeInMinutes = timeToMinutes(item.startTime);
-                    endTimeInMinutes = timeToMinutes(item.endTime);
+                // Если isDayShift равен true и смена дневная
+                if (isDayShift === true && isDayShiftLocal === true) {
+                    shiftErrorsCount += 1;
+                    console.log(item)
+                    processItem(item, 'day', uniqueItems);
                 }
-
-                const diffInMinutes = endTimeInMinutes - startTimeInMinutes;
-                const itemKey = work_title || "unknown";
-
-                if (uniqueItems[itemKey]) {
-                    uniqueItems[itemKey].count += 1;
-                    uniqueItems[itemKey].stay_time += diffInMinutes;
-                } else {
-                    uniqueItems[itemKey] = {Ws: work_title, count: 1, stay_time: diffInMinutes};
+                // Если isDayShift равен false и смена ночная
+                else if (isDayShift === false && isDayShiftLocal === false) {
+                    shiftErrorsCount += 1;
+                    console.log(item)
+                    processItem(item, 'night', uniqueItems);
                 }
             }
         });
 
+        setErrorsInShiftCount(shiftErrorsCount);
         return Object.values(uniqueItems);
     };
 
@@ -63,11 +102,10 @@ const ErrorDisplay = () => {
             const formattedData = processErrors(errors);
             setFormated_data(formattedData);
         }
-    }, [errors, picked_date, isSeparetedSides]); // зависимости: ошибки и выбранная дата
+    }, [errors, picked_date, isSeparetedSides, isDayShift]); // зависимости: ошибки и выбранная дата
 
     return (
         <Row gutter={[4, 4]}>
-            {/* Date Picker */}
             <Col span={24}>
                 <Space>
                     <Form.Item label="Select Date" name="datepicker">
@@ -78,32 +116,21 @@ const ErrorDisplay = () => {
                         />
                     </Form.Item>
                     <Form.Item label="Separeted side" name="switch" valuePropName="checked">
-                        <Switch onChange={() => setIsSeparetedSides(!isSeparetedSides)} value={isSeparetedSides} defaultChecked={false}/>
+                        <Switch onChange={() => setIsSeparetedSides(!isSeparetedSides)} value={isSeparetedSides}
+                                defaultChecked={false}/>
                     </Form.Item>
+                    <Form.Item label="Night / Day" name="switch" valuePropName="checked">
+                        <Switch onChange={() => setIsDayShift(!isDayShift)} value={isDayShift} defaultChecked={false}/>
+                    </Form.Item>
+                    <Statistic style={{margin: "0 14px"}} title="Total Errors in day" value={errors.length}/>
+                    <Statistic style={{margin: "0 14px"}} title="Total Errors in shift"
+                               value={errorsInShiftCount.toString()}/>
+                    <Tooltip arrowPointAtCenter
+                             title={<span>Attention, all errors data saving on database during one week, after that time it's automaticly removed</span>}>
+                        <ExclamationCircleOutlined style={{fontSize: 24}} />
+                    </Tooltip>
                 </Space>
-
-                <Statistic style={{position: "absolute", left: 74}} title="Total Errors in day" value={errors.length}/>
             </Col>
-
-            {/* Выводим теги с данными ошибок */}
-            {/*<Col span={24}>
-                {formated_data.map((error) => {
-                    const content = (
-                        <>
-                            <p>Errors count: {error.count}</p>
-                            <p>Stay time: {error.stay_time} minutes</p>
-                        </>
-                    );
-
-                    return (
-                        <Tag color={error.stay_time > 6 ? "error" : "success"} key={error.Ws}>
-                            <Tooltip title={content}>
-                                <span>Workstation {error.Ws}</span>
-                            </Tooltip>
-                        </Tag>
-                    );
-                })}
-            </Col>*/}
 
             {/* График ошибок */}
             <Col span={24}>
