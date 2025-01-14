@@ -22,7 +22,7 @@ import {doc, updateDoc} from "firebase/firestore";
 import {db} from "../../firebase";
 import {useAppSelector} from "../../hooks/storeHooks";
 import robot_img from '../../assets/robot.webp'
-import ErrorDisplay from "./dep/ErrorDisplay";
+import ErrorDisplay from "./dep/Error/ErrorDisplay";
 
 const getColor = (status: string) => {
     switch (status) {
