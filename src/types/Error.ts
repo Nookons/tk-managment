@@ -5,4 +5,6 @@ export interface IError {
     endTime: string;
     startTime: string;
     workStation: string;
+    vsw?: string;
+    isVsw?: boolean;
 }

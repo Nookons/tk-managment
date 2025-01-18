@@ -134,22 +134,22 @@ const TableDrawer: FC<TableDrawerProps> = ({isDrawer, setIsDrawer, current_data}
                     {
                         title: "Issue",
                         dataIndex: "",
-                        render: (text) => {
-                            return <span style={{color: "red"}}>操作员问题 Worker factors</span>
+                        render: (item) => {
+                            return <span style={{color: "red"}}>{item.isVsw ? "系统原因 System issues" : "操作员问题 Worker factors"}</span>
                         }
                     },
                     {
                         title: "Issue ID 问题编号",
                         dataIndex: "",
-                        render: (text) => {
-                            return <span style={{color: "red"}}>工作站 Workstation</span>
+                        render: (item) => {
+                            return <span style={{color: "red"}}>{item.isVsw ? "VSW" : "工作站 Workstation"}</span>
                         }
                     },
                     {
                         title: "work station",
-                        dataIndex: "workStation",
-                        render: (text) => {
-                            return <span>{text}</span>
+                        dataIndex: "",
+                        render: (item) => {
+                            return <span>{item.isVsw ? `${item.vsw}`: item.workStation}</span>
                         }
                     },
                     {title: "*", dataIndex: ""},
