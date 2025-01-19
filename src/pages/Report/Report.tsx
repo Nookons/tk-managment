@@ -13,6 +13,7 @@ import {parseTime} from "./ParseTime";
 import ButtonGroup from "antd/es/button/button-group";
 import {collection, deleteDoc, doc, onSnapshot, query} from "firebase/firestore";
 import {db} from "../../firebase";
+import {match} from "node:assert";
 
 
 const Report = () => {
@@ -23,66 +24,59 @@ const Report = () => {
     const [isErrorControl, setIsErrorControl] = useState<boolean>(false);
 
     async function parseLogLine(log: string) {
-        const lines = log.split("\n").filter(line => line.trim()); // Убираем пустые строки
-        const result: IError[] = [];
+        const stringArray = log.trim().split('\n');  // Removes newline at the end
+        const result_array: IError[] = [];
 
-        lines.forEach(curr => {
-            if (curr !== "[Photo]") {
-                if (/VSW|vsw|Vsw/.test(curr)) {
-                    const ws_match = curr.split(".")
-                    const vsw_match = ws_match[0]
-                        .replace("VSW ", "")
-                        .replace("Vsw ", "")
-                        .replace("vsw ", "")
-                        .split("-")
+        stringArray.forEach(line => {
+            const refactored_line = line.toLowerCase();
 
-                    const vsw_number = `${vsw_match[0]}-${vsw_match[1]}`
-                    const ws_number = `${vsw_match[2]}`
+            if (refactored_line.length > 1 && refactored_line !== "[Photo]" && (refactored_line.includes("ws") || refactored_line.includes("vsw"))) {
+                const regexWs = /(?:ws|vsw)\s*([\d\-]+)\b/i;
+                const matchWs = refactored_line.match(regexWs);
 
-                    const time = parseTime(ws_match[2])
+                const regexTime = /(\d{1,2}:\d{2}[- ]*\d{1,2}:\d{2})/;
+                const matchTime = line.match(regexTime);
 
-                    const error_data = {
-                        workStation: ws_number,
-                        vsw: vsw_number,
+                let error_text = refactored_line.replace(/(?:ws|vsw)\s*[\d\-]+(?:\s*=\s*\d+)?/i, ''); // Убираем номер станции
+                error_text = error_text.replace(/\d{1,2}:\d{2}[- ]*\d{1,2}:\d{2}/, '').trim(); // Убираем время и удаляем пробелы в начале и конце
+                error_text = error_text.replace(".", "").replace(",", "");  // Выводим только текст ошибки
+
+                const time = matchTime ? matchTime[1].trim() : "None"
+
+                if (matchWs && matchWs[0]?.includes("vsw")) {
+                    const trimed = matchWs[1].split("-")
+                    const time_local = parseTime(time)
+
+                    const data = {
+                        vsw: `A-${trimed[0]}`,
+                        workStation: trimed[1],
+                        id: `${time_local?.startTime}-${matchWs[1]}`,
+                        startTime: time_local?.startTime,
+                        endTime: time_local?.endTime,
+                        text: parseText(error_text),
                         isVsw: true,
-                        startTime: time?.startTime,
-                        endTime: time?.endTime,
-                        id: `${vsw_number}-${time?.startTime}-${dayjs().format("YYYY-MM-DD")}`,
-                        text: ws_match[1],
                     }
 
-                    result.push(error_data as IError)
-                }
+                    result_array.push(data as IError)
+                } else if (matchWs) {
+                    const time_local = parseTime(time)
 
-                if (/ws|WS|Ws/.test(curr)) {
-                    const workStation = parseWorkStation(curr);
-                    const time = parseTime(curr);
-                    const text = parseText(curr);
-
-                    const error_data = {
-                        workStation: workStation,
-                        startTime: time?.startTime,
-                        endTime: time?.endTime,
-                        id: `${workStation}-${time?.startTime}-${dayjs().format("YYYY-MM-DD")}`,
-                        text: text,
+                    const data = {
+                        workStation: matchWs[1],
+                        isVsw: false,
+                        id: `${time_local?.startTime}-${matchWs[1]}`,
+                        startTime: time_local?.startTime,
+                        endTime: time_local?.endTime,
+                        text: parseText(error_text),
                     }
 
-                    result.push(error_data as IError)
+                    result_array.push(data as IError)
                 }
             }
-        });
-        setCurrent_data(result);
+        })
+
+        setCurrent_data(result_array);
     }
-
-
-    function parseWorkStation(line: string) {
-        const ws_match = line.match(/WS\.?\s*=?\s*(\d+)/i); // Ищем номер станции
-        if (ws_match) {
-            return ws_match[1]; // Возвращаем только номер станции
-        }
-        return null; // Если нет совпадений, возвращаем null
-    }
-
 
     const onFormFinish = (values: any) => {
         parseLogLine(values.textarea);
