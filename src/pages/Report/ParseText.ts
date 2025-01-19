@@ -74,7 +74,7 @@ export function parseText(line: string) {
     const withoutWorkStation = line.replace(/WS\.?\s*=?\s*\d+\s*/i, "").trim();
     const withoutTime = withoutWorkStation.replace(/(\d{1,2}:\d{2}(?:-\d{1,2}:\d{2})?)/g, "").trim();
 
-    let errorMessage = `⛔ ${withoutTime} This Error was not parsed`; // Default message
+    let errorMessage = `${withoutTime}`; // Default message
 
     for (let keywordObj of uniqueKeywords) {
         const keyword = keywordObj.keyword.toLowerCase();  // Convert keyword to lowercase

@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Divider, Form, Space, Button, Row, Switch, Alert, message} from "antd";
+import {Divider, Form, Space, Button, Row, Switch, Alert, message, Tag} from "antd";
 import TextArea from "antd/es/input/TextArea";
 import {useForm} from "antd/es/form/Form";
 import Col from "antd/es/grid/col";
@@ -31,7 +31,8 @@ const Report = () => {
             const refactored_line = line.toLowerCase();
 
             if (refactored_line.length > 1 && refactored_line !== "[Photo]" && (refactored_line.includes("ws") || refactored_line.includes("vsw"))) {
-                const regexWs = /(?:ws|vsw)\s*([\d\-]+)\b/i;
+                const date = dayjs().format("YYYY-MM-DD")
+                const regexWs = /(?:ws|vsw)\s*=?\s*([\d\-]+)\b/i;
                 const matchWs = refactored_line.match(regexWs);
 
                 const regexTime = /(\d{1,2}:\d{2}[- ]*\d{1,2}:\d{2})/;
@@ -50,7 +51,7 @@ const Report = () => {
                     const data = {
                         vsw: `A-${trimed[0]}`,
                         workStation: trimed[1],
-                        id: `${time_local?.startTime}-${matchWs[1]}`,
+                        id: `${trimed[1]}-${time_local?.startTime}-${date}`,
                         startTime: time_local?.startTime,
                         endTime: time_local?.endTime,
                         text: parseText(error_text),
@@ -64,7 +65,7 @@ const Report = () => {
                     const data = {
                         workStation: matchWs[1],
                         isVsw: false,
-                        id: `${time_local?.startTime}-${matchWs[1]}`,
+                        id: `${matchWs[1]}-${time_local?.startTime}-${date}`,
                         startTime: time_local?.startTime,
                         endTime: time_local?.endTime,
                         text: parseText(error_text),
@@ -134,9 +135,12 @@ const Report = () => {
                             <Col span={20}>
                                 <Alert message={
                                     <span>
-                                        From 00:00 am to 06:00 am time after 06:00 👉 will be equal to yesterday date
+                                        Example for VSW:
+                                        <Tag style={{marginLeft: 14}}>
+                                            <span>Vsw 07-2001. Employee triggered emergency button on VSW. 12:18 - 12:20</span>
+                                        </Tag>
                                     </span>
-                                } banner/>
+                                } banner type={"info"}/>
                             </Col>
                             <Col span={24}>
                                 <Form.Item

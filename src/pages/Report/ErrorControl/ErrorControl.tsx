@@ -139,6 +139,7 @@ const ErrorControl = () => {
                     },
                 ]}
                 pagination={{
+                    pageSize: 100,  // Количество строк на страницу
                     showSizeChanger: true,  // Скрывает возможность смены количества строк на странице
                 }}
                 dataSource={sorted_data}

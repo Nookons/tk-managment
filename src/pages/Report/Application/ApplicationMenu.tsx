@@ -12,13 +12,13 @@ const ApplicationMenu = () => {
             <Divider>Application Menu</Divider>
             <Col span={24}>
                 <Space>
-                    <span>Current version: 0.0.4</span>
+                    <span>Current version: 0.0.6</span>
                 </Space>
             </Col>
             <Col span={24}>
-                <Alert style={{marginBottom: 14}} message={<span>The programme has been updated to version 0.0.4v. This update is available for download here</span>} banner showIcon={false} type={"success"}/>
+                <Alert style={{marginBottom: 14}} message={<span>The programme has been updated to version 0.0.6v. This update is available for download here</span>} banner showIcon={false} type={"success"}/>
                 <ButtonGroup>
-                    <Button onClick={() => window.location.href = "https://drive.google.com/file/d/1o_Up7CDXvx1c32C18wPfVD2JE-w3SVQo/view"} type={"primary"} ><DownloadOutlined style={{fontSize: 16}}/> Download</Button>
+                    <Button onClick={() => window.location.href = "https://e.pcloud.link/publink/show?code=XZdKpKZac1AHqbgEp01eWWsAFXmubIiWIdV"} type={"primary"} ><DownloadOutlined style={{fontSize: 16}}/> Download</Button>
                     <Button><InfoOutlined style={{fontSize: 16}}/> Info</Button>
                 </ButtonGroup>
             </Col>
