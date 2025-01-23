@@ -13,7 +13,6 @@ import {parseTime} from "./ParseTime";
 import ButtonGroup from "antd/es/button/button-group";
 import {collection, deleteDoc, doc, onSnapshot, query} from "firebase/firestore";
 import {db} from "../../firebase";
-import {match} from "node:assert";
 
 
 const Report = () => {
@@ -170,7 +169,7 @@ const Report = () => {
                            valuePropName="checked">
                     <Switch onChange={() => setIsErrorControl(!isErrorControl)}/>
                 </Form.Item>
-                <ApplicationMenu/>
+                <ApplicationMenu />
             </Col>
             <TableDrawer isDrawer={isDrawer} setIsDrawer={setIsDrawer} current_data={current_data}/>
         </Row>

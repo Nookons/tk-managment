@@ -82,11 +82,6 @@ const ErrorControl = () => {
 
     return (
         <>
-            {sorted_data.length > 0 &&
-            <Row gutter={[4, 4]}>
-                <Button type={"primary"} style={{margin: "14px 0"}} >Start ticket entering  <Tag color={"processing"}><span>📝 {sorted_data.length}</span></Tag></Button>
-            </Row>
-            }
             <Table
                 columns={[
                     {
