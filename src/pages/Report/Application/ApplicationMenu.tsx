@@ -6,8 +6,6 @@ import ButtonGroup from "antd/es/button/button-group";
 import useErrorsFetch from "../../../hooks/useErrorFetch";
 import {IError} from "../../../types/Error";
 import dayjs from "dayjs";
-import {deleteDoc, doc, updateDoc} from "firebase/firestore";
-import {db} from "../../../firebase";
 
 const ApplicationMenu = () => {
     const [isStarted, setIsStarted] = useState<boolean>(false);
@@ -47,7 +45,7 @@ const ApplicationMenu = () => {
                     <Button type={"primary"}>Tickets left <Tag color={"processing"}><span>📝 {sorted_data.length}</span></Tag></Button>
                 </ButtonGroup>
                 <Col span={24}>
-                    <Tag><span>In process: WS {sorted_data[0].workStation} {sorted_data[0].startTime.slice(10)}-{sorted_data[0].endTime.slice(10)} {sorted_data[0].text.slice(0,15)}...</span></Tag>
+                    <Tag><span>In process: WS {sorted_data[0]?.workStation} {sorted_data[0]?.startTime.slice(10)}-{sorted_data[0]?.endTime.slice(10)} {sorted_data[0]?.text.slice(0,15)}...</span></Tag>
                 </Col>
             </Row>
             <Col span={24}>
