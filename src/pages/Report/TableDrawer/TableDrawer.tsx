@@ -64,7 +64,8 @@ const TableDrawer: FC<TableDrawerProps> = ({isDrawer, setIsDrawer, current_data}
 
                     setDoc(doc(db, "errors", `${el.workStation}-${el.startTime}-${date}`), {
                         ...el,
-                        date: el.startTime.slice(0, 10)
+                        date: el.startTime.slice(0, 10),
+                        process: false
                     });
                     setDoc(doc(db, "errors_history", `${el.workStation}-${el.startTime}-${date}`), {
                         ...el,
