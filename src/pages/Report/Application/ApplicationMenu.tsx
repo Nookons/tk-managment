@@ -100,11 +100,11 @@ const ApplicationMenu = () => {
                     />
                 )}
             >
-                {lastError && (
-                    <Tag style={{width: "100%", marginBottom: 14}} color={"#333"}>
-                        <span>WS {program_status.current_item.workStation} {program_status.current_item.startTime.slice(10)} - {program_status.current_item.endTime.slice(10)} {program_status.current_item.text}</span>
-                    </Tag>
-                )}
+                {program_status.current_item.map((ticket: IError) => (
+                    <div style={{margin: 14}}>
+                        <h5>Ticket in process: {ticket.workStation}-{ticket.startTime}-{ticket.text}</h5>
+                    </div>
+                ))}
                 <Row gutter={16}>
                     <Col span={12}>
                         <Card size={"small"}>
