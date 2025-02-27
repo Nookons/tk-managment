@@ -16,6 +16,7 @@ export const SINGLE_TASK = "/single-task"
 
 
 export const REPORT_REFACTOR = "/report-refactor"
+export const REPORT_OVERVIEW = "/report-overview"
 
 
 export const WORK_STATION_DISPLAY = "/work-station-display"

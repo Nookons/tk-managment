@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&family=Raleway:ital,wght@0,100..900;1,100..900&family=SUSE:wght@100..800&display=swap');
 
-h1,h2,h3,h4,h5,h6, article, a, input, span, p, label  {
+h1,h2,h3,h4,h5,h6, article, a, input, span, p, label, time  {
     font-family: "Quicksand", sans-serif;
     font-optical-sizing: auto;
     font-style: normal;

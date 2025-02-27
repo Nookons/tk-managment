@@ -26,6 +26,11 @@ const ReportDrawer: FC<ReportDrawerProps> = ({drawer_options, setDrawer_options}
         }
     }, [reportType]);
 
+    const onChildClose = () => {
+        setDrawer_options((prev) => ({...prev, report_child: false}))
+        setReportType("")
+    }
+
     return (
         <Drawer
             title="Type of report window"
@@ -41,6 +46,7 @@ const ReportDrawer: FC<ReportDrawerProps> = ({drawer_options, setDrawer_options}
                     className={styles.CardItem}
                     span={24}
                 >
+                    <h4 style={{marginLeft: 4}}>Robot</h4>
                     <img src={RobotIco} alt="Robot Icon"/>
                 </Col>
                 <Col
@@ -48,28 +54,35 @@ const ReportDrawer: FC<ReportDrawerProps> = ({drawer_options, setDrawer_options}
                     className={styles.CardItem}
                     span={24}
                 >
-                    <img src={BadgeIco} alt="Robot Icon"/>
+                    <h4 style={{marginLeft: 4}}>Work Station</h4>
+                    <img src={BadgeIco} alt="WorkStation Icon"/>
                 </Col>
                 <Col
                     onClick={() => setReportType("chargeStation")}
                     className={styles.CardItem}
+                    style={{backgroundColor: "rgba(255,0,0,0.5)"}}
                     span={24}
                 >
-                    <img src={EvoStationIco} alt="Robot Icon"/>
+                    <h4 style={{marginLeft: 4}}>Charge Station</h4>
+                    <img src={EvoStationIco} alt="Charge Icon"/>
                 </Col>
                 <Col
                     onClick={() => setReportType("vsw")}
                     className={styles.CardItem}
+                    style={{backgroundColor: "rgba(255,0,0,0.5)"}}
                     span={24}
                 >
-                    <img src={ShelfIco} alt="Robot Icon"/>
+                    <h4 style={{marginLeft: 4}}>VSW Station</h4>
+                    <img src={ShelfIco} alt="VSW Icon"/>
                 </Col>
                 <Col
                     onClick={() => setReportType("qr")}
                     className={styles.CardItem}
+                    style={{backgroundColor: "rgba(255,0,0,0.5)"}}
                     span={24}
                 >
-                    <img src={QRIco} alt="Robot Icon"/>
+                    <h4 style={{marginLeft: 4}}>QR Code</h4>
+                    <img src={QRIco} alt="QR Icon"/>
                 </Col>
             </Row>
 
@@ -77,7 +90,7 @@ const ReportDrawer: FC<ReportDrawerProps> = ({drawer_options, setDrawer_options}
                 title={reportType}
                 width={520}
                 closable={false}
-                onClose={() => setDrawer_options((prev) => ({...prev, report_child: false}))}
+                onClose={onChildClose}
                 open={drawer_options.report_child}
                 destroyOnClose={false} // Форма не удаляется при закрытии
             >

@@ -2,7 +2,7 @@ import Home from "./pages/Home/Home";
 import SignIn from "./pages/SignIn/SignIn";
 import {
     ADD_BROKEN_ROBOT,
-    HOME_ROUTE, PARTS_INFO_ROUTE, REPORT_REFACTOR, ROBOT_ASSETS, ROBOTS_DISPLAY,
+    HOME_ROUTE, PARTS_INFO_ROUTE, REPORT_OVERVIEW, REPORT_REFACTOR, ROBOT_ASSETS, ROBOTS_DISPLAY,
     SIGN_IN_ROUTE, SINGLE_ROBOT, SINGLE_TASK, TOTE_DISPLAY,
     TOTE_INFO_ROUTE,
     UNIQ_NUMBER_ROUTE, USER_PROFILE, WORK_STATION_DISPLAY
@@ -19,6 +19,7 @@ import Task from "./pages/Task/Task";
 import Report from "./pages/Report/Report";
 import PartsInfo from "./pages/Info/PartsInfo";
 import RobotAssets from "./pages/RobotAssets/RobotAssets";
+import ReportOverview from "./pages/Report/ReportOverview/ReportOverview";
 
 
 interface Route {
@@ -46,6 +47,10 @@ export const publicRoutes: PublicRoutes = [
     {
         path: UNIQ_NUMBER_ROUTE,
         Component: UniqNumber,
+    },
+    {
+        path: REPORT_OVERVIEW,
+        Component: ReportOverview,
     },
     {
         path: ADD_BROKEN_ROBOT,

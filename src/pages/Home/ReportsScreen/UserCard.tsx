@@ -4,11 +4,11 @@ import {Avatar, Descriptions, Row, Skeleton} from "antd";
 import Col from "antd/es/grid/col";
 import {UserOutlined} from "@ant-design/icons";
 
-const UserCard = ({user_id}: {user_id: string}) => {
-    const {user, loading, error} = useGetUser(user_id);
+const UserCard = ({user_id}: {user_id: string | undefined}) => {
+    const {user, loading, error} = useGetUser(user_id || "");
 
     if (loading) {
-        return <Skeleton active/>
+        return <Skeleton.Button active/>
     }
 
     if (error) {

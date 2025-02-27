@@ -31,10 +31,10 @@ const CollectDataForm = ({ unit_id, type }: { unit_id: string; type: string }) =
     });
 
     const statusOptions = [
-        { value: 'completed', label: 'Completed' },
-        { value: 'process', label: 'Process' },
-        { value: 'founded', label: 'Founded' },
-        { value: 'observation', label: 'Observation' },
+        { value: 'Completed', label: 'Completed' },
+        { value: 'Process', label: 'Process' },
+        { value: 'Founded', label: 'Founded' },
+        { value: 'Observation', label: 'Observation' },
     ];
 
     const reasonOptionsMap: Record<"robot" | "workstation", { value: string; label: string; }[]> = {
