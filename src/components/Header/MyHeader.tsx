@@ -13,17 +13,28 @@ import {useNavigate} from "react-router-dom";
 import {USER_PROFILE} from "../../utils/const";
 import ReportForm from "./AddReport/ReportForm";
 import {getLanguage} from "../../utils/Cookies/Language";
+import ItemDrawer from "./AddItem/ItemDrawer";
+import ReportDrawer from "./AddReport/ReportDrawer";
 
+export interface IDrawerOptions {
+    item_drawer: boolean;
+    item_child: boolean;
+    report_drawer: boolean;
+    report_child: boolean;
+}
 
 const MyHeader = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const {user} = useAppSelector(state => state.user);
 
-    const [drawer_options, setDrawer_options] = useState({
+    const [drawer_options, setDrawer_options] = useState<IDrawerOptions>({
         item_drawer: false,
-        report_drawer: false
+        item_child: false,
+        report_drawer: false,
+        report_child: false,
     });
+
 
     const [language, setLanguage] = useState<string>("");
 
@@ -117,23 +128,18 @@ const MyHeader = () => {
                         icon={<DiffOutlined/>}/>
             </Space>
 
-            <Drawer
-                title="Add Item"
-                width={"45%"}
-                onClose={() => setDrawer_options((prev) => ({...prev, item_drawer: false}))}
-                open={drawer_options.item_drawer}
-            >
-                <AddItem/>
-            </Drawer>
 
-            <Drawer
-                title="Add Report"
-                width={"45%"}
-                onClose={() => setDrawer_options((prev) => ({...prev, report_drawer: false}))}
-                open={drawer_options.report_drawer}
-            >
-                <ReportForm/>
-            </Drawer>
+            {/* That is drawer for add or create item in system kind of parent*/}
+            <ItemDrawer
+                drawer_options={drawer_options}
+                setDrawer_options={setDrawer_options}
+            />
+
+            {/* That is drawer for add new report of errors in system*/}
+            <ReportDrawer
+                drawer_options={drawer_options}
+                setDrawer_options={setDrawer_options}
+            />
         </div>
     );
 };

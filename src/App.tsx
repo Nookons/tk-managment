@@ -4,19 +4,16 @@ import MyHeader from "./components/Header/MyHeader";
 import Sider from "antd/es/layout/Sider";
 import {Breadcrumb, Menu, MenuProps, message, theme} from 'antd';
 import {
-    AlertOutlined,
     AppstoreAddOutlined, BarcodeOutlined, BugOutlined, CarryOutOutlined, CheckCircleOutlined, FormOutlined,
     HomeOutlined, InfoCircleOutlined, MergeCellsOutlined, RobotOutlined,
 } from '@ant-design/icons';
 import Layout, {Content, Footer, Header} from "antd/es/layout/layout";
 import {useAppDispatch, useAppSelector} from "./hooks/storeHooks";
-import {subscribeToItems} from "./store/reducers/items";
 import {useNavigate} from "react-router-dom";
 import {
     ADD_BROKEN_ROBOT,
-    CREATE_OPTION,
     ERROR_TRANSLATION,
-    HOME_ROUTE, PARTS_INFO_ROUTE, REPORT_REFACTOR,
+    HOME_ROUTE, PARTS_INFO_ROUTE, REPORT_REFACTOR, ROBOT_ASSETS,
     ROBOTS_DISPLAY, TOTE_DISPLAY,
     WORK_STATION_DISPLAY
 } from "./utils/const";
@@ -65,11 +62,6 @@ const App = () => {
             icon: <FormOutlined />,
             label: 'Report Refactor',
         },
-        {
-            key: '3',
-            icon: <AppstoreAddOutlined />,
-            label: 'Create Option',
-        },
         /*getItem('Robots', 'sub1', <RobotOutlined />, [
             getItem('Repair', '4', <BugOutlined />),
             getItem('Robots display', '5', <AlertOutlined />),
@@ -97,13 +89,15 @@ const App = () => {
             icon: <InfoCircleOutlined />,
             label: 'Parts Info',
         },
+        {
+            key: '15',
+            icon: <RobotOutlined />,
+            label: 'Robots Assets',
+        },
     ];
 
 
-
-    const {
-        token: { colorBgContainer, borderRadiusLG },
-    } = theme.useToken();
+    const {token: { colorBgContainer, borderRadiusLG }} = theme.useToken();
 
     useEffect(() => {
         //disptach(subscribeToItems());
@@ -137,9 +131,6 @@ const App = () => {
                                 case '2':
                                     navigate(REPORT_REFACTOR);
                                     break;
-                                case '3':
-                                    navigate(CREATE_OPTION);
-                                    break;
                                 case '4':
                                     navigate(ADD_BROKEN_ROBOT);
                                     break;
@@ -163,6 +154,9 @@ const App = () => {
                                     break;
                                 case '14':
                                     navigate(PARTS_INFO_ROUTE);
+                                    break;
+                                case '15':
+                                    navigate(ROBOT_ASSETS);
                                     break;
                                 default:
                                     break;

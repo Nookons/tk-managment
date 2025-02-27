@@ -1,0 +1,21 @@
+
+.CardItem {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+    padding: 14px 0;
+    border-radius: 4px;
+    box-shadow: 4px 4px 0 rgba(0,0,0, 0.75);
+    cursor: pointer;
+    transition: 0.15s all ease;
+}
+.CardItem img{
+    max-width: 35px;
+}
+
+.CardItem:hover {
+    border: 1px solid transparent;
+    box-shadow: 8px 8px 0 rgba(0,0,0, 0.75);
+    background-color: #fff8f8;
+}

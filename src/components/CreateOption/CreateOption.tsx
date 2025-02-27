@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {FC, useState} from 'react';
 import {useForm} from "antd/es/form/Form";
 import {Form, Input, Select, Space, Modal, message, Spin, Row} from "antd";
 import Button from "antd/es/button";
@@ -7,6 +7,7 @@ import {db} from "../../firebase";
 import {doc, setDoc} from "firebase/firestore";
 import useFetchOptions from "../../hooks/useFetchOptions";
 import Col from "antd/es/grid/col";
+import {IDrawerOptions} from "../Header/MyHeader";
 
 interface FormValues {
     type: string;
@@ -14,8 +15,11 @@ interface FormValues {
     code: string;
 }
 
+interface CreateOptionProps {
+    setDrawer_options: React.Dispatch<React.SetStateAction<IDrawerOptions>>
+}
 
-const CreateOption = () => {
+const CreateOption:FC<CreateOptionProps> = ({setDrawer_options}) => {
     const {options} = useFetchOptions();
     const [form] = useForm();
     const [loading, setLoading] = useState(false);
@@ -46,6 +50,10 @@ const CreateOption = () => {
             });
             message.success("Data submitted successfully!");
             form.resetFields();
+            setDrawer_options((prev) => ({...prev,
+                item_drawer: false,
+                item_child: false,
+            }))
         } catch (error) {
             message.error("Failed to submit data!");
             console.error("Submission Error:", error);
@@ -73,7 +81,7 @@ const CreateOption = () => {
             onFinishFailed={onFormFinishFailed}
         >
             <Row gutter={[16, 16]}>
-                <Col span={8}>
+                <Col span={24}>
                     <Form.Item
                         label="Item Name"
                         name="name"
@@ -81,7 +89,7 @@ const CreateOption = () => {
                         <Input />
                     </Form.Item>
                 </Col>
-                <Col span={8}>
+                <Col span={24}>
                     <Form.Item
                         label="Material Code"
                         name="code"
@@ -92,8 +100,8 @@ const CreateOption = () => {
                         </InputMask>
                     </Form.Item>
                 </Col>
-                <Col span={8}>
-                    <Form.Item wrapperCol={{offset: 3, span: 24}}>
+                <Col span={24}>
+                    <Form.Item wrapperCol={{span: 24}}>
                         <Space>
                             <Button type="primary" htmlType="submit" loading={loading}>
                                 Submit

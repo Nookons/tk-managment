@@ -1,6 +1,5 @@
 
 export const HOME_ROUTE = "/"
-export const CREATE_OPTION = "/create-option"
 export const SIGN_IN_ROUTE = "/sign-in"
 
 export const TOTE_INFO_ROUTE = "/tote-info"
@@ -27,3 +26,5 @@ export const USER_PROFILE = "/user-profile"
 
 
 export const PARTS_INFO_ROUTE = "/parts-info"
+
+export const ROBOT_ASSETS = "/robot-assets"

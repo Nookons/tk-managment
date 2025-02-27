@@ -2,13 +2,11 @@ import Home from "./pages/Home/Home";
 import SignIn from "./pages/SignIn/SignIn";
 import {
     ADD_BROKEN_ROBOT,
-    CREATE_OPTION,
-    HOME_ROUTE, PARTS_INFO_ROUTE, REPORT_REFACTOR, ROBOTS_DISPLAY,
+    HOME_ROUTE, PARTS_INFO_ROUTE, REPORT_REFACTOR, ROBOT_ASSETS, ROBOTS_DISPLAY,
     SIGN_IN_ROUTE, SINGLE_ROBOT, SINGLE_TASK, TOTE_DISPLAY,
     TOTE_INFO_ROUTE,
     UNIQ_NUMBER_ROUTE, USER_PROFILE, WORK_STATION_DISPLAY
 } from "./utils/const";
-import CreateOption from "./pages/CreateOption/CreateOption";
 import ToteInfo from "./pages/Tote/ToteInfo/ToteInfo";
 import UniqNumber from "./pages/UniqNumber/UniqNumber";
 import AddBroken from "./pages/Robots/AddBroken/AddBroken";
@@ -20,6 +18,7 @@ import Profile from "./pages/User/Profile";
 import Task from "./pages/Task/Task";
 import Report from "./pages/Report/Report";
 import PartsInfo from "./pages/Info/PartsInfo";
+import RobotAssets from "./pages/RobotAssets/RobotAssets";
 
 
 interface Route {
@@ -39,10 +38,6 @@ export const publicRoutes: PublicRoutes = [
     {
         path: SIGN_IN_ROUTE,
         Component: SignIn,
-    },
-    {
-        path: CREATE_OPTION,
-        Component: CreateOption,
     },
     {
         path: TOTE_INFO_ROUTE,
@@ -87,5 +82,9 @@ export const publicRoutes: PublicRoutes = [
     {
         path: PARTS_INFO_ROUTE,
         Component: PartsInfo,
+    },
+    {
+        path: ROBOT_ASSETS,
+        Component: RobotAssets,
     },
 ];

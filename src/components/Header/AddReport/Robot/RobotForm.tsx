@@ -9,6 +9,7 @@ const RobotForm = () => {
 
     return (
         <div>
+            <h4>Robot Report page</h4>
             <AutoComplete
                 options={options.map(option => ({label: option.id.toString(), value: option.id.toString()}))}
                 style={{width: "100%"}}
@@ -21,7 +22,7 @@ const RobotForm = () => {
                     option!.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
                 }
             />
-            {unit_id && <CollectDataForm unit_id={unit_id} type={"Robot"} />}
+            {unit_id && <CollectDataForm unit_id={unit_id} type={"robot"} />}
         </div>
     );
 };
