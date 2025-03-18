@@ -1,38 +1,38 @@
 import { useState, useEffect } from "react";
-import { doc, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../../firebase";
-import {IReportTimeline} from "../../types/Reports/Report";
+import {IReportTimelineItem} from "../../types/Reports/Report";
 
 export const useReportTimeLine = (report_id: string) => {
-    const [timeLineData, setTimeLineData] = useState<IReportTimeline | null>(null);
+    const [timeLineData, setTimeLineData] = useState<IReportTimelineItem[] | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        // Ensure loading state is true initially when the effect runs
+        if (!report_id) return;
+
         setLoading(true);
+        setError(null);
 
-        const docRef = doc(db, "reports_history", report_id);
+        console.log(report_id)
 
-        // Subscribe to real-time updates using onSnapshot
-        const unsubscribe = onSnapshot(docRef, (docSnap) => {
-            if (docSnap.exists()) {
-                setTimeLineData(docSnap.data() as IReportTimeline);
+        const q = query(collection(db, "reports_history"), where("report_id", "==", report_id));
+
+        const unsubscribe = onSnapshot(q,
+            (querySnapshot) => {
+                const timeline: IReportTimelineItem[] = querySnapshot.docs.map(doc => (doc.data() as IReportTimelineItem));
+                setTimeLineData(timeline);
+                console.log(timeline);
                 setLoading(false);
-            } else {
-                setError("History not found on server");
+            },
+            (error) => {
+                console.error("Error fetching report timeline:", error);
+                setError(error.message);
                 setLoading(false);
             }
-        }, (err) => {
-            setError("Failed to fetch report");
-            console.error("Error fetching report:", err);
-            setLoading(false);
-        });
+        );
 
-        // Cleanup function to unsubscribe from the snapshot listener when the component is unmounted or report_id changes
-        return () => {
-            unsubscribe();
-        };
+        return () => unsubscribe();
     }, [report_id]);
 
     return { timeLineData, loading, error };

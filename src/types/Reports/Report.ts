@@ -11,12 +11,12 @@ export interface IReportTimelineItem {
     change?: string | IReportChangePart[];
 }
 
-export interface IReportTimeline {
-    actions_array: IReportTimelineItem[]
-}
 
 export interface IReport {
     add_person: string;
+    closedBy?: string;
+    closedAt?: string;
+    closedAtString?: string;
     add_time: number;
     add_time_string: string;
     change_parts: IReportChangePart[];

@@ -8,7 +8,14 @@ import workStationImg from "../../../assets/workStation.png";
 
 import UserCard from "./UserCard";
 import ButtonGroup from "antd/es/button/button-group";
-import {DeleteOutlined, EditOutlined, EyeOutlined, FileDoneOutlined,} from "@ant-design/icons";
+import {
+    AlertOutlined,
+    DeleteOutlined,
+    EditOutlined,
+    ExclamationCircleOutlined,
+    EyeOutlined,
+    FileDoneOutlined, LoadingOutlined, SafetyOutlined,
+} from "@ant-design/icons";
 import {useNavigate} from "react-router-dom";
 import {REPORT_OVERVIEW} from "../../../utils/const";
 import {TransferDirection} from "antd/es/transfer";
@@ -17,23 +24,23 @@ const getImg = (type: string) => {
     switch (type) {
         case "robot":
             return robotImg;
-        case "workstation":
+        case "workStation":
             return workStationImg
         default:
             return ""
     }
 }
 
-const getColor = (status: string) => {
+const getStatus = (status: string) => {
     switch (status) {
-        case "Process":
-            return "linear-gradient(270deg, rgba(255,255,255,1) 80%, rgba(130,244,255,1) 100%)";
-        case "Observation":
-            return "linear-gradient(270deg, rgba(255,255,255,1) 80%, rgba(255,252,130,1) 100%)";
         case "Founded":
-            return "linear-gradient(270deg, rgba(255,255,255,1) 80%, rgba(255,130,130,1) 100%)";
+            return <AlertOutlined style={{color: "rgba(255,0,0,1)", marginLeft: 8}}/>
+        case "Observation":
+            return <EyeOutlined style={{color: "rgb(255,136,0)", marginLeft: 8}}/>
+        case "Process":
+            return <LoadingOutlined style={{color: "rgb(0,225,255)", marginLeft: 8}}/>
         case "Completed":
-            return "linear-gradient(270deg, rgba(255,255,255,1) 80%, rgba(137,255,130,1) 100%)";
+            return <SafetyOutlined style={{color: "rgb(43,161,0)", marginLeft: 8}}/>
         default:
             return ""
     }
@@ -64,27 +71,6 @@ const ReportsScreen = () => {
         navigate(`${REPORT_OVERVIEW}?id=${refactored_id}`)
     }
 
-    const mockData: {
-        key: string;
-        title: string;
-        description: string;
-    }[] = useMemo(
-        () =>
-            Array.from({length: 20}).map((_, i) => ({
-                key: i.toString(),
-                title: `content${i + 1}`,
-                description: `description of content${i + 1}`,
-            })),
-        []
-    );
-
-    const initialTargetKeys = useMemo(
-        () =>
-            mockData.filter((item) => Number(item.key) > 10).map((item) => item.key),
-        [mockData]
-    );
-
-
     if (loading) {
         return (
             <div>
@@ -109,7 +95,7 @@ const ReportsScreen = () => {
                 return (
                     <Card
                         bordered={false}
-                        style={{width: "100%", background: getColor(item.status), marginTop: 14}}
+                        style={{width: "100%", marginTop: 14}}
                         extra={
                             <ButtonGroup>
                                 <Button onClick={() => reportClickHandle(item.id)}><EyeOutlined/></Button>
@@ -133,7 +119,7 @@ const ReportsScreen = () => {
                                         {item.add_time_string}
                                     </Descriptions.Item>
                                     <Descriptions.Item span={3} label="⭐ Status">
-                                        {item.status}
+                                        {item.status}  {getStatus(item.status)}
                                     </Descriptions.Item>
                                     <Descriptions.Item span={3} label="💡 Reason">
                                         {item.reason}

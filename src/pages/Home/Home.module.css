@@ -1,0 +1,13 @@
+
+
+.userCard {
+    align-items: center;
+    padding: 4px;
+    border-radius: 4px;
+    transition: .15s all ease;
+    cursor: pointer;
+}
+
+.userCard:hover {
+    background-color: rgba(0,0,0, 0.05);
+}

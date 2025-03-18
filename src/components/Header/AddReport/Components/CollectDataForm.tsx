@@ -64,10 +64,12 @@ const CollectDataForm = ({ unit_id, type }: { unit_id: string; type: string }) =
         if (user) {
             const obj = {
                 unit_id: unit_id,
-                type: type.toLowerCase(),
+                type: type,
                 ...formData
             }
+
             const result = await AddReport(obj, user)
+
             if (result) {
                 handleClear()
                 message.success("I'm so pleased to tell you that the report has now been added!")

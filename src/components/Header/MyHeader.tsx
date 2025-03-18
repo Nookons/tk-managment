@@ -51,7 +51,7 @@ const MyHeader = () => {
     }
 
     const goProfile = () => {
-        navigate(USER_PROFILE)
+        navigate(`${USER_PROFILE}?user_id=${user.id}`)
     }
 
     const items: MenuProps['items'] = [

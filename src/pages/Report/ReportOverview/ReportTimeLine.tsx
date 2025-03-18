@@ -7,17 +7,23 @@ import UserCard from "../../Home/ReportsScreen/UserCard";
 
 const ReportTimeLine = ({ report_id }: { report_id: string | null }) => {
     const { timeLineData, loading, error } = useReportTimeLine(report_id || "");
-
     const [sorted_data, setSorted_data] = useState<IReportTimelineItem[]>([]);
 
     useEffect(() => {
-        if (timeLineData && timeLineData.actions_array) {
-            setSorted_data(timeLineData.actions_array.sort((a, b) => b.add_time - a.add_time));
+        if (timeLineData) {
+            const sorted = timeLineData.sort((a, b) => b.add_time - a.add_time);
+            setSorted_data(sorted)
+            console.log(timeLineData);
+            console.log(sorted);
         }
     }, [timeLineData]);
 
     if (loading) {
         return <Spin size="large" />;
+    }
+
+    if (!timeLineData) {
+        return null
     }
 
     if (error) {

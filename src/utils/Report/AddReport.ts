@@ -5,17 +5,18 @@ import dayjs from "dayjs";
 
 export const AddReport = async (data: any, user: IUser) => {
    try {
-       const report_id = dayjs().valueOf();
+       const report_id = dayjs().valueOf().toString();
 
        const historyItem = {
            person: user.id,
            id: report_id,
+           report_id: report_id,
            add_time_string: dayjs().format("dddd, MMMM DD, YYYY [at] HH:mm:ss"),
            add_time: dayjs().valueOf(),
            type: "Create report"
        }
 
-       await setDoc(doc(db, "reports", report_id.toString()), {
+       await setDoc(doc(db, "reports", report_id), {
            ...data,
            add_person: user.id,
            id: report_id,
@@ -23,8 +24,8 @@ export const AddReport = async (data: any, user: IUser) => {
            add_time_string: dayjs().format("dddd, MMMM DD, YYYY [at] HH:mm:ss"),
        });
 
-       await setDoc(doc(db, "reports_history", report_id.toString()), {
-           actions_array: [historyItem]
+       await setDoc(doc(db, "reports_history", report_id), {
+           ...historyItem
        });
 
        return true

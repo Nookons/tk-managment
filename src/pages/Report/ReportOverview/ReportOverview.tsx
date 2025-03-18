@@ -1,6 +1,6 @@
 import React from 'react';
 import {useLocation} from "react-router-dom";
-import {Alert, Row, Select, Skeleton, Space, Tag, Timeline} from "antd";
+import {Alert, Button, Descriptions, Divider, message, Row, Select, Skeleton, Space, Tag, Timeline} from "antd";
 import {useReport} from "../../../hooks/Reports/useReport";
 import ReportOverviewDescription from "./ReportOverviewDescription";
 import {arrayUnion, doc, setDoc, updateDoc} from "firebase/firestore";
@@ -12,6 +12,8 @@ import dayjs from "dayjs";
 import UserCard from "../../Home/ReportsScreen/UserCard";
 import {ClockCircleOutlined, EditOutlined} from "@ant-design/icons";
 import ReportTimeLine from "./ReportTimeLine";
+import {closeReport} from "../../../utils/Report/CloseReport";
+import ChangePartsScreen from "../../Home/ReportsScreen/ChangePartsScreen";
 
 const ReportOverview = () => {
     const location = useLocation();
@@ -32,11 +34,13 @@ const ReportOverview = () => {
 
     const statusHandle = async (value: string) => {
         if (user) {
+            const id = dayjs().valueOf().toString();
             const reportRef = doc(db, "reports", report_id || "");
 
             const historyItem = {
                 person: user.id,
-                id: report_id,
+                id: id,
+                report_id: report_id,
                 add_time_string: dayjs().format("dddd, MMMM DD, YYYY [at] HH:mm:ss"),
                 add_time: dayjs().valueOf(),
                 type: "Change status",
@@ -49,18 +53,20 @@ const ReportOverview = () => {
                 last_modify_person: user.id,
             });
 
-            await updateDoc(doc(db, "reports_history", report_id || ""), {
-                actions_array: arrayUnion(historyItem)
+            await setDoc(doc(db, "reports_history", id), {
+                ...historyItem
             });
         }
     }
     const partsHandle = async (value: IReportChangePart[]) => {
         if (user) {
+            const id = dayjs().valueOf().toString();
             const reportRef = doc(db, "reports", report_id || "");
 
             const historyItem = {
                 person: user.id,
-                id: report_id,
+                id: id,
+                report_id: report_id,
                 add_time_string: dayjs().format("dddd, MMMM DD, YYYY [at] HH:mm:ss"),
                 add_time: dayjs().valueOf(),
                 type: "Change parts what was changed",
@@ -73,9 +79,20 @@ const ReportOverview = () => {
                 last_modify_person: user.id,
             });
 
-            await updateDoc(doc(db, "reports_history", report_id || ""), {
-                actions_array: arrayUnion(historyItem)
+            await setDoc(doc(db, "reports_history", id), {
+                ...historyItem
             });
+        }
+    }
+
+    const onCloseHandle = () => {
+        if (user && user.role !== "admin") {
+            message.error("Only individuals with the highest level of permission can close a report. If you wish to close a report, please liaise with your lead.")
+            return
+        }
+
+        if (reportData && user) {
+            const result = closeReport({reportData, user});
         }
     }
 
@@ -98,28 +115,49 @@ const ReportOverview = () => {
     return (
         <div>
             <Row gutter={[16, 16]}>
-                <Col span={12}>
+                <Col span={14}>
                     <h1>Report overview</h1>
-                    <Space>
-                        <Select
-                            style={{minWidth: 155}}
-                            options={statusOptions}
-                            value={reportData.status}
-                            onChange={(value) => statusHandle(value)}
-                        />
-                        <Select
-                            mode="multiple"
-                            allowClear
-                            style={{minWidth: "250px"}}
-                            placeholder="Please pick parts to change"
-                            options={options.map(el => ({value: el.name, label: el.name}))}
-                            value={reportData.change_parts}
-                            onChange={(value) => partsHandle(value)}
-                        />
-                    </Space>
+                    {reportData.status !== "Closed" ?
+                        <>
+                            <Divider>Actions buttons</Divider>
+                            <Space>
+                                <Select
+                                    style={{minWidth: 155}}
+                                    options={statusOptions}
+                                    value={reportData.status}
+                                    onChange={(value) => statusHandle(value)}
+                                />
+                                <Select
+                                    mode="multiple"
+                                    allowClear
+                                    style={{minWidth: "250px"}}
+                                    placeholder="Please pick parts to change"
+                                    options={options.map(el => ({value: el.name, label: el.name}))}
+                                    value={reportData.change_parts}
+                                    onChange={(value) => partsHandle(value)}
+                                />
+                                <Button onClick={onCloseHandle} type={"primary"}>Close that issue</Button>
+                                <Button danger type={"primary"}>Remove</Button>
+                            </Space>
+                        </>
+                        :
+                        <>
+                            <Divider>Report close data</Divider>
+                            <Descriptions style={{marginTop: 14, backgroundColor: reportData.status === "Closed" ? "rgba(0,255,187,0.15)" : "", borderRadius: 8}} size={"small"} bordered={true}>
+                                <Descriptions.Item style={{alignItems: "center"}} span={3} label="🙍 Closed By">
+                                    <UserCard user_id={reportData.closedBy}/>
+                                </Descriptions.Item>
+                                <Descriptions.Item span={3} label="🕖 Closed at">
+                                    {reportData.closedAtString}
+                                </Descriptions.Item>
+                            </Descriptions>
+                        </>
+                    }
+                    <Divider>Report data</Divider>
                     <ReportOverviewDescription reportData={reportData}/>
                 </Col>
-                <Col span={12}>
+                <Col span={10}>
+                    <Divider>History</Divider>
                     <ReportTimeLine report_id={report_id}/>
                 </Col>
             </Row>

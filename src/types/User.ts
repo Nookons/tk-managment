@@ -6,6 +6,7 @@ export interface IUser {
     email: string;
     password: string;
     last_modify?: string;
+    role: string;
     experience?: number;
     position: string;
     start_work_time?: number;
